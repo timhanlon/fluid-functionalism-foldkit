@@ -1,0 +1,149 @@
+.ff-checkbox {
+  --check-size: 16px;
+  --check-icon: 18px;
+  --check-corner: 5px;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  /* Upstream's CheckboxGroup row: min-h-9 py-3 (compact min-h-7 py-2). */
+  min-height: 36px;
+  gap: 8px;
+  padding: 12px;
+  box-sizing: border-box;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--muted-foreground, #737373);
+  font: var(--fs-body, 13px)/var(--lh-body, 20px) var(--font-sans, Inter, system-ui, sans-serif);
+  text-align: left;
+}
+.ff-checkbox-group[data-size='compact'] .ff-checkbox,
+.ff-checkbox[data-size='compact'] {
+  --check-size: 14px;
+  --check-icon: 16px;
+  --check-corner: 4px;
+  min-height: 28px;
+  gap: 4px;
+  padding: 8px 10px;
+  font-size: var(--fs-body-compact, 12px);
+  line-height: var(--lh-body-compact, 18px);
+}
+.ff-checkbox-group[data-radius='pill'] .ff-checkbox,
+.ff-checkbox[data-radius='pill'] {
+  border-radius: 20px;
+}
+.ff-checkbox-glyph {
+  position: relative;
+  display: block;
+  flex: none;
+  width: var(--check-size);
+  height: var(--check-size);
+}
+.ff-checkbox-border {
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid var(--border, #ddd);
+  border-radius: var(--check-corner);
+  transition: border-color 80ms;
+}
+.ff-checkbox:is([data-fluid-hover-active], :hover, :focus-visible) .ff-checkbox-border {
+  border-color: light-dark(#a3a3a3, #737373);
+}
+.ff-checkbox[data-checked] .ff-checkbox-border {
+  border-color: transparent;
+}
+.ff-checkbox-check {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--check-icon);
+  height: var(--check-icon);
+  color: var(--foreground, #171717);
+}
+.ff-checkbox-check path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 40ms ease-in;
+}
+.ff-checkbox[data-checked] .ff-checkbox-check path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 80ms ease-out;
+}
+.ff-checkbox-label {
+  display: inline-grid;
+}
+.ff-checkbox-label > span {
+  grid-area: 1/1;
+  text-box: trim-both cap alphabetic;
+}
+.ff-checkbox-sizer {
+  visibility: hidden;
+  font-variation-settings:
+    'wght' 550,
+    'opsz' 18;
+}
+.ff-checkbox-text {
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+  transition:
+    color 80ms,
+    font-variation-settings 80ms;
+}
+.ff-checkbox[data-checked] .ff-checkbox-text {
+  font-variation-settings:
+    'wght' 550,
+    'opsz' 18;
+}
+.ff-checkbox:is([data-checked], [data-fluid-hover-active], :hover, :focus-visible) {
+  color: var(--foreground, #171717);
+}
+.ff-checkbox:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.ff-checkbox:focus-visible {
+  outline: 1px solid var(--focus-ring, #6b97ff);
+  outline-offset: 2px;
+}
+.ff-checkbox-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 288px;
+  max-width: 100%;
+  user-select: none;
+}
+.ff-checkbox-group > .ff-hover-highlight {
+  position: absolute;
+  pointer-events: none;
+  background: var(--hover, rgb(0 0 0/0.04));
+}
+
+.ff-checkbox-group .ff-checkbox:focus-visible {
+  outline: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ff-checkbox-border,
+  .ff-checkbox-check path,
+  .ff-checkbox-text {
+    transition: none;
+  }
+}
+
+/* Sharp uses the source shape-context radii. */
+.ff-checkbox-group[data-radius='sharp'] .ff-checkbox,
+.ff-checkbox[data-radius='sharp'] {
+  border-radius: 1px;
+}
+
+.ff-checkbox-group[data-radius='sharp'] .ff-checkbox,
+.ff-checkbox[data-radius='sharp'] {
+  --check-corner: 0px;
+}

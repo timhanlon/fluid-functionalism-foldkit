@@ -1,0 +1,184 @@
+{
+  "origin": "https://fff.timhanlon.com",
+  "components": [
+    {
+      "name": "breadcrumb",
+      "title": "Breadcrumb",
+      "description": "Navigation trails with shared hover, sibling menus, truncation tooltips and responsive collapse.",
+      "compatibility": "pnpm"
+    },
+    {
+      "name": "button",
+      "title": "Button",
+      "description": "A stateless button with variants, sizes and shapes."
+    },
+    {
+      "name": "select",
+      "title": "Select",
+      "description": "A controlled selection with keyboard navigation and a portalled popup."
+    },
+    {
+      "name": "date-picker",
+      "title": "DatePicker",
+      "description": "A date selection composed with Calendar and a portalled popup."
+    },
+    {
+      "name": "checkbox",
+      "title": "Checkbox",
+      "description": "A controlled checkbox with visible and accessible labels."
+    },
+    {
+      "name": "switch",
+      "title": "Switch",
+      "description": "A controlled switch with keyboard and pointer interaction."
+    },
+    {
+      "name": "combobox",
+      "title": "Combobox",
+      "description": "Single and multiple selection with filtering and editable chips.",
+      "compatibility": "pnpm"
+    },
+    {
+      "name": "dropdown",
+      "title": "Dropdown",
+      "description": "Action menus with keyboard navigation and configurable popup content.",
+      "compatibility": "pnpm"
+    },
+    {
+      "name": "input",
+      "title": "Input",
+      "description": "Controlled text and number inputs with native stepping and file selection callbacks."
+    },
+    {
+      "name": "textarea",
+      "title": "Textarea",
+      "description": "A controlled multiline text field with sizing and validation attributes."
+    },
+    {
+      "name": "badge",
+      "title": "Badge",
+      "description": "A presentation badge with colors, solid and dot variants, sizes and corners."
+    },
+    {
+      "name": "field",
+      "title": "Field",
+      "description": "Accessible field composition with labels, descriptions and validation messages.",
+      "exampleDependencies": ["input"]
+    },
+    {
+      "name": "input-copy",
+      "title": "InputCopy",
+      "description": "Copyable values with clipboard feedback and an optional portalled tooltip."
+    },
+    {
+      "name": "input-group",
+      "title": "InputGroup",
+      "description": "A group of labelled input fields with shared hover, sizing and corners.",
+      "exampleDependencies": ["input-field"]
+    },
+    {
+      "name": "card",
+      "title": "Card",
+      "description": "Selectable and dismissible cards with compound content and grouped hover."
+    },
+    {
+      "name": "banner",
+      "title": "Banner",
+      "description": "Animated status banners with dismissal and retained exits."
+    },
+    {
+      "name": "carousel-dots",
+      "title": "CarouselDots",
+      "description": "Controlled slide indicators with optional autoplay and progress."
+    },
+    {
+      "name": "thinking-indicator",
+      "title": "ThinkingIndicator",
+      "description": "An accessible thinking status with scoped cycling visuals."
+    },
+    {
+      "name": "thinking-steps",
+      "title": "ThinkingSteps",
+      "description": "Controlled reasoning disclosure with progressive step content."
+    },
+    {
+      "name": "accordion",
+      "title": "Accordion",
+      "description": "Keyboard-accessible single or multiple disclosure."
+    },
+    {
+      "name": "checkbox-group",
+      "title": "CheckboxGroup",
+      "description": "Controlled checkboxes with shared hover and keyboard navigation.",
+      "exampleDependencies": ["checkbox"]
+    },
+    {
+      "name": "radio-group",
+      "title": "RadioGroup",
+      "description": "Controlled single selection with roving keyboard focus."
+    },
+    {
+      "name": "tabs",
+      "title": "Tabs",
+      "description": "Controlled tabs with manual keyboard activation and parent-owned panels."
+    },
+    {
+      "name": "slider",
+      "title": "Slider",
+      "description": "Controlled scalar and range sliders with lifted drag subscriptions."
+    },
+    {
+      "name": "tooltip",
+      "title": "Tooltip",
+      "description": "Accessible portalled tooltip with delayed visibility and retained exits."
+    },
+    {
+      "name": "calendar",
+      "title": "Calendar",
+      "description": "Controlled date-range selection with restrictions and keyboard navigation."
+    },
+    {
+      "name": "color-picker",
+      "title": "ColorPicker",
+      "description": "Inline and popover color editors with channel controls and swatches.",
+      "compatibility": "pnpm"
+    },
+    {
+      "name": "dialog",
+      "title": "Dialog",
+      "description": "Native modal composition with scoped isolation, focus and retained exits."
+    },
+    {
+      "name": "sidebar",
+      "title": "Sidebar",
+      "description": "Composable responsive navigation with collapse, resize, groups and mobile drawers."
+    },
+    {
+      "name": "command-menu",
+      "title": "CommandMenu",
+      "description": "Searchable commands and a keyboard-opened modal palette.",
+      "exampleEntries": ["./dialog.ts"]
+    },
+    {
+      "name": "table",
+      "title": "Table",
+      "description": "Semantic tables with controlled sorting, empty states and scoped row hover."
+    },
+    {
+      "name": "chat-message",
+      "title": "ChatMessage",
+      "description": "Conversation bubbles with owned file previews and consumer actions."
+    },
+    {
+      "name": "input-message",
+      "title": "InputMessage",
+      "description": "Controlled composer with attachments, suggestions, history and queued messages.",
+      "exampleDependencies": ["queued-stack"]
+    },
+    {
+      "name": "ask-user-questions",
+      "title": "AskUserQuestions",
+      "description": "Stateful question flows with validated answers and completion events."
+    }
+  ]
+}

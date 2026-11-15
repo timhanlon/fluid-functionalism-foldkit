@@ -1,0 +1,623 @@
+.ff-calendar {
+  box-sizing: border-box;
+  width: fit-content;
+  /* Caption motion paints into adjacent slots; contain that horizontal paint
+     even when the calendar is embedded without a popup clipping parent. */
+  overflow-x: clip;
+  border-radius: inherit;
+  background: inherit;
+  --cell-size: 36px;
+  --calendar-col: var(--cell-size);
+  --calendar-body: var(--fs-body, 13px);
+  --calendar-body-line: var(--lh-body, 20px);
+  --calendar-caption: var(--fs-caption, 12px);
+  --calendar-caption-line: var(--lh-caption, 16px);
+  --calendar-radius: 8px;
+  --calendar-focus-radius: 10px;
+}
+.ff-calendar[data-size='compact'] {
+  --calendar-body: var(--fs-body-compact, 12px);
+  --calendar-body-line: var(--lh-body-compact, 18px);
+  --calendar-caption: var(--fs-caption-compact, 11px);
+  --calendar-caption-line: var(--lh-caption-compact, 14px);
+}
+.ff-calendar[data-radius='pill'] {
+  --calendar-radius: 999px;
+  --calendar-focus-radius: 999px;
+}
+.ff-calendar[data-fill='true'] {
+  width: 100%;
+}
+.ff-calendar-body {
+  box-sizing: border-box;
+  padding: 8px;
+  background: inherit;
+}
+.ff-calendar-months {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  background: inherit;
+}
+.ff-calendar-strip {
+  display: flex;
+  gap: 24px;
+  margin: 0 -8px -8px;
+  padding: 0 8px 8px;
+  mask-image: linear-gradient(to right, transparent, #000 8px, #000 calc(100% - 8px), transparent);
+}
+.ff-calendar-month {
+  box-sizing: border-box;
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  width: calc(var(--cell-size) * 7);
+  min-width: 0;
+}
+.ff-calendar[data-week-numbers='true'] .ff-calendar-month {
+  width: calc(var(--cell-size) * 7.75);
+}
+.ff-calendar[data-fill='true'] .ff-calendar-strip {
+  flex: 1;
+  min-width: 0;
+}
+.ff-calendar[data-fill='true'] .ff-calendar-month {
+  flex: 1;
+  width: auto;
+}
+.ff-calendar-caption {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  height: var(--cell-size);
+  margin-bottom: 4px;
+  padding-left: 8px;
+}
+.ff-calendar-caption-text {
+  display: inline-block;
+  white-space: nowrap;
+  text-box: trim-both cap alphabetic;
+  color: var(--foreground);
+  font-size: var(--calendar-body);
+  line-height: var(--calendar-body-line);
+  font-variation-settings:
+    'wght' 550,
+    'opsz' 18;
+}
+.ff-calendar-caption-clip {
+  position: relative;
+  display: inline-grid;
+  min-width: 0;
+}
+.ff-calendar-caption-outgoing {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ff-calendar[data-week-numbers='true'] .ff-calendar-caption {
+  padding-left: calc(var(--cell-size) * 0.75 + 8px);
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal'] .ff-calendar-caption {
+  justify-content: center;
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal']
+  .ff-calendar-caption
+  > .ff-calendar-nav:first-child {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal']
+  .ff-calendar-caption
+  > .ff-calendar-nav:last-child {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal'][data-week-numbers='true']
+  .ff-calendar-caption {
+  padding-left: calc(var(--cell-size) * 0.75);
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal'][data-week-numbers='true']
+  .ff-calendar-caption
+  > .ff-calendar-nav:first-child {
+  left: calc(var(--cell-size) * 0.75);
+}
+.ff-calendar-nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  isolation: isolate;
+}
+.ff-calendar-nav-slot {
+  display: flex;
+  justify-content: center;
+  width: var(--calendar-col);
+}
+.ff-calendar .ff-calendar-nav-button {
+  position: relative;
+  z-index: 1;
+  width: min(var(--calendar-col), var(--cell-size));
+  height: min(var(--calendar-col), var(--cell-size));
+  padding: 0;
+}
+.ff-calendar-nav-button > .ff-button-background {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.ff-calendar-nav-button:active > .ff-button-background {
+  background: var(--active) !important;
+}
+.ff-calendar-nav-chevron {
+  display: inline-flex;
+}
+.ff-calendar-nav-chevron svg {
+  width: 14px;
+  height: 14px;
+}
+.ff-calendar-nav-chevron[data-direction='-1'] {
+  transform: rotate(180deg);
+}
+.ff-calendar[dir='rtl'] .ff-calendar-nav-chevron[data-direction='-1'] {
+  transform: none;
+}
+.ff-calendar[dir='rtl'] .ff-calendar-nav-chevron[data-direction='1'] {
+  transform: rotate(180deg);
+}
+.ff-calendar-weeks {
+  position: relative;
+}
+.ff-calendar-weeks-outgoing {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ff-calendar-weekdays,
+.ff-calendar-week {
+  display: flex;
+}
+.ff-calendar-weekday {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cell-size);
+  height: calc(var(--cell-size) * 0.8);
+  color: var(--muted-foreground);
+  font-size: var(--calendar-caption);
+  line-height: var(--calendar-caption-line);
+}
+@supports (width: round(1px, 1px)) {
+  .ff-calendar-weekday {
+    height: round(down, calc(var(--cell-size) * 0.8), 1px);
+  }
+}
+.ff-calendar-week-number {
+  box-sizing: border-box;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--cell-size) * 0.75);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+  opacity: 0.6;
+  font-size: var(--calendar-caption);
+  line-height: var(--calendar-caption-line);
+}
+.ff-calendar-week > .ff-calendar-week-number {
+  height: var(--cell-size);
+}
+.ff-calendar-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  padding: 0;
+}
+.ff-calendar[data-fill='true'] .ff-calendar-cell {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  height: auto;
+  aspect-ratio: 1;
+  max-height: var(--cell-size);
+}
+.ff-calendar[data-fill='true'] .ff-calendar-weekday {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+.ff-calendar-day {
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  padding: 0;
+  border: 0;
+  border-radius: var(--calendar-radius);
+  background: transparent;
+  color: var(--foreground);
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  font-family: inherit;
+  font-size: var(--calendar-body);
+  line-height: var(--calendar-body-line);
+  font-variant-numeric: tabular-nums;
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+  transition:
+    color 80ms,
+    background-color 80ms,
+    font-variation-settings 80ms;
+}
+.ff-calendar[data-fill='true'] .ff-calendar-day {
+  width: auto;
+  height: 100%;
+  aspect-ratio: 1;
+  max-width: 100%;
+}
+.ff-calendar-cell[data-today='true'] .ff-calendar-day {
+  font-variation-settings:
+    'wght' 550,
+    'opsz' 18;
+}
+.ff-calendar-number,
+.ff-calendar-day-detail {
+  text-box: trim-both cap alphabetic;
+}
+.ff-calendar-cell[data-outside='true'] .ff-calendar-day {
+  color: var(--muted-foreground);
+  opacity: 0.6;
+}
+.ff-calendar-day[data-unavailable='true'] {
+  cursor: default;
+  color: var(--muted-foreground);
+  opacity: 0.5;
+}
+.ff-calendar-day[data-booked='true'] {
+  text-decoration: line-through;
+}
+.ff-calendar-day[data-selected='true'] {
+  background: var(--foreground);
+  color: var(--background);
+}
+.ff-calendar-day[data-preview-end='true'] {
+  color: var(--background);
+}
+.ff-calendar[data-picking='true'] .ff-calendar-day {
+  transition: color 80ms;
+}
+.ff-calendar-day[data-committed='true'] {
+  transition: none;
+}
+.ff-calendar-day:has(.ff-calendar-day-detail) {
+  flex-direction: column;
+  gap: 8px;
+}
+.ff-calendar-day-detail {
+  white-space: nowrap;
+  color: var(--muted-foreground);
+  font-size: var(--calendar-caption);
+  line-height: var(--calendar-caption-line);
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+}
+.ff-calendar-day:is([data-selected='true'], [data-preview-end='true']) .ff-calendar-day-detail,
+.ff-calendar-day:is([data-selected='true'], [data-preview-end='true']) .ff-calendar-day-detail * {
+  color: inherit !important;
+}
+.ff-calendar-today-dot {
+  position: absolute;
+  bottom: 14%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: currentColor;
+}
+.ff-calendar-band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: var(--hover);
+}
+.ff-calendar-hover-layers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ff-calendar-hover-fill,
+.ff-calendar-hover-outline,
+.ff-calendar-focus-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  border-radius: var(--calendar-radius);
+}
+.ff-calendar-hover-fill {
+  z-index: 1;
+  background: transparent;
+}
+.ff-calendar-hover-fill::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: var(--hover);
+  box-shadow: 0 0 0 1px var(--hover);
+  transition:
+    box-shadow 180ms cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 80ms;
+}
+.ff-calendar-hover-fill[data-solid='true'] {
+  background: var(--foreground);
+}
+.ff-calendar-hover-fill[data-solid='true']::before {
+  display: none;
+}
+.ff-calendar-hover-fill[data-pressed='true']:not([data-filled='true'])::before {
+  background: var(--active);
+  box-shadow: 0 0 0 0 var(--active);
+  transition-duration: 80ms;
+}
+.ff-calendar-hover-outline {
+  z-index: 3;
+}
+.ff-calendar-hover-outline::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border: 1px solid var(--background);
+  border-radius: 7px;
+  opacity: 0;
+  transition: opacity 80ms;
+}
+.ff-calendar[data-radius='pill'] .ff-calendar-hover-outline::before {
+  border-radius: 999px;
+}
+.ff-calendar-hover-outline[data-filled='true']::before {
+  opacity: 0.4;
+}
+.ff-calendar-hover-outline[data-filled='true'][data-pressed='true']::before {
+  opacity: 1;
+}
+.ff-calendar-focus-ring {
+  box-sizing: border-box;
+  z-index: 3;
+  border: 1px solid var(--focus-ring, #6b97ff);
+  border-radius: var(--calendar-focus-radius);
+}
+.ff-calendar[data-layout='vertical'][data-number-months='2'] .ff-calendar-months {
+  flex-direction: column;
+  gap: 16px;
+}
+.ff-calendar[data-layout='vertical'][data-number-months='2'] .ff-calendar-strip {
+  pointer-events: none;
+  flex-direction: column;
+  gap: 16px;
+  margin: -16px -4px -24px;
+  padding: 16px 4px 24px;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent calc(var(--strip-clip-top, 0px) + 16px),
+    #000 calc(var(--strip-clip-top, 0px) + 16px + var(--cell-size) / 4),
+    #000 calc(100% - 24px),
+    transparent
+  );
+}
+.ff-calendar[data-layout='vertical'] .ff-calendar-strip > .ff-calendar-month {
+  pointer-events: auto;
+}
+.ff-calendar[data-layout='vertical'][data-fill='true'] .ff-calendar-month {
+  width: 100%;
+  flex: auto;
+}
+.ff-calendar-sticky-weekdays {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  background: inherit;
+}
+.ff-calendar-sticky-weekdays > .ff-calendar-weekdays {
+  display: flex;
+  width: 100%;
+}
+.ff-calendar-stacked-nav {
+  position: absolute;
+  right: 0;
+  top: calc(var(--cell-size) * 0.8 + 16px);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  height: var(--cell-size);
+}
+@supports (width: round(1px, 1px)) {
+  .ff-calendar-stacked-nav {
+    top: calc(round(down, var(--cell-size) * 0.8, 1px) + 16px);
+  }
+}
+.ff-calendar[data-layout='vertical'] .ff-calendar-nav-chevron[data-direction='-1'] {
+  transform: rotate(-90deg);
+}
+.ff-calendar[data-layout='vertical'] .ff-calendar-nav-chevron[data-direction='1'] {
+  transform: rotate(90deg);
+}
+.ff-calendar-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Captions travel with the grids while the chevrons stay fixed. Extend the
+   paint layer across the adjacent slot, then mask the navigation column. */
+.ff-calendar-caption-layer,
+.ff-calendar-caption-inner {
+  display: inline-grid;
+}
+.ff-calendar[data-number-months='1'] .ff-calendar-caption-layer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(-1 * var(--calendar-stride, 0px));
+  right: calc(-1 * var(--calendar-stride, 0px));
+  pointer-events: none;
+  mask-image: linear-gradient(
+    to left,
+    transparent calc(var(--calendar-stride, 0px) + var(--calendar-col) * 2),
+    #000 calc(var(--calendar-stride, 0px) + var(--calendar-col) * 2 + 24px)
+  );
+}
+.ff-calendar[data-number-months='1'][data-nav-hidden='true'] .ff-calendar-caption-layer {
+  mask-image: linear-gradient(
+    to left,
+    transparent var(--calendar-stride, 0px),
+    #000 calc(var(--calendar-stride, 0px) + 24px)
+  );
+}
+.ff-calendar[data-number-months='1'] .ff-calendar-caption-inner {
+  position: absolute;
+  inset: 0 var(--calendar-stride, 0px);
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+}
+.ff-calendar[data-number-months='1'][data-week-numbers='true'] .ff-calendar-caption-inner {
+  padding-left: calc(var(--cell-size) * 0.75 + 8px);
+}
+.ff-calendar[data-number-months='1'] .ff-calendar-caption > .ff-calendar-nav {
+  margin-left: auto;
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal'] .ff-calendar-caption-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal'] .ff-calendar-caption-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal'][data-week-numbers='true']
+  .ff-calendar-caption-inner {
+  padding-left: calc(var(--cell-size) * 0.75);
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal']
+  .ff-calendar-month[data-display-index='0']
+  .ff-calendar-caption-layer {
+  right: calc(-1 * var(--calendar-stride, 0px));
+  mask-image: linear-gradient(
+    to right,
+    transparent var(--calendar-caption-nav, var(--calendar-col)),
+    #000 calc(var(--calendar-caption-nav, var(--calendar-col)) + 24px)
+  );
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal'][data-week-numbers='true'] {
+  --calendar-caption-nav: calc(var(--cell-size) * 0.75 + var(--calendar-col));
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal']
+  .ff-calendar-month[data-display-index='0']
+  .ff-calendar-caption-inner {
+  right: var(--calendar-stride, 0px);
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal']
+  .ff-calendar-month[data-display-index='1']
+  .ff-calendar-caption-layer {
+  left: calc(-1 * var(--calendar-stride, 0px));
+  mask-image: linear-gradient(
+    to left,
+    transparent var(--calendar-col),
+    #000 calc(var(--calendar-col) + 24px)
+  );
+}
+.ff-calendar[data-number-months='2'][data-layout='horizontal']
+  .ff-calendar-month[data-display-index='1']
+  .ff-calendar-caption-inner {
+  left: var(--calendar-stride, 0px);
+}
+.ff-calendar-caption-outgoing > .ff-calendar-caption-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.ff-calendar-days {
+  display: flex;
+  flex-direction: column;
+}
+.ff-calendar-range-ghost {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.ff-calendar-ghost-end {
+  position: relative;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  background: var(--foreground);
+  border-radius: var(--calendar-radius);
+}
+.ff-calendar[data-fill='true'] .ff-calendar-ghost-end {
+  width: auto;
+  height: 100%;
+  aspect-ratio: 1;
+  max-width: 100%;
+}
+.ff-calendar[data-layout='vertical'][data-number-months='2'][data-nav-hidden='false']
+  .ff-calendar-strip {
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent calc(var(--strip-clip-top, 0px) + 16px),
+      #000 calc(var(--strip-clip-top, 0px) + 16px + var(--cell-size) / 4),
+      #000 calc(100% - 24px),
+      transparent
+    ),
+    linear-gradient(to left, #000 calc(100% - 16px), transparent),
+    linear-gradient(to bottom, #000 calc(100% - 4px), transparent);
+  mask-size:
+    100% 100%,
+    calc(var(--calendar-col) * 2 + 16px) calc(var(--cell-size) + 4px),
+    calc(var(--calendar-col) * 2 + 16px) calc(var(--cell-size) + 4px);
+  mask-position:
+    0 0,
+    right 4px top 16px,
+    right 4px top 16px;
+  mask-repeat: no-repeat;
+  mask-composite: subtract, intersect;
+}
+
+/* Sharp uses the source shape-context radii. */
+.ff-calendar[data-radius='sharp'] {
+  --calendar-radius: 1px;
+  --calendar-focus-radius: 3px;
+}
+.ff-calendar[data-radius='sharp'] .ff-calendar-hover-outline::before {
+  border-radius: 1px;
+}

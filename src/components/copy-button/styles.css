@@ -1,0 +1,50 @@
+.ff-copy-icon {
+  position: relative;
+  display: grid;
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.ff-copy-icon > span {
+  grid-area: 1/1;
+  display: flex;
+  opacity: 0;
+  transform: scale(0.6);
+  filter: blur(4px);
+  transition:
+    opacity 60ms ease-in,
+    transform 60ms ease-in,
+    filter 60ms ease-in;
+}
+.ff-copy-button[data-size='compact'] .ff-copy-icon {
+  width: 14px;
+  height: 14px;
+}
+.ff-copy-icon svg {
+  width: 100%;
+  height: 100%;
+}
+.ff-copy-icon[data-copied='false'] .ff-copy-glyph,
+.ff-copy-icon[data-copied='true'] .ff-copy-check {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+  transition-duration: 80ms;
+  transition-timing-function: ease-out;
+}
+.ff-copy-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ff-copy-icon > span {
+    transition: none;
+  }
+}

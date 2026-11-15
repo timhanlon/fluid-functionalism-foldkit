@@ -1,0 +1,423 @@
+/* AskUserQuestions: the flow card. Size and shape key off the root's own
+ * data-size / data-radius, so a consumer's props win over site settings. */
+.auq-flow {
+  border-radius: 12px;
+}
+.auq-header {
+  padding: 14px 16px 8px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 16px;
+}
+.auq-body {
+  padding: 0 16px 10px;
+}
+.auq-body.auq-with-footer {
+  padding-bottom: 4px;
+}
+.auq-morph {
+  overflow: hidden;
+}
+.auq-title {
+  font-size: var(--fs-title, 16px);
+  line-height: var(--lh-title, 22px);
+}
+.auq-option {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  padding: 6px 6px 6px 12px;
+  cursor: pointer;
+  user-select: none;
+  outline: 0;
+  border-radius: 8px;
+}
+.auq-option-body {
+  min-width: 0;
+  flex: 1;
+  font-size: var(--fs-body, 13px);
+  line-height: var(--lh-body, 20px);
+}
+.auq-option-title {
+  color: var(--foreground);
+  transition: font-variation-settings 80ms;
+}
+.auq-option[aria-checked='true'] {
+  background: var(--active);
+}
+.auq-flow:not([data-auq-pointer='true']) .auq-option:focus-visible {
+  outline: 1px solid var(--focus-ring, #6b97ff);
+}
+/* Set by the view, not :has(+ [aria-checked]): a :has() on aria-checked makes
+ * every checkbox toggle on the page restyle the page. */
+.auq-option[data-joins-next] {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.auq-option[aria-checked='true'] + .auq-option[aria-checked='true'] {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.auq-chip-slot {
+  flex-shrink: 0;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+.auq-chip {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: var(--fs-micro, 11px);
+  line-height: var(--lh-micro, 14px);
+  color: var(--muted-foreground);
+}
+.auq-checkbox {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+[aria-checked='true'] .auq-checkbox,
+.auq-other[data-filled='true'] .auq-checkbox {
+  border-color: transparent;
+  background: var(--foreground);
+  color: var(--background);
+}
+.auq-arrow {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--foreground);
+  color: var(--background);
+  border-radius: 8px;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 80ms,
+    transform 80ms;
+}
+.auq-option[data-fluid-hover-active] .auq-arrow,
+.auq-option:focus-visible .auq-arrow {
+  opacity: 1;
+  transform: scale(1);
+}
+.auq-option:not(.auq-chip-left)[data-fluid-hover-active] .auq-chip,
+.auq-option:not(.auq-chip-left):focus-visible .auq-chip {
+  opacity: 0;
+}
+.auq-chip-left {
+  gap: 8px;
+  padding-left: 6px;
+}
+.auq-stacked {
+  align-items: flex-start;
+  min-height: 56px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.auq-stacked .auq-option-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.auq-stacked .auq-description {
+  font-size: 12px;
+  line-height: 16px;
+}
+.auq-stacked .auq-chip-slot {
+  margin-top: -1px;
+}
+.auq-other {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  /* An option row (upstream's Row): its chip slot sits flush like theirs. */
+  padding: 6px 6px 6px 12px;
+  border-radius: 8px;
+}
+.auq-textarea {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  color: var(--foreground);
+  font-size: var(--fs-body, 13px);
+  line-height: var(--lh-body, 20px);
+}
+.auq-textarea::placeholder {
+  color: var(--muted-foreground);
+}
+.auq-other[data-filled='true'],
+.auq-free-field[data-filled='true'] {
+  background: var(--active);
+}
+/* Focus shows the card + hairline only while empty; with text the field
+ * keeps the selected fill (upstream). */
+.auq-other:not([data-filled='true']):focus-within,
+.auq-free-field:not([data-filled='true']):focus-within {
+  box-shadow: inset 0 0 0 1px var(--border);
+  background: var(--card);
+}
+.auq-other-submit {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  background: var(--foreground);
+  color: var(--background);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.auq-free-field {
+  position: relative;
+  min-height: 76px;
+  margin: 4px -12px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: text;
+}
+.auq-single-line {
+  min-height: 40px;
+}
+.auq-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 8px 8px;
+}
+.auq-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.auq-footer-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.auq-footer-button:hover {
+  background: var(--hover);
+  color: var(--foreground);
+}
+.auq-footer-button:focus-visible {
+  outline: 1px solid var(--focus-ring, #6b97ff);
+}
+.auq-footer-button.auq-primary {
+  background: var(--foreground);
+  color: var(--background);
+}
+.auq-footer-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.auq-skip-arrow {
+  display: contents;
+}
+/* Continue's label and its shortcut chip, 6px apart (upstream's gap-1.5). */
+.auq-submit-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+/* Upstream's ShortcutChip, inverted tone: 18px tall, 4px inset, shape radius. */
+.auq-submit-shortcut {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--background) 15%, transparent);
+  font-family: var(--font-sans, Inter, system-ui, sans-serif);
+  font-size: var(--fs-micro, 11px);
+  line-height: 1;
+}
+.auq-error {
+  font-size: 12px;
+  line-height: 16px;
+  min-width: 0;
+}
+@media (min-width: 640px) {
+  .auq-header {
+    padding: 16px 20px 8px;
+  }
+  .auq-body {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 12px;
+  }
+  .auq-body.auq-with-footer {
+    padding-bottom: 4px;
+  }
+  .auq-submit-shortcut {
+    display: inline-flex;
+  }
+  /* Skip's arrow and Continue's chip act as trailing icons: tighter right. */
+  .auq-flow [data-auq-action='skip'],
+  .auq-flow [data-auq-action='submit'] {
+    padding-right: 8px;
+  }
+}
+@media (max-width: 639px) {
+  .auq-footer-button > svg,
+  .auq-flow [data-auq-action] svg {
+    display: none;
+  }
+  /* With the arrows hidden, Back and Skip go back to symmetric 12px. */
+  .auq-flow .ff-button[data-auq-action='back'][data-leading] {
+    padding-left: 12px;
+  }
+  .auq-flow .ff-button[data-auq-action='skip'][data-trailing] {
+    padding-right: 12px;
+  }
+}
+.auq-flow[data-size='compact'] .auq-header {
+  padding: 10px 14px 6px;
+  font-size: 11px;
+  line-height: 14px;
+}
+.auq-flow[data-size='compact'] .auq-body {
+  padding-left: 14px;
+  padding-right: 14px;
+  padding-bottom: 8px;
+}
+.auq-flow[data-size='compact'] .auq-body.auq-with-footer {
+  padding-bottom: 4px;
+}
+.auq-flow[data-size='compact'] .auq-option {
+  min-height: 32px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+.auq-flow[data-size='compact'] .auq-option-body,
+.auq-flow[data-size='compact'] .auq-textarea {
+  font-size: var(--fs-body-compact, 12px);
+  line-height: var(--lh-body-compact, 18px);
+}
+.auq-flow[data-size='compact'] .auq-chip-slot {
+  width: 24px;
+  height: 24px;
+}
+.auq-flow[data-size='compact'] .auq-chip {
+  width: 18px;
+  height: 18px;
+}
+.auq-flow[data-size='compact'] .auq-stacked {
+  min-height: 48px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.auq-flow[data-size='compact'] .auq-stacked .auq-description {
+  font-size: 11px;
+  line-height: 14px;
+}
+.auq-flow[data-size='compact'] .auq-free-field {
+  margin-left: -10px;
+  margin-right: -10px;
+  padding: 8px 10px;
+}
+.auq-flow[data-size='compact'] .auq-single-line {
+  min-height: 32px;
+}
+.auq-flow[data-size='compact'] .auq-footer {
+  padding-bottom: 6px;
+}
+.auq-flow[data-size='compact'] .auq-footer-button {
+  height: 24px;
+  font-size: 12px;
+  line-height: 18px;
+  padding: 0 10px;
+}
+@media (min-width: 640px) {
+  .auq-flow[data-size='compact'] .auq-header {
+    padding: 12px 16px 6px;
+  }
+  .auq-flow[data-size='compact'] .auq-body {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+.auq-flow[data-radius='pill'] {
+  border-radius: 24px;
+}
+.auq-flow[data-radius='pill'] .auq-option,
+.auq-flow[data-radius='pill'] .auq-free-field,
+.auq-flow[data-radius='pill'] .auq-other,
+.auq-flow[data-radius='pill'] .auq-footer-button,
+.auq-flow[data-radius='pill'] .auq-arrow,
+.auq-flow[data-radius='pill'] .auq-checkbox,
+.auq-flow[data-radius='pill'] .auq-submit-shortcut {
+  border-radius: 20px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .auq-arrow,
+  .auq-option-title {
+    transition: none;
+  }
+}
+
+/* Sharp uses the source shape-context radii. */
+.auq-flow[data-radius='sharp'] {
+  border-radius: 1px;
+}
+.auq-flow[data-radius='sharp'] .auq-option,
+.auq-flow[data-radius='sharp'] .auq-free-field,
+.auq-flow[data-radius='sharp'] .auq-other,
+.auq-flow[data-radius='sharp'] .auq-footer-button,
+.auq-flow[data-radius='sharp'] .auq-arrow,
+.auq-flow[data-radius='sharp'] .auq-checkbox,
+.auq-flow[data-radius='sharp'] .auq-submit-shortcut {
+  border-radius: 1px;
+}
+
+@layer components {
+  :where(.auq-flow) {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    overflow: hidden;
+    background: var(--card, var(--background));
+    border: 1px solid var(--border);
+    box-sizing: border-box;
+  }
+  :where(.auq-option-label) {
+    display: inline-grid;
+  }
+  :where(.auq-option-label > span) {
+    grid-area: 1 / 1;
+  }
+  :where(.auq-option-label > [aria-hidden='true']) {
+    visibility: hidden;
+  }
+}

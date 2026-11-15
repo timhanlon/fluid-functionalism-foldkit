@@ -1,0 +1,566 @@
+/* Portable panel layout and tokens. Consumer surface classes can override
+ * these low-specificity defaults. */
+@layer components {
+  :where(.ff-color-picker) {
+    --cp-control: 36px;
+    --cp-px: 12px;
+    --cp-gap: 8px;
+    --cp-radius: 8px;
+    --cp-fs: var(--fs-body, 13px);
+    --cp-lh: var(--lh-body, 20px);
+    --cp-glyph: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--cp-surface, var(--surface-3));
+    box-shadow: var(--cp-shadow, var(--shadow-1, 0 0 0 1px var(--border)));
+  }
+  :where(.ff-color-picker[data-size='compact']) {
+    --cp-control: 28px;
+    --cp-px: 10px;
+    --cp-gap: 4px;
+    --cp-fs: var(--fs-body-compact, 12px);
+    --cp-lh: var(--lh-body-compact, 18px);
+    --cp-glyph: 14px;
+  }
+  :where(.ff-color-picker[data-radius='pill']) {
+    --cp-radius: 20px;
+    border-radius: 24px;
+  }
+  :where(.ff-color-picker[data-radius='sharp']) {
+    border-radius: 1px;
+  }
+}
+
+/* The square is the first surface inside the 12px padding: its corner is the
+ * panel's less 12px (rounded 0, pill 12px). */
+.ff-cp-square {
+  position: relative;
+  width: 100%;
+  height: 156px;
+  border-radius: 0;
+  outline: none;
+  cursor: none;
+  user-select: none;
+  touch-action: none;
+}
+.ff-color-picker[data-radius='pill'] .ff-cp-square {
+  border-radius: 12px;
+}
+.ff-cp-square:focus-visible {
+  box-shadow: 0 0 0 2px var(--focus-ring, #6b97ff);
+}
+.ff-cp-plane {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.ff-cp-thumb,
+.ff-cp-ghost {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border-radius: 9999px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+.ff-cp-thumb {
+  border: 1px solid white;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 1);
+}
+.ff-cp-ghost {
+  display: none;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+.ff-cp-ghost[data-shown] {
+  display: block;
+}
+
+.ff-cp-rails {
+  display: flex;
+  flex-direction: column;
+}
+.ff-cp-rails > .ff-slider {
+  margin-bottom: 0 !important;
+}
+.ff-cp-rails > .ff-slider + .ff-slider {
+  margin-top: -1px;
+}
+
+.ff-cp-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.ff-cp-inputs[data-columns='4'] {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+}
+.ff-cp-inputs > .ff-dropdown,
+.ff-cp-cell {
+  display: grid;
+  min-width: 0;
+}
+
+/* Format trigger and eyedropper: ghost controls. */
+.ff-cp-control {
+  display: flex;
+  width: 100%;
+  height: var(--cp-control);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cp-gap);
+  padding: 0 var(--cp-px);
+  box-sizing: border-box;
+  border: 0;
+  border-radius: var(--cp-radius);
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: var(--cp-fs);
+  line-height: var(--cp-lh);
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+  outline: none;
+  cursor: pointer;
+  transition:
+    background-color 80ms,
+    color 80ms;
+}
+.ff-cp-control:hover {
+  background: var(--hover);
+  color: var(--foreground);
+}
+.ff-cp-control:active,
+.ff-cp-control[data-cp-format-open='true'] {
+  background: var(--active);
+}
+.ff-cp-control[data-cp-format-open='true'] {
+  color: var(--foreground);
+}
+:is(.ff-cp-control, .ff-cp-field, .ff-cp-swatch, .ff-cp-trigger, .ff-cp-segment):focus-visible,
+.ff-cp-field:focus-within {
+  box-shadow: 0 0 0 1px var(--focus-ring, #6b97ff);
+}
+.ff-cp-eyedropper {
+  justify-content: center;
+}
+.ff-cp-chevron,
+.ff-cp-glyph {
+  display: flex;
+  color: var(--muted-foreground);
+}
+.ff-cp-glyph {
+  color: inherit;
+}
+.ff-cp-chevron svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.5;
+  transition: transform 150ms;
+}
+.ff-cp-format[data-cp-format-open='true'] .ff-cp-chevron svg {
+  transform: rotate(180deg);
+}
+.ff-cp-glyph svg {
+  width: var(--cp-glyph);
+  height: var(--cp-glyph);
+  stroke-width: 1.5;
+}
+/* The format menu is as wide as its trigger. */
+.ff-popup.ff-dropdown-popup[data-cp-format] {
+  width: auto;
+}
+/* The format menu's rows inset as upstream's FormatItem (px-3, px-2.5). */
+.ff-popup[data-cp-format] .ff-popup-row {
+  padding: 0 12px;
+}
+.ff-popup[data-cp-format][data-size='compact'] .ff-popup-row {
+  padding: 0 10px;
+}
+
+/* Channel fields. */
+.ff-cp-field {
+  display: flex;
+  height: var(--cp-control);
+  min-width: 0;
+  align-items: center;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border-radius: var(--cp-radius);
+  background: transparent;
+  user-select: none;
+  transition: background-color 80ms;
+}
+.ff-cp-field[data-scrub] {
+  padding: 0;
+}
+.ff-cp-field:hover {
+  background: var(--hover);
+}
+.ff-cp-field:active {
+  background: var(--active);
+}
+.ff-cp-scrub {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  align-self: stretch;
+  padding: 0 8px;
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
+}
+.ff-cp-field[data-editing] .ff-cp-scrub {
+  cursor: auto;
+}
+.ff-cp-prefix {
+  margin-right: 4px;
+  color: var(--muted-foreground);
+  font-size: var(--fs-caption, 12px);
+  line-height: var(--lh-caption, 16px);
+  user-select: none;
+}
+.ff-color-picker[data-size='compact'] .ff-cp-prefix {
+  font-size: var(--fs-caption-compact, 11px);
+  line-height: var(--lh-caption-compact, 14px);
+}
+.ff-cp-input {
+  min-width: 0;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-size: var(--cp-fs);
+  line-height: var(--cp-lh);
+  font-variant-numeric: tabular-nums;
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+  outline: none;
+}
+.ff-cp-scrub .ff-cp-input {
+  text-align: center;
+}
+.ff-cp-field[data-scrub]:not([data-editing]) .ff-cp-input {
+  pointer-events: none;
+}
+@media (pointer: coarse) {
+  .ff-cp-field,
+  .ff-cp-scrub {
+    padding: 0 4px;
+  }
+  .ff-cp-field[data-scrub] {
+    padding: 0;
+  }
+  .ff-cp-input {
+    font-size: 16px;
+  }
+}
+.ff-cp-scrub-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+}
+
+/* Swatches: cells tile with no gap; -4px puts their room outside the strip. */
+.ff-cp-swatches {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  margin: -4px;
+}
+.ff-cp-swatch {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  padding: 4px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+.ff-color-picker[data-radius='pill'] .ff-cp-swatch {
+  border-radius: 24px;
+}
+/* The selected band, 2px in: dims a step under the pointer, thins by 1px a
+ * side while pressed. */
+.ff-cp-band {
+  position: absolute;
+  inset: 2px;
+  border-radius: 10px;
+  background: var(--foreground);
+  opacity: 0;
+  transition:
+    opacity 80ms,
+    inset 80ms,
+    border-radius 80ms;
+}
+.ff-color-picker[data-radius='pill'] .ff-cp-band {
+  border-radius: 22px;
+}
+.ff-cp-swatch[aria-pressed='true'] .ff-cp-band {
+  opacity: 1;
+}
+.ff-cp-swatch[aria-pressed='true']:hover .ff-cp-band {
+  opacity: 0.8;
+}
+.ff-cp-swatches[data-pressed] .ff-cp-swatch[aria-pressed='true']:hover .ff-cp-band {
+  inset: 3px;
+  border-radius: 9px;
+  opacity: 1;
+}
+.ff-cp-chip {
+  position: relative;
+  display: block;
+  width: 28px;
+  height: 28px;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(127, 127, 127, 0.25);
+}
+.ff-color-picker[data-radius='pill'] .ff-cp-chip {
+  border-radius: 20px;
+}
+.ff-cp-chip-color {
+  position: absolute;
+  inset: 0;
+}
+/* The hover fill, pressed like a ghost Button: a surface 3px in with a 1px
+ * spread at rest, collapsing on press as it steps to the active token. */
+.ff-cp-swatches > .ff-hover-highlight {
+  background: transparent !important;
+  --swatch-press: var(--hover);
+}
+.ff-cp-swatches > .ff-hover-highlight::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 9px;
+  background: var(--swatch-press);
+  box-shadow: 0 0 0 1px var(--swatch-press);
+  pointer-events: none;
+  transition:
+    box-shadow 180ms cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 80ms ease;
+}
+.ff-color-picker[data-radius='pill'] .ff-cp-swatches > .ff-hover-highlight::before {
+  border-radius: 9999px;
+}
+.ff-cp-swatches[data-pressed]:not([data-over-selected]) > .ff-hover-highlight {
+  --swatch-press: var(--active);
+}
+.ff-cp-swatches[data-pressed]:not([data-over-selected]) > .ff-hover-highlight::before {
+  box-shadow: 0 0 0 0 var(--swatch-press);
+  transition-duration: 80ms, 80ms;
+}
+
+/* ColorTile and ColorSwatch. */
+.ff-cp-tile {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(127, 127, 127, 0.25);
+}
+.ff-cp-tile[data-radius='pill'] {
+  border-radius: 20px;
+}
+.ff-cp-color-swatch {
+  padding: 0;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  transition: box-shadow 100ms;
+}
+.ff-cp-color-swatch:hover {
+  box-shadow:
+    inset 0 0 0 1px rgba(127, 127, 127, 0.25),
+    0 0 0 2px var(--background),
+    0 0 0 4px rgba(127, 127, 127, 0.4);
+}
+.ff-cp-color-swatch[data-selected] {
+  box-shadow:
+    inset 0 0 0 1px rgba(127, 127, 127, 0.25),
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--fluid-accent, #6b97ff);
+}
+
+.ff-cp-trigger-field {
+  position: relative;
+  padding: 2px;
+}
+.ff-cp-segment {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  border: 0;
+  border-radius: 5px;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  outline: none;
+  cursor: pointer;
+}
+.ff-cp-trigger-field[data-radius='pill'] .ff-cp-segment {
+  border-radius: 17px;
+}
+.ff-cp-trigger-field > .ff-hover-highlight {
+  z-index: 0;
+}
+.ff-cp-segment-open {
+  gap: var(--cp-gap);
+  padding: 0 6px;
+}
+.ff-cp-popover-root[data-size='compact'] .ff-cp-segment-open {
+  padding: 0 4px;
+}
+.ff-cp-segment-remove {
+  width: 28px;
+  flex-shrink: 0;
+  justify-content: center;
+  color: var(--muted-foreground);
+}
+.ff-cp-popover-root[data-size='compact'] .ff-cp-segment-remove {
+  width: 24px;
+}
+.ff-cp-segment-remove:hover {
+  color: var(--foreground);
+}
+.ff-cp-segment-remove svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.5;
+}
+/* ColorPickerPopover trigger: layered, so a consumer's triggerClassName
+ * utilities (border-transparent, px-2, [&_span]:…) win. */
+@layer components {
+  .ff-cp-popover-root {
+    display: inline-flex;
+    --cp-control: 36px;
+    --cp-gap: 8px;
+    --cp-radius: 8px;
+    --cp-fs: var(--fs-body, 13px);
+    --cp-lh: var(--lh-body, 20px);
+  }
+  .ff-cp-popover-root[data-size='compact'] {
+    --cp-control: 28px;
+    --cp-gap: 4px;
+    --cp-fs: var(--fs-body-compact, 12px);
+    --cp-lh: var(--lh-body-compact, 18px);
+  }
+  .ff-cp-popover-root[data-radius='pill'] {
+    --cp-radius: 20px;
+  }
+  :where(.ff-cp-trigger, .ff-cp-trigger-field) {
+    display: inline-flex;
+    height: var(--cp-control);
+    align-items: center;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: var(--cp-radius);
+    background: transparent;
+    font-size: var(--cp-fs);
+    line-height: var(--cp-lh);
+    font-variation-settings:
+      'wght' 400,
+      'opsz' 14;
+  }
+  :where(.ff-cp-trigger) {
+    gap: var(--cp-gap);
+    padding: 0 8px;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 80ms;
+  }
+  .ff-cp-popover-root[data-size='compact'] :where(.ff-cp-trigger) {
+    padding: 0 6px;
+  }
+  :where(.ff-cp-trigger:hover) {
+    background: var(--hover);
+  }
+  :where(.ff-cp-trigger-label) {
+    padding: 0 4px;
+    color: var(--muted-foreground);
+    user-select: none;
+  }
+  :where(.ff-cp-trigger-value) {
+    color: var(--foreground);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* The popup shell only animates; the picker panel inside is the surface. */
+.ff-popup.ff-cp-popover {
+  min-width: 0;
+  /* Not a scroll container: the anchor's inline overflow would clip (and so
+   * flip) the format menu opening inside it. */
+  max-height: none !important;
+  overflow: visible !important;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  transform-origin: top left;
+}
+.ff-popup.ff-cp-popover[data-placement^='top'] {
+  transform-origin: bottom left;
+}
+/* At rest the shell drops its transform, which would otherwise be the
+ * containing block for the format menu's fixed positioning. */
+.ff-popup.ff-cp-popover:not([data-transition]):not([data-closed]) {
+  transform: none;
+}
+
+/* Sharp uses the source shape-context radii. */
+:where(.ff-color-picker[data-radius='sharp']) {
+  --cp-radius: 1px;
+}
+.ff-color-picker[data-radius='sharp'] .ff-cp-square {
+  border-radius: 0;
+}
+.ff-color-picker[data-radius='sharp'] .ff-cp-swatch {
+  border-radius: 1px;
+}
+.ff-color-picker[data-radius='sharp'] .ff-cp-band {
+  border-radius: 1px;
+}
+.ff-color-picker[data-radius='sharp'] .ff-cp-chip {
+  border-radius: 1px;
+}
+.ff-cp-tile[data-radius='sharp'] {
+  border-radius: 1px;
+}
+.ff-cp-trigger-field[data-radius='sharp'] .ff-cp-segment {
+  border-radius: 0;
+}
+.ff-cp-popover-root[data-radius='sharp'] {
+  --cp-radius: 1px;
+}
+
+.ff-color-picker[data-radius='sharp'] :is(.ff-cp-thumb, .ff-cp-ghost) {
+  border-radius: 0;
+}
+.ff-color-picker[data-radius='sharp'],
+.ff-cp-popover-root[data-radius='sharp'] .ff-cp-popover {
+  border-radius: 1px;
+}
+.ff-color-picker[data-radius='sharp'] .ff-cp-swatches > .ff-hover-highlight::before {
+  border-radius: 0;
+}

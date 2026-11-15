@@ -1,0 +1,382 @@
+/* Component-owned surface defaults sit beneath consumer utility overrides.
+ * The edge ring is recoloured for drag, focus and hover without thickening. */
+.ff-input-message {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  transition:
+    box-shadow 80ms,
+    color 80ms;
+  --ff-im-drop: 0 1px 1px -0.5px var(--shadow-color);
+}
+.ff-input-message[data-click-to-focus] {
+  cursor: text;
+}
+.ff-input-message[data-click-to-focus]:hover {
+  box-shadow:
+    0 0 0 1px var(--border),
+    var(--ff-im-drop);
+}
+.ff-input-message:has(.ff-im-field:focus-visible) {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--foreground) 20%, transparent),
+    var(--ff-im-drop);
+}
+.ff-input-message[data-drag-over] {
+  box-shadow:
+    0 0 0 1px var(--fluid-accent, #6b97ff),
+    var(--ff-im-drop);
+}
+.ff-input-message[data-im-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.ff-im-region {
+  overflow: hidden;
+}
+.ff-im-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 4px;
+  position: relative;
+}
+.ff-im-tile {
+  position: relative;
+  flex-shrink: 0;
+  cursor: default;
+}
+.ff-im-tile-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 9999px;
+  padding: 0;
+  background: #171717;
+  color: #fff;
+  cursor: pointer;
+  outline: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 80ms;
+}
+/* The 20px badge takes taps across a 32px square inside the tile's corner. */
+.ff-im-tile-remove::before,
+.ff-im-queued-remove::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+}
+.ff-im-tile:hover .ff-im-tile-remove,
+.ff-im-tile-remove:focus-visible,
+.ff-input-message[data-touch] .ff-im-tile-remove {
+  opacity: 1;
+  pointer-events: auto;
+}
+:is(.ff-im-tile-remove, .ff-im-queued-remove, .ff-im-queued):focus-visible {
+  box-shadow: 0 0 0 1px var(--focus-ring, #6b97ff);
+}
+.ff-im-x {
+  display: flex;
+}
+.ff-im-x svg {
+  width: var(--ff-im-x);
+  height: var(--ff-im-x);
+  stroke-width: 2.5;
+}
+
+.ff-im-queue {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 4px;
+}
+.ff-im-queued {
+  display: flex;
+  height: 32px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: var(--fs-body, 13px);
+  line-height: var(--lh-body, 20px);
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+  user-select: none;
+  outline: none;
+  cursor: grab;
+}
+.ff-im-queued:active {
+  cursor: grabbing;
+}
+.ff-input-message[data-size='compact'] .ff-im-queued {
+  height: 28px;
+  padding: 0 8px;
+  font-size: var(--fs-body-compact, 12px);
+  line-height: var(--lh-body-compact, 18px);
+}
+.ff-im-queued-files {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2px;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+.ff-im-queued-files svg {
+  width: 13px;
+  height: 13px;
+}
+.ff-im-queued-label,
+.ff-im-suggestion-text {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-box: trim-both cap alphabetic;
+  padding: 4px 0;
+  margin: -4px 0;
+}
+.ff-im-queued-remove {
+  position: relative;
+  display: flex;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 9999px;
+  padding: 0;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  outline: none;
+  opacity: 0;
+  transition: opacity 80ms;
+}
+.ff-im-queued-remove:hover {
+  color: var(--foreground);
+  background: var(--hover);
+}
+.ff-im-queued:hover .ff-im-queued-remove,
+.ff-im-queued-remove:focus-visible,
+.ff-input-message[data-touch] .ff-im-queued-remove {
+  opacity: 1;
+}
+
+.ff-im-field-wrap {
+  position: relative;
+}
+.ff-im-field,
+.ff-im-ghost {
+  font: inherit;
+  font-size: var(--fs-subtitle, 14px);
+  line-height: var(--lh-subtitle, 20px);
+  padding: 8px;
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+}
+.ff-input-message[data-size='compact'] :is(.ff-im-field, .ff-im-ghost) {
+  font-size: var(--fs-subtitle-compact, 13px);
+  line-height: var(--lh-subtitle-compact, 18px);
+  padding: 6px;
+}
+@media (pointer: coarse) {
+  :is(.ff-im-field, .ff-im-ghost) {
+    font-size: 16px;
+  }
+}
+.ff-im-field {
+  /* Inline, as upstream's textarea: its line box keeps the same space below. */
+  width: 100%;
+  vertical-align: baseline;
+  box-sizing: border-box;
+  resize: none;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  background: transparent;
+  color: var(--foreground);
+  outline: none;
+}
+.ff-im-field::placeholder {
+  color: var(--muted-foreground);
+}
+.ff-im-ghost {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+.ff-im-ghost-line {
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 6px;
+}
+.ff-im-ghost-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ff-im-ghost-kbd {
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 18px;
+  align-items: center;
+  padding: 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--background);
+  color: var(--muted-foreground);
+  font-family: var(--font-sans, Inter, system-ui, sans-serif);
+  font-size: var(--fs-micro, 11px);
+  line-height: var(--lh-micro, 14px);
+  transform: translateY(-1px);
+}
+.ff-input-message[data-size='compact'] .ff-im-ghost-kbd {
+  height: 16px;
+  font-size: var(--fs-micro-compact, 10px);
+  line-height: var(--lh-micro-compact, 12px);
+}
+
+.ff-im-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ff-im-slot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ff-im-slot-left {
+  min-width: 0;
+}
+.ff-im-slot-right {
+  flex-shrink: 0;
+}
+/* The compact step scales every footer button, send included, to 24px. */
+.ff-input-message[data-size='compact'] .ff-im-footer {
+  gap: 6px;
+}
+.ff-input-message[data-size='compact'] .ff-im-footer .ff-button[data-size] {
+  height: 24px;
+  font-size: var(--fs-caption-compact, 11px);
+  line-height: var(--lh-caption-compact, 14px);
+}
+.ff-input-message[data-size='compact'] .ff-im-footer .ff-button[data-size='icon-compact'] {
+  width: 24px;
+}
+.ff-im-send-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+.ff-im-send-glyph svg {
+  display: block;
+  width: 19px !important;
+  height: 19px !important;
+}
+.ff-input-message[data-size='compact'] .ff-im-send-glyph svg {
+  width: 15px !important;
+  height: 15px !important;
+}
+.ff-im-stop {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: currentColor;
+}
+
+.ff-im-suggestions-region {
+  margin: -4px -8px 0;
+}
+.ff-im-suggestions {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  padding: 6px 6px 0;
+  border-top: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+}
+.ff-im-suggestion {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  height: 32px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  color: var(--muted-foreground);
+  font-size: var(--fs-subtitle, 14px);
+  line-height: var(--lh-subtitle, 20px);
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+  cursor: pointer;
+  transition: color 80ms;
+}
+.ff-input-message[data-size='compact'] .ff-im-suggestion {
+  height: 28px;
+  padding: 0 8px;
+  font-size: var(--fs-subtitle-compact, 13px);
+  line-height: var(--lh-subtitle-compact, 18px);
+}
+.ff-im-suggestion[aria-selected='true'] {
+  color: var(--foreground);
+}
+:is(.ff-im-suggestion-hint, .ff-im-suggestion-enter) {
+  display: flex;
+  flex-shrink: 0;
+  transition: opacity 80ms;
+}
+:is(.ff-im-suggestion-hint, .ff-im-suggestion-enter) svg {
+  width: 13px;
+  height: 13px;
+}
+.ff-im-suggestion-hint {
+  color: var(--muted-foreground);
+}
+.ff-im-suggestion-enter {
+  opacity: 0;
+}
+.ff-im-suggestion-enter[data-shown] {
+  opacity: 1;
+}
+
+@layer components {
+  :where(.ff-input-message) {
+    box-sizing: border-box;
+    min-width: 0;
+    background: var(--surface-2);
+    color: var(--foreground);
+    border-radius: 12px;
+    box-shadow: var(--shadow-2, 0 0 0 1px var(--border));
+  }
+  :where(.ff-input-message[data-radius='pill']) {
+    border-radius: 24px;
+  }
+  :where(.ff-input-message[data-radius='sharp']) {
+    border-radius: 1px;
+  }
+}

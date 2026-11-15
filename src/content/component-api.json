@@ -1,0 +1,6288 @@
+{
+  "accordion": [
+    {
+      "name": "Item",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "content",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Options",
+      "fields": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": "'single' | 'multiple'",
+          "description": ""
+        },
+        {
+          "name": "collapsible",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "optional": true,
+          "type": "string | readonly string[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "highlight",
+          "optional": true,
+          "type": "'trigger' | 'item'",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "renderContent",
+          "optional": true,
+          "type": "(value: string) => Html",
+          "description": ""
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": "'single' | 'multiple'",
+          "description": ""
+        },
+        {
+          "name": "collapsible",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "optional": true,
+          "type": "string | readonly string[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "ask-user-questions": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "questions",
+          "optional": false,
+          "type": "readonly Question[] | (() => readonly Question[])",
+          "description": "Use a top-level getter when questions include validation callbacks."
+        },
+        {
+          "name": "currentIndex",
+          "optional": true,
+          "type": "number",
+          "description": "Pass matching controls to update; call sync when the parent changes them."
+        },
+        {
+          "name": "answers",
+          "optional": true,
+          "type": "Readonly<Record<string, Answer>>",
+          "description": ""
+        },
+        {
+          "name": "skipLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly ChildAttribute[]",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Question",
+      "fields": [
+        {
+          "name": "id",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "options",
+          "optional": true,
+          "type": "readonly { readonly id?: string; readonly title: string; readonly description?: string; }[]",
+          "description": ""
+        },
+        {
+          "name": "multiSelect",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "allowOther",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "otherPlaceholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "skippable",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "nextLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "chipPosition",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "freeText",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "freeTextMultiline",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "freeTextPlaceholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "freeTextValidate",
+          "optional": true,
+          "type": "(value: string) => string | null | undefined",
+          "description": "Validate trimmed free text on submit. Return a message to block advancing."
+        }
+      ]
+    },
+    {
+      "name": "Answer",
+      "fields": [
+        {
+          "name": "selectedIds",
+          "optional": false,
+          "type": "readonly string[]",
+          "description": ""
+        },
+        {
+          "name": "questionId",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "otherText",
+          "optional": true,
+          "type": "string | undefined",
+          "description": ""
+        },
+        {
+          "name": "skipped",
+          "optional": true,
+          "type": "boolean | undefined",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "InitConfig",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "defaultCurrentIndex",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "defaultAnswers",
+          "optional": true,
+          "type": "Readonly<Record<string, Answer>>",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Options",
+      "fields": [
+        {
+          "name": "questions",
+          "optional": false,
+          "type": "readonly Question[]",
+          "description": ""
+        },
+        {
+          "name": "currentIndex",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "answers",
+          "optional": true,
+          "type": "Readonly<Record<string, Answer>>",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "badge": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "color",
+          "optional": true,
+          "type": "Color",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "'solid' | 'dot'",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "Size",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly Attribute<Message>[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "banner": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "title",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "status",
+          "optional": true,
+          "type": "Status",
+          "description": ""
+        },
+        {
+          "name": "contrast",
+          "optional": true,
+          "type": "'low' | 'high'",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "'inline' | 'fixed'",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "dismissible",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "dismissLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "motion",
+          "optional": true,
+          "type": "MotionConfig",
+          "description": ""
+        },
+        {
+          "name": "renderActions",
+          "optional": true,
+          "type": "(h: HtmlBuilder<Message>) => readonly Html[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "breadcrumb": [
+    {
+      "name": "Item",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "href",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "IconName",
+          "description": ""
+        },
+        {
+          "name": "iconOnly",
+          "optional": true,
+          "type": "boolean",
+          "description": "Keep a name for an icon-only home link."
+        },
+        {
+          "name": "items",
+          "optional": true,
+          "type": "readonly Dropdown.Item[]",
+          "description": "Sibling destinations. A menu step uses a native button."
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "collapse",
+          "optional": true,
+          "type": "'overflow' | number",
+          "description": "Overflow hides middle steps as space runs out. A number fixes the count."
+        },
+        {
+          "name": "reveal",
+          "optional": true,
+          "type": "'menu' | 'expand'",
+          "description": ""
+        },
+        {
+          "name": "openOnHover",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "separator",
+          "optional": true,
+          "type": "string | null",
+          "description": "undefined uses the icon library chevron; null removes separators."
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly Attribute<Message>[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "CrumbProps",
+      "fields": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "separator",
+          "optional": true,
+          "type": "Html | null",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<ParentMessage> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "button": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "Message",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "Variant",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "Size",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "loading",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "active",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": "'button' | 'submit' | 'reset'",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "leadingIcon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "trailingIcon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "calendar": [
+    {
+      "name": "Options",
+      "fields": [
+        {
+          "name": "numberOfMonths",
+          "optional": true,
+          "type": "1 | 2",
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "optional": true,
+          "type": "Orientation",
+          "description": ""
+        },
+        {
+          "name": "controlled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "selected",
+          "optional": true,
+          "type": "Selection",
+          "description": ""
+        },
+        {
+          "name": "month",
+          "optional": true,
+          "type": "CalendarDay",
+          "description": "A supplied month is controlled; init.month seeds the local month."
+        },
+        {
+          "name": "disableNavigation",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "hideNavigation",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "pagedNavigation",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "reverseMonths",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "optional": true,
+          "type": "'single' | 'range'",
+          "description": ""
+        },
+        {
+          "name": "required",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "min",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "max",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "booked",
+          "optional": true,
+          "type": "Matchers",
+          "description": ""
+        },
+        {
+          "name": "available",
+          "optional": true,
+          "type": "Matchers",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "Matchers",
+          "description": ""
+        },
+        {
+          "name": "hidden",
+          "optional": true,
+          "type": "Matchers",
+          "description": ""
+        },
+        {
+          "name": "shift",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "dir",
+          "optional": true,
+          "type": "'ltr' | 'rtl'",
+          "description": ""
+        },
+        {
+          "name": "startMonth",
+          "optional": true,
+          "type": "Day",
+          "description": ""
+        },
+        {
+          "name": "endMonth",
+          "optional": true,
+          "type": "Day",
+          "description": ""
+        },
+        {
+          "name": "showWeekNumber",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "weekStartsOn",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "ISOWeek",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "firstWeekContainsDate",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "fixedWeeks",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "cellSize",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "fill",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "showOutsideDays",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "autoFocus",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "dayDetail",
+          "optional": true,
+          "type": "DayDetail",
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "labels",
+          "optional": true,
+          "type": "Labels | (() => Labels)",
+          "description": "For h.submodel, return callback labels from a top-level factory:\n`labels: () => ({ day: (date) => date.toDateString() })`.\nObject values support static labels, or callbacks in a direct view call."
+        },
+        {
+          "name": "formatters",
+          "optional": true,
+          "type": "Formatters | (() => Formatters)",
+          "description": "Use a top-level factory in h.submodel: `formatters: () => ({ day: () => \"•\" })`.\nThe object form remains available to direct view callers."
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        },
+        {
+          "name": "numberOfMonths",
+          "optional": true,
+          "type": "1 | 2",
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "optional": true,
+          "type": "Orientation",
+          "description": ""
+        },
+        {
+          "name": "controlled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "selected",
+          "optional": true,
+          "type": "Selection",
+          "description": ""
+        },
+        {
+          "name": "month",
+          "optional": true,
+          "type": "CalendarDay",
+          "description": "A supplied month is controlled; init.month seeds the local month."
+        },
+        {
+          "name": "disableNavigation",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "hideNavigation",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "pagedNavigation",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "reverseMonths",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "optional": true,
+          "type": "'single' | 'range'",
+          "description": ""
+        },
+        {
+          "name": "required",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "min",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "max",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "booked",
+          "optional": true,
+          "type": "Matchers",
+          "description": ""
+        },
+        {
+          "name": "available",
+          "optional": true,
+          "type": "Matchers",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "Matchers",
+          "description": ""
+        },
+        {
+          "name": "hidden",
+          "optional": true,
+          "type": "Matchers",
+          "description": ""
+        },
+        {
+          "name": "shift",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "dir",
+          "optional": true,
+          "type": "'ltr' | 'rtl'",
+          "description": ""
+        },
+        {
+          "name": "startMonth",
+          "optional": true,
+          "type": "Day",
+          "description": ""
+        },
+        {
+          "name": "endMonth",
+          "optional": true,
+          "type": "Day",
+          "description": ""
+        },
+        {
+          "name": "showWeekNumber",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "weekStartsOn",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "ISOWeek",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "firstWeekContainsDate",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "fixedWeeks",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DateRange",
+      "fields": [
+        {
+          "name": "from",
+          "optional": false,
+          "type": "Date | undefined",
+          "description": ""
+        },
+        {
+          "name": "to",
+          "optional": true,
+          "type": "Date",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Labels",
+      "fields": [
+        {
+          "name": "previousMonth",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "nextMonth",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "day",
+          "optional": true,
+          "type": "(date: Date, modifiers: DayModifiers) => string",
+          "description": ""
+        },
+        {
+          "name": "month",
+          "optional": true,
+          "type": "(date: Date) => string",
+          "description": ""
+        },
+        {
+          "name": "weekday",
+          "optional": true,
+          "type": "(date: Date) => string",
+          "description": ""
+        },
+        {
+          "name": "weekNumber",
+          "optional": true,
+          "type": "(week: number) => string",
+          "description": ""
+        },
+        {
+          "name": "weekNumberHeader",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Formatters",
+      "fields": [
+        {
+          "name": "caption",
+          "optional": true,
+          "type": "(date: Date) => string",
+          "description": ""
+        },
+        {
+          "name": "weekday",
+          "optional": true,
+          "type": "(date: Date) => string",
+          "description": ""
+        },
+        {
+          "name": "day",
+          "optional": true,
+          "type": "(date: Date) => string",
+          "description": ""
+        },
+        {
+          "name": "weekNumber",
+          "optional": true,
+          "type": "(week: number) => string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DayModifiers",
+      "fields": [
+        {
+          "name": "selected",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "today",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "booked",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "outside",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "hidden",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "card": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "key",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string | null)[]",
+          "description": "Compound parts other than the prominent image."
+        },
+        {
+          "name": "image",
+          "optional": true,
+          "type": "ImageProps",
+          "description": ""
+        },
+        {
+          "name": "leading",
+          "optional": true,
+          "type": "Html | null",
+          "description": "Small media outside the body in an inline card."
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "Message",
+          "description": ""
+        },
+        {
+          "name": "href",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "external",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "selected",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "dismissible",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "dismissOnHover",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "onDismiss",
+          "optional": true,
+          "type": "Message",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "border",
+          "optional": true,
+          "type": "Border",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GroupProps",
+      "fields": [
+        {
+          "name": "cards",
+          "optional": false,
+          "type": "readonly Props<Message>[]",
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "optional": true,
+          "type": "Orientation",
+          "description": ""
+        },
+        {
+          "name": "columns",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "border",
+          "optional": true,
+          "type": "Border",
+          "description": ""
+        },
+        {
+          "name": "separated",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "fluidHover",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "PartProps",
+      "fields": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string | null)[]",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "MediaProps",
+      "fields": [
+        {
+          "name": "logo",
+          "optional": true,
+          "type": "string | readonly [string, string]",
+          "description": ""
+        },
+        {
+          "name": "logoAlt",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ImageProps",
+      "fields": [
+        {
+          "name": "src",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "alt",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ButtonProps",
+      "fields": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "Message",
+          "description": ""
+        },
+        {
+          "name": "href",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "ButtonVariant",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "iconPosition",
+          "optional": true,
+          "type": "'start' | 'end'",
+          "description": ""
+        },
+        {
+          "name": "external",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "carousel-dots": [
+    {
+      "name": "Autoplay",
+      "fields": [
+        {
+          "name": "duration",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "paused",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "loop",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "count",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: number, source: ChangeSource) => Message",
+          "description": ""
+        },
+        {
+          "name": "autoplay",
+          "optional": true,
+          "type": "boolean | Autoplay",
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "optional": true,
+          "type": "number",
+          "description": "An externally controlled clock, clamped to [0,1], takes precedence."
+        },
+        {
+          "name": "getLabel",
+          "optional": true,
+          "type": "(index: number) => string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": "Sharp squares dots, fills and hover highlights; other shapes keep them round."
+        }
+      ]
+    }
+  ],
+  "chat-message": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "key",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "from",
+          "optional": false,
+          "type": "'user' | 'assistant'",
+          "description": ""
+        },
+        {
+          "name": "files",
+          "optional": true,
+          "type": "readonly File[]",
+          "description": ""
+        },
+        {
+          "name": "thumbnailSize",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "time",
+          "optional": true,
+          "type": "Html | string",
+          "description": ""
+        },
+        {
+          "name": "actions",
+          "optional": true,
+          "type": "readonly Html[]",
+          "description": ""
+        },
+        {
+          "name": "children",
+          "optional": true,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "animateEntrance",
+          "optional": true,
+          "type": "boolean",
+          "description": "Use false for existing transcript entries, mirroring initial={false} on\nthe reference's surrounding AnimatePresence. Newly added entries enter."
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "checkbox": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "checked",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "onToggle",
+          "optional": false,
+          "type": "(checked: boolean) => Message",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "readOnly",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Control.Props",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "checked",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "onToggle",
+          "optional": false,
+          "type": "(checked: boolean) => Message",
+          "description": ""
+        },
+        {
+          "name": "indeterminate",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "readOnly",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "invalid",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "required",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "ariaLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "checkbox-group": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly Html[]",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "color-picker": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "format",
+          "optional": true,
+          "type": "ColorFormat",
+          "description": "Controlled format; pass the same value to update. Defaults to the internal format."
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string",
+          "description": "Controlled value (see state Options); omitted, the panel owns it."
+        },
+        {
+          "name": "swatches",
+          "optional": true,
+          "type": "readonly SwatchItem[]",
+          "description": "Any CSS colors, named ones included."
+        },
+        {
+          "name": "hideEyedropper",
+          "optional": true,
+          "type": "boolean",
+          "description": "The button already hides itself where window.EyeDropper is missing."
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "surface",
+          "optional": true,
+          "type": "string",
+          "description": "Surface classes for the panel; the popover lifts it two levels."
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "portalMenu",
+          "optional": true,
+          "type": "boolean",
+          "description": "false: the format menu renders inside the panel (in a popover)."
+        },
+        {
+          "name": "formatOpen",
+          "optional": true,
+          "type": "boolean",
+          "description": "Controlled menu state; user toggles are ignored. Rows still switch format."
+        }
+      ]
+    },
+    {
+      "name": "Options",
+      "fields": [
+        {
+          "name": "format",
+          "optional": true,
+          "type": "ColorFormat",
+          "description": "Controlled format. Handle FormatChanged, then pass the parent value to view too."
+        },
+        {
+          "name": "formatOpen",
+          "optional": true,
+          "type": "boolean",
+          "description": "Controlled menu state. User toggles are ignored; pass the same value to view."
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string",
+          "description": "A controlled value: when it differs from what the panel last emitted,\nthe panel re-derives its color from it before handling the message."
+        }
+      ]
+    },
+    {
+      "name": "InitConfig",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string",
+          "description": "Hex, rgb(a), hsl(a) or oklch; unparseable starts at pure red."
+        },
+        {
+          "name": "defaultFormat",
+          "optional": true,
+          "type": "ColorFormat",
+          "description": "Initial internal format, matching upstream defaultFormat."
+        },
+        {
+          "name": "defaultFormatOpen",
+          "optional": true,
+          "type": "boolean",
+          "description": "Initial internal format-menu state, matching upstream defaultFormatOpen."
+        },
+        {
+          "name": "format",
+          "optional": true,
+          "type": "ColorFormat",
+          "description": "Starting-format alias. Controlled format belongs to Options/Props."
+        }
+      ]
+    },
+    {
+      "name": "ParsedColor",
+      "fields": [
+        {
+          "name": "h",
+          "optional": false,
+          "type": "number",
+          "description": "HSV, canonical: 0..360 / 0..1 / 0..1."
+        },
+        {
+          "name": "s",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "v",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "a",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "r",
+          "optional": false,
+          "type": "number",
+          "description": "sRGB 0..255, rounded."
+        },
+        {
+          "name": "g",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "b",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "hex",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "rgb",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "hsl",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "oklch",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Popover.Props",
+      "fields": [
+        {
+          "name": "triggerLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "triggerLabelPosition",
+          "optional": true,
+          "type": "'left' | 'right'",
+          "description": ""
+        },
+        {
+          "name": "triggerShowValue",
+          "optional": true,
+          "type": "boolean",
+          "description": "The color as 6-digit hex beside the tile (alpha left out). Default true."
+        },
+        {
+          "name": "triggerShowRemove",
+          "optional": true,
+          "type": "boolean",
+          "description": "An X inside the trigger that emits Removed without opening."
+        },
+        {
+          "name": "triggerClassName",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "triggerTrailing",
+          "optional": true,
+          "type": "readonly Html[]",
+          "description": "Extra trigger content after the color (the right panel's shortcut)."
+        },
+        {
+          "name": "surfaceLevel",
+          "optional": true,
+          "type": "number",
+          "description": "The surface the trigger sits on; the panel floats two levels above."
+        },
+        {
+          "name": "format",
+          "optional": true,
+          "type": "ColorFormat",
+          "description": "Controlled format; pass the same value to update. Defaults to the internal format."
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string",
+          "description": "Controlled value (see state Options); omitted, the panel owns it."
+        },
+        {
+          "name": "swatches",
+          "optional": true,
+          "type": "readonly SwatchItem[]",
+          "description": "Any CSS colors, named ones included."
+        },
+        {
+          "name": "hideEyedropper",
+          "optional": true,
+          "type": "boolean",
+          "description": "The button already hides itself where window.EyeDropper is missing."
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "formatOpen",
+          "optional": true,
+          "type": "boolean",
+          "description": "Controlled menu state; user toggles are ignored. Rows still switch format."
+        }
+      ]
+    }
+  ],
+  "combobox": [
+    {
+      "name": "Multi.Props",
+      "fields": [
+        {
+          "name": "values",
+          "optional": false,
+          "type": "readonly string[]",
+          "description": ""
+        },
+        {
+          "name": "hideSelected",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "allSelectedLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Data[]",
+          "description": ""
+        },
+        {
+          "name": "filter",
+          "optional": true,
+          "type": "Filter<Data>",
+          "description": "Filter the item dataset passed to the primitive view."
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "emptyLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "clearable",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "readOnly",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "'bordered' | 'borderless'",
+          "description": ""
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "creatable",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "createLabel",
+          "optional": true,
+          "type": "(query: string) => string",
+          "description": ""
+        },
+        {
+          "name": "createIcon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Item",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Data[]",
+          "description": ""
+        },
+        {
+          "name": "filter",
+          "optional": true,
+          "type": "Filter<Data>",
+          "description": "Filter the item dataset passed to the primitive view."
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "emptyLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "clearable",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "readOnly",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "'bordered' | 'borderless'",
+          "description": ""
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "creatable",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "createLabel",
+          "optional": true,
+          "type": "(query: string) => string",
+          "description": ""
+        },
+        {
+          "name": "createIcon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "command-menu": [
+    {
+      "name": "Item",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": "Unique id: the row's key, its option id suffix and the Selected value."
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "action",
+          "optional": true,
+          "type": "string",
+          "description": "What the footer names Enter while the row is highlighted. Defaults to the label."
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "string",
+          "description": "Secondary text after the label, in the muted colour."
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "shortcut",
+          "optional": true,
+          "type": "string",
+          "description": "Display only, e.g. \"mod+p\" or \"⌘⇧P\". Bind the combo yourself."
+        },
+        {
+          "name": "keywords",
+          "optional": true,
+          "type": "readonly string[]",
+          "description": "Extra terms the filter matches besides label and description."
+        },
+        {
+          "name": "group",
+          "optional": true,
+          "type": "string",
+          "description": "Heading the row is listed under; groups keep first-appearance order."
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Section",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "heading",
+          "optional": false,
+          "type": "string | null",
+          "description": ""
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "start",
+          "optional": false,
+          "type": "number",
+          "description": "Flat index of the section's first row."
+        }
+      ]
+    },
+    {
+      "name": "Tab",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "UpdateOptions",
+      "fields": [
+        {
+          "name": "tabs",
+          "optional": true,
+          "type": "{ readonly items: readonly Pick<Tab, 'value'>[]; readonly value: string }",
+          "description": "The tabs under the field, if any: ← and → in the field switch them."
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "filter",
+          "optional": true,
+          "type": "Filter",
+          "description": ""
+        },
+        {
+          "name": "suggestions",
+          "optional": true,
+          "type": "readonly string[]",
+          "description": ""
+        },
+        {
+          "name": "suggestionsLabel",
+          "optional": true,
+          "type": "string",
+          "description": "Defaults to \"Suggestions\"."
+        }
+      ]
+    },
+    {
+      "name": "Hint",
+      "fields": [
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "keys",
+          "optional": false,
+          "type": "string | readonly string[]",
+          "description": "A combo, or a list of separate caps."
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": "Icon set for the default search glyph."
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html | null",
+          "description": "Leading glyph; `null` hides it. Defaults to the search icon."
+        },
+        {
+          "name": "mac",
+          "optional": true,
+          "type": "boolean",
+          "description": "Draw ⌘ and ⌥ (true) or Ctrl and Alt. Defaults to true."
+        },
+        {
+          "name": "inDialog",
+          "optional": true,
+          "type": "boolean",
+          "description": "Inside a dialog: Escape belongs to the shell and the footer says so."
+        },
+        {
+          "name": "inputAttributes",
+          "optional": true,
+          "type": "readonly ChildAttribute[]",
+          "description": "Extra attributes for the field, e.g. a dialog's initial-focus slot."
+        },
+        {
+          "name": "tabs",
+          "optional": true,
+          "type": "{ readonly items: readonly Tab[]; readonly value: string }",
+          "description": ""
+        },
+        {
+          "name": "filters",
+          "optional": true,
+          "type": "() => readonly Html[]",
+          "description": "A compact control bar under the field (borderless Selects, ghost\nButtons). A function, so its controls may carry Mounts and Messages."
+        },
+        {
+          "name": "tabsTrailing",
+          "optional": true,
+          "type": "() => readonly Html[]",
+          "description": "The trailing edge of the tab row, e.g. filters beside the tabs."
+        },
+        {
+          "name": "empty",
+          "optional": true,
+          "type": "Html | string",
+          "description": "Shown in place of the rows when nothing matches."
+        },
+        {
+          "name": "footer",
+          "optional": true,
+          "type": "true | { readonly hints: readonly Hint[] }",
+          "description": "Footer hints. `true` uses the defaults; omit for no footer."
+        },
+        {
+          "name": "renderItem",
+          "optional": true,
+          "type": "(item: Item, index: number, active: boolean) => Html",
+          "description": "Replaces a row's label area; its icon, caps, highlight and events stay\nthe menu's, as upstream's CommandMenuItem children do."
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "filter",
+          "optional": true,
+          "type": "Filter",
+          "description": ""
+        },
+        {
+          "name": "suggestions",
+          "optional": true,
+          "type": "readonly string[]",
+          "description": ""
+        },
+        {
+          "name": "suggestionsLabel",
+          "optional": true,
+          "type": "string",
+          "description": "Defaults to \"Suggestions\"."
+        }
+      ]
+    },
+    {
+      "name": "ParsedShortcut",
+      "fields": [
+        {
+          "name": "mod",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "meta",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "ctrl",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "alt",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "shift",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "key",
+          "optional": false,
+          "type": "string",
+          "description": "Lowercase `KeyboardEvent.key` (\"k\", \"/\", \"escape\")."
+        }
+      ]
+    }
+  ],
+  "date-picker": [
+    {
+      "name": "Options",
+      "fields": [
+        {
+          "name": "timeMode",
+          "optional": true,
+          "type": "TimeMode",
+          "description": ""
+        },
+        {
+          "name": "time",
+          "optional": true,
+          "type": "string | null",
+          "description": ""
+        },
+        {
+          "name": "timeRange",
+          "optional": true,
+          "type": "TimeRange | null",
+          "description": ""
+        },
+        {
+          "name": "timeControlled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "timeRangeControlled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "step",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "hourCycle",
+          "optional": true,
+          "type": "12 | 24",
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "optional": true,
+          "type": "'single' | 'range'",
+          "description": ""
+        },
+        {
+          "name": "controlled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "Calendar.Selection",
+          "description": ""
+        },
+        {
+          "name": "open",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "numberOfMonths",
+          "optional": true,
+          "type": "1 | 2",
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "optional": true,
+          "type": "Calendar.Orientation",
+          "description": ""
+        },
+        {
+          "name": "presets",
+          "optional": true,
+          "type": "readonly Preset[]",
+          "description": ""
+        },
+        {
+          "name": "calendarProps",
+          "optional": true,
+          "type": "Omit< Calendar.Props, 'mode' | 'selected' | 'controlled' | 'month' | 'numberOfMonths' | 'orientation' | 'size' >",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "'outline' | 'ghost'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "clearable",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        },
+        {
+          "name": "timeMode",
+          "optional": true,
+          "type": "TimeMode",
+          "description": ""
+        },
+        {
+          "name": "time",
+          "optional": true,
+          "type": "string | null",
+          "description": ""
+        },
+        {
+          "name": "timeRange",
+          "optional": true,
+          "type": "TimeRange | null",
+          "description": ""
+        },
+        {
+          "name": "timeControlled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "timeRangeControlled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "step",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "hourCycle",
+          "optional": true,
+          "type": "12 | 24",
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "optional": true,
+          "type": "'single' | 'range'",
+          "description": ""
+        },
+        {
+          "name": "controlled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "Calendar.Selection",
+          "description": ""
+        },
+        {
+          "name": "open",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "numberOfMonths",
+          "optional": true,
+          "type": "1 | 2",
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "optional": true,
+          "type": "Calendar.Orientation",
+          "description": ""
+        },
+        {
+          "name": "presets",
+          "optional": true,
+          "type": "readonly Preset[]",
+          "description": ""
+        },
+        {
+          "name": "calendarProps",
+          "optional": true,
+          "type": "Omit< Calendar.Props, 'mode' | 'selected' | 'controlled' | 'month' | 'numberOfMonths' | 'orientation' | 'size' >",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TimeRange",
+      "fields": [
+        {
+          "name": "start",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "end",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Preset",
+      "fields": [
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "range",
+          "optional": false,
+          "type": "DateRange",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "TimeSlot",
+      "fields": [
+        {
+          "name": "minutes",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "optional": true,
+          "type": "number",
+          "description": "Minutes after the range start, for an end list."
+        }
+      ]
+    }
+  ],
+  "dialog": [
+    {
+      "name": "Slots",
+      "fields": [
+        {
+          "name": "closeButton",
+          "optional": false,
+          "type": "readonly ChildAttribute[]",
+          "description": ""
+        },
+        {
+          "name": "initialFocus",
+          "optional": false,
+          "type": "readonly ChildAttribute[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "title",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "triggerLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "triggerVariant",
+          "optional": true,
+          "type": "Button.Variant",
+          "description": ""
+        },
+        {
+          "name": "hideTrigger",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "width",
+          "optional": true,
+          "type": "'sm' | 'lg' | 'xl'",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "position",
+          "optional": true,
+          "type": "'center' | 'top'",
+          "description": ""
+        },
+        {
+          "name": "surfaceLevel",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "showCloseButton",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "hideHeader",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "renderTrigger",
+          "optional": true,
+          "type": "(attributes: readonly ChildAttribute[]) => Html",
+          "description": ""
+        },
+        {
+          "name": "renderContent",
+          "optional": true,
+          "type": "(slots: Slots) => Html",
+          "description": ""
+        },
+        {
+          "name": "renderFooter",
+          "optional": true,
+          "type": "(slots: Slots) => Html",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "dropdown": [
+    {
+      "name": "Panel.Props",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "selection",
+          "optional": false,
+          "type": "Selection",
+          "description": ""
+        },
+        {
+          "name": "onSelect",
+          "optional": false,
+          "type": "(value: string) => Message",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Searchable.Props",
+      "fields": [
+        {
+          "name": "clearOnClose",
+          "optional": true,
+          "type": "boolean",
+          "description": "Clear the query on opening and field removal. Defaults to true. Pass the same value to update."
+        },
+        {
+          "name": "inputAttributes",
+          "optional": true,
+          "type": "readonly ChildAttribute[]",
+          "description": "Native input attributes and consumer event handlers, bound to their owner."
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "emptyLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "searchIcon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "creatable",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "createLabel",
+          "optional": true,
+          "type": "(query: string) => string",
+          "description": ""
+        },
+        {
+          "name": "createIcon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "anchorTriggerId",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "hideTrigger",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "submenu",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "surfaceLevel",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "anchorOffset",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "popupAttributes",
+          "optional": true,
+          "type": "readonly ChildAttribute[]",
+          "description": ""
+        },
+        {
+          "name": "heldIndex",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "itemToAttributes",
+          "optional": true,
+          "type": "(value: string, index: number) => readonly ChildAttribute[]",
+          "description": ""
+        },
+        {
+          "name": "selection",
+          "optional": true,
+          "type": "Selection",
+          "description": ""
+        },
+        {
+          "name": "chevron",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "Button.Variant",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "placement",
+          "optional": true,
+          "type": "Primitive.AnchorConfig['placement']",
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "optional": true,
+          "type": "{ readonly attributes: readonly (Attribute<Message> | ChildAttribute)[]; readonly children: readonly Html[]; }",
+          "description": "Replaces the Button-styled trigger (ColorPicker's format menu)."
+        },
+        {
+          "name": "checkmarks",
+          "optional": true,
+          "type": "boolean",
+          "description": "false: checked rows mark themselves by background and weight only."
+        },
+        {
+          "name": "portal",
+          "optional": true,
+          "type": "boolean",
+          "description": "Render the popup in place instead of portalling it to the body (inside\nanother popup, so presses in it stay inside that popup)."
+        },
+        {
+          "name": "rootClassName",
+          "optional": true,
+          "type": "string",
+          "description": "The wrapper's class (\"contents\" lets a custom trigger sit in its\nparent's layout, as a sidebar row's own button)."
+        },
+        {
+          "name": "anchorGap",
+          "optional": true,
+          "type": "number",
+          "description": "Gap between trigger and popup (default 6)."
+        }
+      ]
+    },
+    {
+      "name": "Tree.Item",
+      "fields": [
+        {
+          "name": "children",
+          "optional": true,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "action",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "trailing",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "group",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Tree.UpdateOptions",
+      "fields": [
+        {
+          "name": "selectionForPath",
+          "optional": true,
+          "type": "(path: readonly number[]) => Dropdown.Panel.Selection['mode']",
+          "description": ""
+        },
+        {
+          "name": "search",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "clearOnClose",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Tree.Props",
+      "fields": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "direction",
+          "optional": true,
+          "type": "'ltr' | 'rtl'",
+          "description": ""
+        },
+        {
+          "name": "selectionForPath",
+          "optional": true,
+          "type": "(path: readonly number[]) => Dropdown.Panel.Selection",
+          "description": ""
+        },
+        {
+          "name": "search",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "clearOnClose",
+          "optional": true,
+          "type": "boolean",
+          "description": "Clear the query on opening and field removal. Defaults to true. Pass the same value to update."
+        },
+        {
+          "name": "inputAttributes",
+          "optional": true,
+          "type": "Searchable.Props['inputAttributes']",
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "emptyLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "searchIcon",
+          "optional": true,
+          "type": "Searchable.Props['searchIcon']",
+          "description": ""
+        },
+        {
+          "name": "creatable",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "createIcon",
+          "optional": true,
+          "type": "Searchable.Props['createIcon']",
+          "description": ""
+        },
+        {
+          "name": "createLabel",
+          "optional": true,
+          "type": "Searchable.Props['createLabel']",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "renderItemsHeader",
+          "optional": true,
+          "type": "() => Html",
+          "description": ""
+        },
+        {
+          "name": "renderItemsFooter",
+          "optional": true,
+          "type": "() => Html",
+          "description": ""
+        },
+        {
+          "name": "scrollFade",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "anchorTriggerId",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "hideTrigger",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "submenu",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "surfaceLevel",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "anchorOffset",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "heldIndex",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "selection",
+          "optional": true,
+          "type": "Selection",
+          "description": ""
+        },
+        {
+          "name": "chevron",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "Button.Variant",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "placement",
+          "optional": true,
+          "type": "Primitive.AnchorConfig['placement']",
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "optional": true,
+          "type": "{ readonly attributes: readonly (Attribute<Message> | ChildAttribute)[]; readonly children: readonly Html[]; }",
+          "description": "Replaces the Button-styled trigger (ColorPicker's format menu)."
+        },
+        {
+          "name": "checkmarks",
+          "optional": true,
+          "type": "boolean",
+          "description": "false: checked rows mark themselves by background and weight only."
+        },
+        {
+          "name": "portal",
+          "optional": true,
+          "type": "boolean",
+          "description": "Render the popup in place instead of portalling it to the body (inside\nanother popup, so presses in it stay inside that popup)."
+        },
+        {
+          "name": "rootClassName",
+          "optional": true,
+          "type": "string",
+          "description": "The wrapper's class (\"contents\" lets a custom trigger sit in its\nparent's layout, as a sidebar row's own button)."
+        },
+        {
+          "name": "anchorGap",
+          "optional": true,
+          "type": "number",
+          "description": "Gap between trigger and popup (default 6)."
+        }
+      ]
+    },
+    {
+      "name": "Item",
+      "fields": [
+        {
+          "name": "action",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "trailing",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "group",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "anchorTriggerId",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "hideTrigger",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "submenu",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "surfaceLevel",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "anchorOffset",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "popupAttributes",
+          "optional": true,
+          "type": "readonly ChildAttribute[]",
+          "description": ""
+        },
+        {
+          "name": "heldIndex",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "itemToAttributes",
+          "optional": true,
+          "type": "(value: string, index: number) => readonly ChildAttribute[]",
+          "description": ""
+        },
+        {
+          "name": "renderItemsHeader",
+          "optional": true,
+          "type": "() => Html",
+          "description": ""
+        },
+        {
+          "name": "renderItemsFooter",
+          "optional": true,
+          "type": "() => Html",
+          "description": ""
+        },
+        {
+          "name": "scrollFade",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "selection",
+          "optional": true,
+          "type": "Selection",
+          "description": ""
+        },
+        {
+          "name": "chevron",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "Button.Variant",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "placement",
+          "optional": true,
+          "type": "Primitive.AnchorConfig['placement']",
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "optional": true,
+          "type": "{ readonly attributes: readonly (Attribute<Message> | ChildAttribute)[]; readonly children: readonly Html[]; }",
+          "description": "Replaces the Button-styled trigger (ColorPicker's format menu)."
+        },
+        {
+          "name": "checkmarks",
+          "optional": true,
+          "type": "boolean",
+          "description": "false: checked rows mark themselves by background and weight only."
+        },
+        {
+          "name": "portal",
+          "optional": true,
+          "type": "boolean",
+          "description": "Render the popup in place instead of portalling it to the body (inside\nanother popup, so presses in it stay inside that popup)."
+        },
+        {
+          "name": "rootClassName",
+          "optional": true,
+          "type": "string",
+          "description": "The wrapper's class (\"contents\" lets a custom trigger sit in its\nparent's layout, as a sidebar row's own button)."
+        },
+        {
+          "name": "anchorGap",
+          "optional": true,
+          "type": "number",
+          "description": "Gap between trigger and popup (default 6)."
+        }
+      ]
+    }
+  ],
+  "field": [
+    {
+      "name": "Parts",
+      "fields": [
+        {
+          "name": "children",
+          "optional": true,
+          "type": "readonly (Html | string | null)[]",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "orientation",
+          "optional": true,
+          "type": "Orientation",
+          "description": ""
+        },
+        {
+          "name": "invalid",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "children",
+          "optional": true,
+          "type": "readonly (Html | string | null)[]",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "input": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "onInput",
+          "optional": true,
+          "type": "(value: string) => Message",
+          "description": ""
+        },
+        {
+          "name": "onFiles",
+          "optional": true,
+          "type": "(files: readonly File[]) => Message",
+          "description": ""
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "ariaLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "describedBy",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "readOnly",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "invalid",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "required",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "min",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "max",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "step",
+          "optional": true,
+          "type": "number | 'any'",
+          "description": ""
+        },
+        {
+          "name": "maxLength",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "autoComplete",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "accept",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "multiple",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "input-copy": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "'icon' | 'button'",
+          "description": ""
+        },
+        {
+          "name": "align",
+          "optional": true,
+          "type": "'left' | 'right'",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "input-group": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly Html[]",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "input-message": [
+    {
+      "name": "QueuedMessage",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "text",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "files",
+          "optional": false,
+          "type": "readonly File[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Options",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "files",
+          "optional": true,
+          "type": "readonly File[]",
+          "description": "Present enables attachments (picker, drop, preview row)."
+        },
+        {
+          "name": "accept",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "maxFiles",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "status",
+          "optional": true,
+          "type": "'idle' | 'streaming'",
+          "description": "Present with `queue` enables the queue: a submit while streaming enqueues."
+        },
+        {
+          "name": "queue",
+          "optional": true,
+          "type": "readonly QueuedMessage[]",
+          "description": ""
+        },
+        {
+          "name": "history",
+          "optional": true,
+          "type": "readonly string[]",
+          "description": ""
+        },
+        {
+          "name": "suggestions",
+          "optional": true,
+          "type": "readonly string[]",
+          "description": ""
+        },
+        {
+          "name": "placeholderSuggestion",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "leftSlot",
+          "optional": true,
+          "type": "() => readonly Html[]",
+          "description": "Bottom-left actions, e.g. an attach button."
+        },
+        {
+          "name": "rightSlot",
+          "optional": true,
+          "type": "() => readonly Html[]",
+          "description": "Bottom-right actions, before the send button."
+        },
+        {
+          "name": "minRows",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "maxRows",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "clickToFocus",
+          "optional": true,
+          "type": "boolean",
+          "description": "Clicking the surrounding container focuses the textarea. Defaults to true."
+        },
+        {
+          "name": "sendLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "filePreviewSize",
+          "optional": true,
+          "type": "number",
+          "description": "Side of each attachment tile in pixels. Defaults to 80."
+        },
+        {
+          "name": "stoppable",
+          "optional": true,
+          "type": "boolean",
+          "description": "The send button becomes Stop while streaming with an empty draft."
+        },
+        {
+          "name": "showQueue",
+          "optional": true,
+          "type": "boolean",
+          "description": "Render the built-in queue rows above the textarea. Defaults to true."
+        },
+        {
+          "name": "ariaLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "files",
+          "optional": true,
+          "type": "readonly File[]",
+          "description": "Present enables attachments (picker, drop, preview row)."
+        },
+        {
+          "name": "accept",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "maxFiles",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "status",
+          "optional": true,
+          "type": "'idle' | 'streaming'",
+          "description": "Present with `queue` enables the queue: a submit while streaming enqueues."
+        },
+        {
+          "name": "queue",
+          "optional": true,
+          "type": "readonly QueuedMessage[]",
+          "description": ""
+        },
+        {
+          "name": "history",
+          "optional": true,
+          "type": "readonly string[]",
+          "description": ""
+        },
+        {
+          "name": "suggestions",
+          "optional": true,
+          "type": "readonly string[]",
+          "description": ""
+        },
+        {
+          "name": "placeholderSuggestion",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "radio-group": [
+    {
+      "name": "Item",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "select": [
+    {
+      "name": "Item",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "group",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "readOnly",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "'bordered' | 'borderless'",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "form",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "placement",
+          "optional": true,
+          "type": "Primitive.AnchorConfig['placement']",
+          "description": ""
+        },
+        {
+          "name": "triggerTrailing",
+          "optional": true,
+          "type": "readonly Html[]",
+          "description": "Content between the current value and chevron, such as a shortcut chip."
+        }
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "name": "MenuRow",
+      "fields": [
+        {
+          "name": "key",
+          "optional": false,
+          "type": "string",
+          "description": "Stable row identity. Scope top-level keys across lists sharing a model;\ndescendants are scoped by their ancestor keys."
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "IconName",
+          "description": ""
+        },
+        {
+          "name": "status",
+          "optional": true,
+          "type": "'active' | 'unread' | 'idle'",
+          "description": "Status-dot navigation: active/unread fill the dot, idle rings it."
+        },
+        {
+          "name": "dot",
+          "optional": true,
+          "type": "'filled' | 'ring'",
+          "description": ""
+        },
+        {
+          "name": "active",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'sm' | 'lg'",
+          "description": ""
+        },
+        {
+          "name": "href",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "P",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly Attribute<P>[]",
+          "description": ""
+        },
+        {
+          "name": "badge",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "actions",
+          "optional": true,
+          "type": "readonly MenuAction<P>[]",
+          "description": ""
+        },
+        {
+          "name": "actionsOnHover",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "leading",
+          "optional": true,
+          "type": "readonly Html[]",
+          "description": "Content before the label (a workspace tile, an avatar) instead of an icon."
+        },
+        {
+          "name": "trailing",
+          "optional": true,
+          "type": "readonly Html[]",
+          "description": "Content after the label (a chevron)."
+        },
+        {
+          "name": "sub",
+          "optional": true,
+          "type": "{ readonly open: boolean; readonly rows: readonly MenuRow<P>[] }",
+          "description": ""
+        },
+        {
+          "name": "content",
+          "optional": true,
+          "type": "readonly Html[]",
+          "description": "Element content instead of a text label (upstream's non-string\nchildren): wrapped in the row's flex label span."
+        },
+        {
+          "name": "before",
+          "optional": true,
+          "type": "readonly Html[]",
+          "description": "Siblings of the button inside the row's <li>, before it."
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "Readonly<Record<string, string>>",
+          "description": ""
+        },
+        {
+          "name": "ariaLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "actionsShown",
+          "optional": true,
+          "type": "boolean",
+          "description": "Shows the hover-revealed actions without hover (a pinned spotlight)."
+        },
+        {
+          "name": "renderButton",
+          "optional": true,
+          "type": "Render<P>",
+          "description": "Renders the row's button through the consumer (a dropdown trigger)."
+        }
+      ]
+    },
+    {
+      "name": "MenuAction",
+      "fields": [
+        {
+          "name": "icon",
+          "optional": false,
+          "type": "IconName",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "tooltip",
+          "optional": true,
+          "type": "string",
+          "description": "A tooltip naming the action (needs MenuProps.model)."
+        },
+        {
+          "name": "lit",
+          "optional": true,
+          "type": "boolean",
+          "description": "Static hover treatment (a pinned spotlight)."
+        },
+        {
+          "name": "tooltipOpen",
+          "optional": true,
+          "type": "boolean",
+          "description": "Pins the action's tooltip open (the spotlight's subject)."
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "P",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly Attribute<P>[]",
+          "description": ""
+        },
+        {
+          "name": "render",
+          "optional": true,
+          "type": "Render<P>",
+          "description": "Renders the action through the consumer (a dropdown trigger)."
+        },
+        {
+          "name": "open",
+          "optional": true,
+          "type": "boolean",
+          "description": "The action's menu is open: the row keeps its hover gutter and its\nactions stay shown. Upstream reads this off the trigger with :has(),\nwhich makes every data-state change on the page restyle the page."
+        }
+      ]
+    },
+    {
+      "name": "MenuProps",
+      "fields": [
+        {
+          "name": "model",
+          "optional": true,
+          "type": "Model",
+          "description": "The sidebar model, for action tooltips."
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "focusRing",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Blocks.WorkspaceHeaderProps",
+      "fields": [
+        {
+          "name": "name",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "tile",
+          "optional": false,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "menu",
+          "optional": true,
+          "type": "{ readonly onClick?: P; readonly attributes?: readonly Attribute<P>[]; /** The switcher's dropdown, given the row's button to render as its trigger. */ readonly render?: Render<P>; }",
+          "description": "The switcher: the row becomes a menu button with a chevron."
+        }
+      ]
+    },
+    {
+      "name": "Blocks.CalloutProps",
+      "fields": [
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "'inline' | 'banner'",
+          "description": ""
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "description",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "media",
+          "optional": false,
+          "type": "Parameters<typeof icon>[0]",
+          "description": ""
+        },
+        {
+          "name": "mediaClass",
+          "optional": true,
+          "type": "string",
+          "description": "The inline tile's tint classes (the stacked pile's brand ladder)."
+        },
+        {
+          "name": "image",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "href",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "surfaceLevel",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": "Extra card classes (the pile drops the card's 60px floor)."
+        },
+        {
+          "name": "onDismiss",
+          "optional": true,
+          "type": "P",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Kit",
+      "fields": [
+        {
+          "name": "h",
+          "optional": false,
+          "type": "HtmlBuilder<ParentMessage>",
+          "description": ""
+        },
+        {
+          "name": "toMessage",
+          "optional": false,
+          "type": "(message: Message) => ParentMessage",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ProviderProps",
+      "fields": [
+        {
+          "name": "peek",
+          "optional": true,
+          "type": "Peek",
+          "description": ""
+        },
+        {
+          "name": "shortcut",
+          "optional": true,
+          "type": "string | null",
+          "description": "The toggle key; null disables it. Defaults by side (\"[\" / \"]\")."
+        },
+        {
+          "name": "side",
+          "optional": true,
+          "type": "Side",
+          "description": ""
+        },
+        {
+          "name": "mobileBreakpoint",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "widthMobile",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly Attribute<unknown>[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "SidebarProps",
+      "fields": [
+        {
+          "name": "side",
+          "optional": true,
+          "type": "Side",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "Variant",
+          "description": ""
+        },
+        {
+          "name": "collapsible",
+          "optional": true,
+          "type": "'offcanvas' | 'none'",
+          "description": ""
+        },
+        {
+          "name": "bordered",
+          "optional": true,
+          "type": "boolean",
+          "description": "The sidebar variant's inner-edge border. Default true."
+        },
+        {
+          "name": "railTooltipOpen",
+          "optional": true,
+          "type": "boolean",
+          "description": "Pins the rail's tooltip open (a demo's subject); dragging hides it."
+        },
+        {
+          "name": "rail",
+          "optional": true,
+          "type": "boolean",
+          "description": "The resize/collapse rail on the inner edge. Default true."
+        },
+        {
+          "name": "peek",
+          "optional": true,
+          "type": "Peek",
+          "description": ""
+        },
+        {
+          "name": "mobileBreakpoint",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "height",
+          "optional": true,
+          "type": "'h-svh' | 'h-full'",
+          "description": "The shell's height: h-svh in an app, h-full inside a bounded frame."
+        },
+        {
+          "name": "surfaceLevel",
+          "optional": true,
+          "type": "number",
+          "description": "Surface the floating card / peek / drawer sits on (default 1)."
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "GroupProps",
+      "fields": [
+        {
+          "name": "key",
+          "optional": true,
+          "type": "string",
+          "description": "Collapsible groups keep their open state in the model by key."
+        },
+        {
+          "name": "collapsible",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "defaultOpen",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "actions",
+          "optional": true,
+          "type": "readonly Html[]",
+          "description": "Header actions (groupAction / groupActions) overlaid on the label row."
+        },
+        {
+          "name": "actionsCount",
+          "optional": true,
+          "type": "number",
+          "description": "How many 24px actions the header carries (the label pads past them)."
+        },
+        {
+          "name": "actionsOpen",
+          "optional": true,
+          "type": "boolean",
+          "description": "A header action's menu is open: the chevron slot stays shown."
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly Attribute<unknown>[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "InitConfig",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "defaultOpen",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "width",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "slider": [
+    {
+      "name": "Range.Props",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "Value",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "showSteps",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "showValue",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "valuePosition",
+          "optional": true,
+          "type": "ValuePosition",
+          "description": ""
+        },
+        {
+          "name": "formatValue",
+          "optional": true,
+          "type": "(value: number) => string",
+          "description": ""
+        },
+        {
+          "name": "trackStyle",
+          "optional": true,
+          "type": "Readonly<Record<string, string>>",
+          "description": "Upstream's color-rail props, compact engine only: inline styles on the\npill (a gradient track), no filled range, and the knob's fill and 1px\nborder colors."
+        },
+        {
+          "name": "hideFill",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "thumbColor",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "thumbBorderColor",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "InitConfig",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "min",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "max",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "step",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "steps",
+          "optional": true,
+          "type": "readonly number[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "'pips' | 'scrubber'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "showSteps",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "showValue",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "valuePosition",
+          "optional": true,
+          "type": "ValuePosition",
+          "description": ""
+        },
+        {
+          "name": "formatValue",
+          "optional": true,
+          "type": "(value: number) => string",
+          "description": ""
+        },
+        {
+          "name": "trackStyle",
+          "optional": true,
+          "type": "Readonly<Record<string, string>>",
+          "description": "Upstream's color-rail props, compact engine only: inline styles on the\npill (a gradient track), no filled range, and the knob's fill and 1px\nborder colors."
+        },
+        {
+          "name": "hideFill",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "thumbColor",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "thumbBorderColor",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "switch": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "checked",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "onToggle",
+          "optional": false,
+          "type": "(checked: boolean) => Message",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "readOnly",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "table": [
+    {
+      "name": "Children",
+      "fields": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly Attribute<Message>[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": "Upstream follows the surrounding SizeProvider; Foldkit has no context, so\npass the docs or app size preference here (default 36px, compact 28px)."
+        },
+        {
+          "name": "hover",
+          "optional": true,
+          "type": "boolean",
+          "description": "`false` suspends the row highlight (an inspector overlay, say) and\nreleases any lit row. Defaults to true."
+        },
+        {
+          "name": "wrapperAttributes",
+          "optional": true,
+          "type": "readonly Attribute<Message>[]",
+          "description": ""
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly Attribute<Message>[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "RowProps",
+      "fields": [
+        {
+          "name": "index",
+          "optional": true,
+          "type": "number",
+          "description": "Omit on header rows. Indexed rows participate in pointer hover."
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly Attribute<Message>[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "EmptyProps",
+      "fields": [
+        {
+          "name": "columns",
+          "optional": false,
+          "type": "number",
+          "description": "How many columns the message spans: the table's column count."
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "Html | string",
+          "description": "One short line saying what belongs here."
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "Html | string",
+          "description": "One line on how rows get here."
+        },
+        {
+          "name": "action",
+          "optional": true,
+          "type": "Html",
+          "description": "The control that creates the first row, e.g. a Button."
+        },
+        {
+          "name": "rows",
+          "optional": true,
+          "type": "number",
+          "description": "The height to hold, in body rows, so filling the table doesn't shift\nwhat sits under it. Defaults to 3."
+        },
+        {
+          "name": "children",
+          "optional": true,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly Attribute<Message>[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "tabs": [
+    {
+      "name": "Item",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "content",
+          "optional": true,
+          "type": "Html | string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "activeLabel",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "panel",
+          "optional": true,
+          "type": "(value: string, index: number) => Html",
+          "description": "Renders the active panel. Use it when panel content carries Mounts or\nparent messages: Foldkit allows functions only at the top level of\nviewInputs, where they are scoped to the parent boundary. It takes\nprecedence over an item's static `content`."
+        }
+      ]
+    }
+  ],
+  "textarea": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "onInput",
+          "optional": true,
+          "type": "(value: string) => Message",
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "ariaLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "describedBy",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "readOnly",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "invalid",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "required",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "maxLength",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (TextareaAttribute<Message> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "thinking-indicator": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "showIcon",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<Message> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "thinking-steps": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "open",
+          "optional": false,
+          "type": "boolean",
+          "description": "Parents own open state; initialize to true for the reference default."
+        },
+        {
+          "name": "onOpenChange",
+          "optional": false,
+          "type": "(open: boolean) => Message",
+          "description": ""
+        },
+        {
+          "name": "header",
+          "optional": true,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly Html[]",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Attributes<Message>",
+          "description": ""
+        },
+        {
+          "name": "headerAttributes",
+          "optional": true,
+          "type": "Attributes<Message>",
+          "description": ""
+        },
+        {
+          "name": "contentAttributes",
+          "optional": true,
+          "type": "Attributes<Message>",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "HeaderProps",
+      "fields": [
+        {
+          "name": "open",
+          "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "children",
+          "optional": true,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": false,
+          "type": "Attributes<Message>",
+          "description": "Use the Disclosure button attribute bundle to retain native semantics."
+        }
+      ]
+    },
+    {
+      "name": "StepProps",
+      "fields": [
+        {
+          "name": "key",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "IconName",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "showIcon",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "status",
+          "optional": true,
+          "type": "StepStatus",
+          "description": ""
+        },
+        {
+          "name": "delay",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "isLast",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "children",
+          "optional": true,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Attributes<Message>",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "DetailsProps",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "open",
+          "optional": false,
+          "type": "boolean",
+          "description": "Initialize to false for the reference default. Independent of the root."
+        },
+        {
+          "name": "onOpenChange",
+          "optional": false,
+          "type": "(open: boolean) => Message",
+          "description": ""
+        },
+        {
+          "name": "summary",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "details",
+          "optional": true,
+          "type": "readonly string[]",
+          "description": ""
+        },
+        {
+          "name": "children",
+          "optional": true,
+          "type": "readonly Html[]",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Attributes<Message>",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "tooltip": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "side",
+          "optional": true,
+          "type": "'top' | 'right' | 'bottom' | 'left'",
+          "description": ""
+        },
+        {
+          "name": "sideOffset",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "ariaLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "renderTrigger",
+          "optional": false,
+          "type": "(attributes: readonly ChildAttribute[]) => Html",
+          "description": ""
+        },
+        {
+          "name": "rich",
+          "optional": true,
+          "type": "() => readonly Html[]",
+          "description": "Rich content (bold verbs, key chips) in place of the plain string;\n`content` stays the accessible text."
+        },
+        {
+          "name": "forceOpen",
+          "optional": true,
+          "type": "boolean",
+          "description": "true forces open, false forces closed, undefined uses hover/focus."
+        },
+        {
+          "name": "followCursor",
+          "optional": true,
+          "type": "'x' | 'y'",
+          "description": "Tracks the pointer along one axis while the other stays anchored by\n`side` — upstream's followCursor, for tall or wide triggers."
+        }
+      ]
+    }
+  ]
+}

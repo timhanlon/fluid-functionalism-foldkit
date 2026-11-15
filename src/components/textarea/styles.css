@@ -1,0 +1,20 @@
+.ff-textarea {
+  field-sizing: content;
+  resize: none;
+  min-height: 76px;
+  max-height: 216px;
+  padding: 7px 12px;
+}
+.ff-textarea[data-size='compact'] {
+  min-height: 64px;
+  max-height: 190px;
+  padding: 4px 10px;
+}
+.ff-textarea[data-radius='pill'] {
+  border-radius: 16px;
+}
+
+/* Sharp uses the source shape-context radii. */
+.ff-textarea[data-radius='sharp'] {
+  border-radius: 1px;
+}

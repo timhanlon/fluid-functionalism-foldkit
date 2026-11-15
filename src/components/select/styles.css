@@ -1,0 +1,116 @@
+.ff-select-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ff-select {
+  position: relative;
+}
+.ff-select-trigger {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 160px;
+  height: 36px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--border, #ddd);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--foreground, #171717);
+  cursor: pointer;
+  outline: none;
+  font: var(--fs-body, 13px)/var(--lh-body, 20px) var(--font-sans, Inter, system-ui, sans-serif);
+  transition:
+    background 80ms,
+    color 80ms,
+    box-shadow 80ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ff-select[data-size='compact'] .ff-select-trigger {
+  min-width: 128px;
+  height: 28px;
+  padding: 0 10px;
+  font-size: var(--fs-body-compact, 12px);
+  line-height: var(--lh-body-compact, 18px);
+}
+.ff-select[data-radius='pill'] .ff-select-trigger {
+  border-radius: 20px;
+}
+.ff-select[data-variant='borderless'] .ff-select-trigger {
+  border-color: transparent;
+}
+.ff-select-trigger:hover {
+  background: var(--hover, rgb(0 0 0 / 0.04));
+}
+.ff-select-trigger:focus-visible {
+  box-shadow: 0 0 0 1px var(--focus-ring, #6b97ff);
+}
+.ff-select-trigger:disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+.ff-select-trigger[data-invalid] {
+  border-color: color-mix(in srgb, var(--destructive, #dc2626) 50%, transparent);
+}
+.ff-select-trigger-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+.ff-select[data-size='compact'] .ff-select-trigger-content {
+  gap: 4px;
+}
+.ff-select-value {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-box: trim-both cap alphabetic;
+  padding: 4px 0;
+  margin: -4px 0;
+}
+.ff-select-trigger[data-placeholder] .ff-select-value {
+  color: var(--muted-foreground, #737373);
+}
+.ff-select-icon,
+.ff-select-chevron {
+  flex: none;
+  display: flex;
+  width: 16px;
+  height: 16px;
+  color: var(--muted-foreground, #737373);
+}
+.ff-select[data-size='compact'] :is(.ff-select-icon, .ff-select-chevron) {
+  width: 14px;
+  height: 14px;
+}
+.ff-select-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke-width: 1.5;
+  transition:
+    color 80ms,
+    stroke-width 80ms;
+}
+.ff-select-trigger:hover :is(.ff-select-icon, .ff-select-chevron) {
+  color: var(--foreground, #171717);
+}
+.ff-select-trigger:hover .ff-select-icon svg {
+  stroke-width: 2;
+}
+.ff-select-error {
+  padding-left: 12px;
+  color: var(--destructive, #dc2626);
+  font: var(--fs-caption, 12px)/var(--lh-caption, 16px)
+    var(--font-sans, Inter, system-ui, sans-serif);
+}
+
+/* Sharp uses the source shape-context radii. */
+.ff-select[data-radius='sharp'] .ff-select-trigger {
+  border-radius: 1px;
+}

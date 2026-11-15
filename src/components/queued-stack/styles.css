@@ -1,0 +1,190 @@
+/* Upstream QueuedStack, class for class. Card transforms, the stack height
+ * and its bottom offset are written by the runtime. */
+.ff-queued-stack {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+.ff-qs-inner {
+  position: absolute;
+  inset: 0;
+}
+.ff-qs-gutter,
+.ff-qs-collapse {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  width: 40px;
+  height: 44px;
+  align-items: center;
+  color: var(--muted-foreground);
+}
+.ff-queued-stack[data-size='compact'] :is(.ff-qs-gutter, .ff-qs-collapse) {
+  height: 38px;
+}
+.ff-qs-gutter {
+  justify-content: flex-end;
+  gap: 4px;
+  padding-right: 4px;
+  outline: none;
+}
+.ff-qs-count {
+  pointer-events: none;
+  font-size: var(--fs-micro-compact, 10px);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  font-variation-settings:
+    'wght' 550,
+    'opsz' 18;
+}
+/* Touch: a fanned-out pile is pinned open, so the gutter becomes Collapse. */
+.ff-qs-collapse {
+  display: none;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+.ff-queued-stack[data-radius='pill'] .ff-qs-collapse {
+  border-radius: 9999px;
+}
+.ff-queued-stack[data-touch][data-expanded] .ff-qs-collapse {
+  display: flex;
+}
+.ff-queued-stack[data-touch][data-expanded] .ff-qs-gutter {
+  display: none;
+}
+.ff-qs-collapse:hover {
+  color: var(--foreground);
+}
+:is(.ff-qs-collapse, .ff-qs-action):focus-visible {
+  box-shadow: 0 0 0 1px var(--focus-ring, #6b97ff);
+}
+.ff-qs-glyph {
+  display: flex;
+}
+.ff-qs-glyph svg {
+  width: var(--ff-qs-glyph);
+  height: var(--ff-qs-glyph);
+  stroke-width: var(--ff-qs-stroke);
+}
+
+.ff-qs-card {
+  position: absolute;
+  bottom: 0;
+  left: 40px;
+  right: 40px;
+  display: flex;
+  height: 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px 0 14px;
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--accent), var(--background) 68%);
+  box-shadow: var(--shadow-3);
+  color: var(--muted-foreground);
+  font-size: var(--fs-subtitle, 14px);
+  line-height: var(--lh-subtitle, 20px);
+  transform-origin: bottom center;
+  user-select: none;
+}
+.ff-qs-card:active {
+  cursor: grabbing;
+}
+.ff-qs-card[data-files] {
+  padding-left: 8px;
+}
+.ff-queued-stack[data-radius='pill'] .ff-qs-card {
+  border-radius: 20px;
+}
+.ff-queued-stack[data-size='compact'] .ff-qs-card {
+  height: 38px;
+  gap: 6px;
+  padding: 0 4px 0 12px;
+  font-size: var(--fs-subtitle-compact, 13px);
+  line-height: var(--lh-subtitle-compact, 18px);
+}
+.ff-queued-stack[data-size='compact'] .ff-qs-card[data-files] {
+  padding-left: 6px;
+}
+.ff-qs-files {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+}
+.ff-qs-more {
+  display: flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklab, var(--background) 40%, transparent);
+  color: var(--foreground);
+  font-size: var(--fs-micro, 11px);
+  line-height: var(--lh-micro, 14px);
+  font-variant-numeric: tabular-nums;
+}
+.ff-queued-stack[data-size='compact'] .ff-qs-more {
+  width: 24px;
+  height: 24px;
+}
+.ff-qs-label {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* Edit and remove stay out of layout until the card is hovered (always shown
+ * on touch), so the text gets the full width. */
+.ff-qs-actions {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+}
+.ff-qs-card:hover .ff-qs-actions,
+.ff-queued-stack[data-touch] .ff-qs-actions {
+  display: flex;
+}
+.ff-qs-action {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  padding: 0;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  outline: none;
+}
+.ff-queued-stack[data-radius='pill'] .ff-qs-action {
+  border-radius: 9999px;
+}
+.ff-qs-action:hover {
+  background: var(--hover);
+  color: var(--foreground);
+}
+
+/* Sharp uses the source shape-context radii. */
+.ff-queued-stack[data-radius='sharp'] .ff-qs-collapse {
+  border-radius: 1px;
+}
+.ff-queued-stack[data-radius='sharp'] .ff-qs-card {
+  border-radius: 1px;
+}
+.ff-queued-stack[data-radius='sharp'] .ff-qs-action {
+  border-radius: 1px;
+}

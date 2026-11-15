@@ -1,0 +1,184 @@
+.ff-input-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 288px;
+  max-width: 100%;
+}
+.ff-input-field {
+  --field-height: 36px;
+  /* Upstream's size ladder: px-3 / gap-2 (compact px-2.5 / gap-1). */
+  --field-inset: 12px;
+  --field-gap: 8px;
+  --field-radius: 8px;
+  --field-font: var(--fs-body, 13px);
+  --field-line: var(--lh-body, 20px);
+  --field-icon: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: text;
+  font-family: var(--font-sans, Inter, system-ui, sans-serif);
+  font-size: var(--field-font);
+  line-height: var(--field-line);
+}
+.ff-input-group[data-size='compact'] .ff-input-field,
+.ff-input-field[data-size='compact'] {
+  --field-height: 28px;
+  --field-inset: 10px;
+  --field-gap: 4px;
+  --field-font: var(--fs-body-compact, 12px);
+  --field-line: var(--lh-body-compact, 18px);
+  --field-icon: 14px;
+}
+.ff-input-group[data-radius='pill'] .ff-input-field,
+.ff-input-field[data-radius='pill'] {
+  --field-radius: 20px;
+}
+.ff-input-field[data-size='default'] {
+  --field-height: 36px;
+  --field-inset: 12px;
+  --field-gap: 8px;
+  --field-font: var(--fs-body, 13px);
+  --field-line: var(--lh-body, 20px);
+  --field-icon: 16px;
+}
+.ff-input-field[data-radius='rounded'] {
+  --field-radius: 8px;
+}
+.ff-input-label {
+  /* Flush with the field's edge, as upstream's Field.Label. */
+  color: var(--muted-foreground, #737373);
+  cursor: text;
+}
+.ff-input-label-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.ff-input-surface {
+  display: flex;
+  align-items: center;
+  gap: var(--field-gap);
+  box-sizing: border-box;
+  height: var(--field-height);
+  padding: 0 var(--field-inset);
+  border-radius: var(--field-radius);
+  background: transparent;
+  /* A hairline that never moves at rest, like the Select trigger's border:
+   * focus darkens it to a neutral 40% (winning over the error tint while the
+   * value is fixed), and hover only adds the fill. */
+  box-shadow: inset 0 0 0 1px var(--border, #ddd);
+  transition:
+    background-color 80ms,
+    box-shadow 80ms;
+}
+.ff-input-field:is([data-fluid-hover-active], :hover):not(:focus-within) .ff-input-surface {
+  background: var(--hover);
+}
+.ff-input-field:focus-within .ff-input-surface {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground, #171717) 40%, transparent);
+}
+.ff-input-control {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--foreground, #171717);
+  outline: none;
+  font: inherit;
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+}
+.ff-input-control::placeholder {
+  color: var(--muted-foreground, #737373);
+  opacity: 1;
+}
+.ff-input-icon {
+  display: flex;
+  flex: none;
+  color: var(--muted-foreground, #737373);
+  transition: color 80ms;
+}
+.ff-input-icon svg {
+  color: inherit;
+  width: var(--field-icon);
+  height: var(--field-icon);
+  stroke-width: 1.5;
+  transition: stroke-width 80ms;
+}
+.ff-input-field:is([data-fluid-hover-active], :hover, :focus-within) .ff-input-icon {
+  color: var(--foreground, #171717);
+}
+.ff-input-field:is([data-fluid-hover-active], :hover, :focus-within) .ff-input-icon svg {
+  stroke-width: 2;
+}
+.ff-input-field[data-invalid] .ff-input-label,
+.ff-input-error {
+  color: var(--destructive, #e5484d);
+}
+.ff-input-field[data-invalid]:not(:focus-within) .ff-input-surface {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--destructive, #e5484d) 50%, transparent);
+}
+.ff-input-error {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--field-gap);
+  font-size: var(--fs-caption, 12px);
+  line-height: var(--lh-caption, 16px);
+}
+.ff-input-group[data-size='compact'] .ff-input-error,
+.ff-input-field[data-size='compact'] .ff-input-error {
+  font-size: var(--fs-caption-compact, 11px);
+  line-height: var(--lh-caption-compact, 14px);
+}
+.ff-input-field[data-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.ff-input-field[data-disabled] .ff-input-surface {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--border, #ddd);
+}
+@media (pointer: coarse) {
+  .ff-input-control {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ff-input-surface,
+  .ff-input-icon,
+  .ff-input-icon svg {
+    transition: none;
+  }
+}
+
+.ff-input-error svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.75;
+}
+.ff-input-group[data-size='compact'] .ff-input-error svg,
+.ff-input-field[data-size='compact'] .ff-input-error svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Sharp uses the source shape-context radii. */
+.ff-input-group[data-radius='sharp'] .ff-input-field,
+.ff-input-field[data-radius='sharp'] {
+  --field-radius: 1px;
+}

@@ -1,0 +1,82 @@
+.ff-checkbox-control-root {
+  display: contents;
+}
+.ff-checkbox-control {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 5px;
+  padding: 0;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 80ms;
+}
+.ff-checkbox-control[data-size='compact'] {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+.ff-checkbox-control:hover,
+.ff-field:hover .ff-checkbox-control {
+  border-color: color-mix(in oklab, var(--foreground) 40%, transparent);
+}
+.ff-checkbox-control[aria-invalid='true'] {
+  border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
+}
+.ff-checkbox-control[aria-checked='true'],
+.ff-checkbox-control[aria-checked='mixed'] {
+  border-color: transparent;
+}
+.ff-checkbox-control:focus-visible {
+  box-shadow: 0 0 0 1px var(--focus-ring, #6b97ff);
+}
+.ff-checkbox-control:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.ff-checkbox-control-check {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  color: var(--foreground);
+  pointer-events: none;
+}
+.ff-checkbox-control[data-size='compact'] .ff-checkbox-control-check {
+  width: 16px;
+  height: 16px;
+}
+.ff-checkbox-control-check path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 40ms ease-in;
+}
+.ff-checkbox-control[aria-checked='true'] path,
+.ff-checkbox-control[aria-checked='mixed'] path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 80ms ease-out;
+}
+.ff-checkbox-form-mirror {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.ff-checkbox-control[data-radius='sharp'] {
+  border-radius: 0;
+}

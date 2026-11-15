@@ -1,0 +1,75 @@
+import { Schema } from 'effect';
+import { Command, type Update } from 'foldkit';
+import { defineMessageUnion } from 'foldkit/message';
+import type { HtmlBuilder } from 'foldkit/html';
+import * as RadioGroup from './fluid/components/radio-group';
+const items = [
+  { value: 'overview', label: 'Overview' },
+  { value: 'locked', label: 'Unavailable', disabled: true },
+  { value: 'reports', label: 'Reports' },
+];
+
+export const Model = Schema.Struct({
+  control: RadioGroup.Model,
+  value: Schema.String,
+  count: Schema.Number,
+  shown: Schema.Boolean,
+});
+export interface Model extends Schema.Schema.Type<typeof Model> {}
+export const Message = defineMessageUnion({
+  Control: { message: RadioGroup.Message },
+  Incremented: {},
+  VisibilityToggled: {},
+});
+export type Message = typeof Message.Type;
+export const init = (): { model: Model } => ({
+  model: {
+    control: RadioGroup.init({ id: 'registry-radio-group' }),
+    value: 'overview',
+    count: 0,
+    shown: true,
+  },
+});
+export function update(model: Model, message: Message): Update.Return<Model, Message> {
+  switch (message._tag) {
+    case 'Control': {
+      const result = RadioGroup.update(model.control, message.message);
+      return {
+        model: { ...model, control: result.model, value: result.outMessage?.value ?? model.value },
+        commands: (result.commands ?? []).map((command) =>
+          Command.mapMessage(command, (message) => Message.Control({ message })),
+        ),
+      };
+    }
+    case 'Incremented':
+      return { model: { ...model, count: model.count + 1 } };
+    case 'VisibilityToggled':
+      return { model: { ...model, shown: !model.shown } };
+  }
+}
+
+export function view(model: Model, h: HtmlBuilder<Message>) {
+  return {
+    title: 'RadioGroup example',
+    body: h.main(
+      [],
+      [
+        h.h1([], ['RadioGroup']),
+        model.shown
+          ? h.submodel({
+              slotId: 'radio-group',
+              model: model.control,
+              view: RadioGroup.view,
+              toParentMessage: (message) => Message.Control({ message }),
+              viewInputs: { items, label: 'Plan', value: model.value, name: 'plan' },
+            })
+          : null,
+        h.p([], [`Selected: ${model.value}`]),
+        h.button(
+          [h.Type('button'), h.OnClick(Message.VisibilityToggled())],
+          [model.shown ? 'Hide control' : 'Show control'],
+        ),
+      ],
+    ),
+  };
+}

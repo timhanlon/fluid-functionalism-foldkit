@@ -1,0 +1,46 @@
+.ff-carousel-dots {
+  position: relative;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+}
+.ff-carousel-dot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  border: 0;
+  border-radius: 999px;
+  padding: 6px;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+.ff-carousel-dot:focus-visible {
+  box-shadow: 0 0 0 1px var(--focus-ring, #6b97ff);
+}
+.ff-carousel-track {
+  position: relative;
+  display: block;
+  height: 6px;
+  width: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--foreground), transparent 85%);
+}
+.ff-carousel-dot[aria-current='true'] .ff-carousel-track {
+  width: 24px;
+}
+.ff-carousel-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--foreground), transparent 60%);
+}
+.ff-carousel-dots[data-autoplay='true'][data-progress=''] .ff-carousel-fill {
+  transform: translateX(calc(-1 * (100% - 6px)));
+}
+.ff-carousel-dots[data-radius='sharp']
+  :is(.ff-carousel-dot, .ff-carousel-track, .ff-carousel-fill) {
+  border-radius: 0;
+}

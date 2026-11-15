@@ -1,0 +1,163 @@
+.ff-input-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--fs-body, 13px);
+  line-height: var(--lh-body, 20px);
+  --copy-py: 8px;
+  --copy-radius: 8px;
+}
+.ff-input-copy[data-size='compact'] {
+  --copy-py: 4px;
+  font-size: var(--fs-body-compact, 12px);
+  line-height: var(--lh-body-compact, 18px);
+}
+.ff-input-copy[data-radius='pill'] {
+  --copy-radius: 20px;
+}
+.ff-input-copy-label {
+  color: var(--muted-foreground, #737373);
+}
+.ff-input-copy-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  border-radius: var(--copy-radius);
+  color: var(--foreground, #171717);
+  font: inherit;
+  outline: none;
+  cursor: pointer;
+  text-align: left;
+}
+.ff-input-copy-button:focus-visible {
+  box-shadow: 0 0 0 1px var(--focus-ring, #6b97ff);
+}
+.ff-input-copy-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: none;
+  font-family: var(--font-mono, monospace);
+  padding: var(--copy-py) 0;
+}
+.ff-input-copy-value mark {
+  background: transparent;
+  color: inherit;
+  transition: background-color 80ms;
+}
+.ff-input-copy-button:hover mark {
+  background: color-mix(in oklab, var(--fluid-accent, #6b97ff) 20%, transparent);
+}
+.ff-input-copy-action {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--copy-py) 6px;
+  color: var(--muted-foreground, #737373);
+  transition: color 80ms;
+}
+.ff-input-copy-button:hover .ff-input-copy-action {
+  color: var(--foreground, #171717);
+}
+.ff-input-copy-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ff-input-copy-glyph svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.5;
+  transition: stroke-width 80ms;
+}
+.ff-input-copy-button:hover svg {
+  stroke-width: 2;
+}
+.ff-input-copy[data-visual-status='error'] .ff-input-copy-action {
+  color: var(--destructive, #e5484d);
+}
+.ff-input-copy[data-visual-status]:not([data-visual-status='idle']) path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: ff-input-copy-draw 80ms ease-out;
+}
+.ff-input-copy-action-label {
+  display: inline-grid;
+  user-select: none;
+}
+.ff-input-copy-action-label > span {
+  grid-column: 1;
+  grid-row: 1;
+}
+.ff-input-copy-reserved {
+  visibility: hidden;
+}
+.ff-input-copy[data-align='left'] :is(.ff-input-copy-label, .ff-input-copy-value) {
+  padding-left: 4px;
+}
+.ff-input-copy[data-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+@keyframes ff-input-copy-result {
+  from {
+    opacity: 0;
+    transform: scale(var(--copy-enter-scale, 0.6));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes ff-input-copy-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ff-input-copy *,
+  .ff-input-copy path {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.ff-input-copy[data-visual-status='idle'] {
+  --copy-enter-scale: 0.8;
+}
+.ff-input-copy[data-animated='true'] :is(.ff-input-copy-glyph, .ff-input-copy-action-label) {
+  animation: ff-input-copy-result 100ms linear(0, 0.9789, 1);
+}
+.ff-input-copy[data-exiting='true'] :is(.ff-input-copy-glyph, .ff-input-copy-action-label) {
+  animation: ff-input-copy-exit 60ms ease-out forwards;
+}
+@keyframes ff-input-copy-exit {
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ff-input-copy[data-animated] *,
+  .ff-input-copy[data-exiting] * {
+    animation: none !important;
+  }
+}
+
+.ff-input-copy[data-variant='button']:not([data-visual-status='idle']) svg {
+  stroke-width: 2;
+}
+
+/* Sharp uses the source shape-context radii. */
+.ff-input-copy[data-radius='sharp'] {
+  --copy-radius: 1px;
+}

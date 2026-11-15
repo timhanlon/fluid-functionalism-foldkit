@@ -1,0 +1,298 @@
+.ff-thinking-steps {
+  box-sizing: border-box;
+  --thinking-body: var(--fs-body, 13px);
+  --thinking-body-line: var(--lh-body, 20px);
+  --thinking-caption: var(--fs-caption, 12px);
+  --thinking-caption-line: var(--lh-caption, 16px);
+  --thinking-trigger-x: 12px;
+  --thinking-trigger-y: 8px;
+  --thinking-trigger-icon: 16px;
+  --thinking-step-icon: 14px;
+  --thinking-item-radius: 8px;
+  --thinking-container-radius: 12px;
+  width: 320px;
+  max-width: 100%;
+}
+.ff-thinking-steps[data-size='compact'] {
+  --thinking-body: var(--fs-body-compact, 12px);
+  --thinking-body-line: var(--lh-body-compact, 18px);
+  --thinking-caption: var(--fs-caption-compact, 11px);
+  --thinking-caption-line: var(--lh-caption-compact, 14px);
+  --thinking-trigger-x: 10px;
+  --thinking-trigger-y: 6px;
+  --thinking-trigger-icon: 14px;
+  --thinking-step-icon: 12px;
+}
+.ff-thinking-steps[data-radius='pill'] {
+  --thinking-item-radius: 20px;
+  --thinking-container-radius: 24px;
+}
+.ff-thinking-trigger-wrap {
+  position: relative;
+  width: fit-content;
+}
+.ff-thinking-trigger-highlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: var(--thinking-item-radius, 8px);
+  background: var(--hover);
+  opacity: 0;
+}
+.ff-thinking-trigger {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--thinking-trigger-y, 8px) var(--thinking-trigger-x, 12px);
+  border: 0;
+  border-radius: var(--thinking-item-radius, 8px);
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--thinking-body, 13px);
+  line-height: var(--thinking-body-line, 20px);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+.ff-thinking-trigger:focus-visible {
+  box-shadow: 0 0 0 1px var(--focus-ring, #6b97ff);
+}
+.ff-thinking-trigger-label {
+  display: inline-grid;
+  text-align: left;
+}
+.ff-thinking-trigger-label > span {
+  grid-column: 1;
+  grid-row: 1;
+}
+.ff-thinking-trigger-reserve {
+  visibility: hidden;
+  font-variation-settings:
+    'wght' 550,
+    'opsz' 18;
+}
+.ff-thinking-trigger-text {
+  color: var(--muted-foreground);
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+  transition:
+    color 80ms,
+    font-variation-settings 80ms;
+}
+.ff-thinking-trigger[data-open='true'] .ff-thinking-trigger-text {
+  font-variation-settings:
+    'wght' 550,
+    'opsz' 18;
+}
+.ff-thinking-chevron {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground);
+}
+.ff-thinking-chevron svg {
+  width: var(--thinking-trigger-icon, 16px);
+  height: var(--thinking-trigger-icon, 16px);
+  transition:
+    color 80ms,
+    stroke-width 80ms;
+}
+.ff-thinking-trigger:is(:hover, [data-open='true']) .ff-thinking-trigger-text,
+.ff-thinking-trigger:is(:hover, [data-open='true']) .ff-thinking-chevron {
+  color: var(--foreground);
+}
+.ff-thinking-trigger:is(:hover, [data-open='true']) .ff-thinking-chevron svg {
+  stroke-width: 2;
+}
+
+.ff-thinking-panel-clip {
+  overflow: hidden;
+}
+.ff-thinking-panel[data-open='false'] > .ff-thinking-panel-clip {
+  height: 0;
+}
+.ff-thinking-panel-inner {
+  padding: 4px 12px 12px;
+  color: var(--muted-foreground);
+  font-size: var(--thinking-body, 13px);
+  line-height: var(--thinking-body-line, 20px);
+}
+.ff-thinking-content {
+  display: flex;
+  flex-direction: column;
+}
+.ff-thinking-step {
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+}
+.ff-thinking-step-row {
+  display: flex;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: var(--thinking-item-radius, 8px);
+}
+.ff-thinking-step-icon-column {
+  display: flex;
+  width: 14px;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: center;
+}
+.ff-thinking-step-icon {
+  padding-top: 2px;
+  color: var(--muted-foreground);
+}
+.ff-thinking-step-icon svg {
+  display: block;
+  width: var(--thinking-step-icon, 14px);
+  height: var(--thinking-step-icon, 14px);
+}
+.ff-thinking-dot {
+  display: flex;
+  width: 14px;
+  height: 14px;
+  align-items: center;
+  justify-content: center;
+}
+.ff-thinking-dot::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--muted-foreground) 60%, transparent);
+}
+.ff-thinking-connector {
+  flex: 1;
+  width: 1px;
+  margin-top: 4px;
+  background: color-mix(in oklab, var(--border) 60%, transparent);
+}
+.ff-thinking-step-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+.ff-thinking-step-label,
+.ff-thinking-step-description {
+  font-size: var(--thinking-body, 13px);
+  line-height: var(--thinking-body-line, 20px);
+}
+.ff-thinking-step-label {
+  color: var(--foreground);
+  font-variation-settings:
+    'wght' 550,
+    'opsz' 18;
+}
+.ff-thinking-step-description {
+  color: var(--muted-foreground);
+}
+.ff-thinking-details {
+  margin-top: 4px;
+  margin-left: -12px;
+}
+.ff-thinking-details > .ff-thinking-trigger-wrap .ff-thinking-trigger {
+  padding: 4px 12px;
+  gap: 6px;
+}
+.ff-thinking-detail-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 2px;
+}
+.ff-thinking-detail-line,
+.ff-thinking-image-caption {
+  color: var(--muted-foreground);
+  font-size: var(--thinking-caption, 12px);
+  line-height: var(--thinking-caption-line, 16px);
+}
+.ff-thinking-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.ff-thinking-source {
+  display: inline-block;
+}
+.ff-thinking-source .ff-badge {
+  border-radius: var(--thinking-item-radius, 8px);
+}
+.ff-thinking-image {
+  margin-top: 6px;
+}
+.ff-thinking-image img {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  object-fit: cover;
+  border-radius: var(--thinking-container-radius, 12px);
+  outline: 1px solid light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.1));
+  outline-offset: -1px;
+}
+.ff-thinking-image-caption {
+  display: block;
+  margin-top: 4px;
+}
+@keyframes ff-thinking-step-shimmer {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+.ff-thinking-step-shimmer {
+  color: transparent;
+  background: linear-gradient(
+    90deg,
+    light-dark(#a3a3a3, #525252) 0%,
+    light-dark(#a3a3a3, #525252) 35%,
+    light-dark(#525252, #a3a3a3) 50%,
+    light-dark(#a3a3a3, #525252) 65%,
+    light-dark(#a3a3a3, #525252) 100%
+  );
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: ff-thinking-step-shimmer 1.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ff-thinking-chevron {
+    transition: none;
+  }
+}
+/* Initial frames match the reference before the scoped runtime starts. */
+.ff-thinking-step {
+  height: 0;
+}
+.ff-thinking-step-inner,
+.ff-thinking-source,
+.ff-thinking-image {
+  opacity: 0;
+}
+.ff-thinking-source,
+.ff-thinking-image {
+  filter: blur(4px);
+}
+.ff-thinking-source {
+  transform: scale(0.85);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ff-thinking-source {
+    transform: none;
+  }
+}
+
+/* Sharp uses the source shape-context radii. */
+.ff-thinking-steps[data-radius='sharp'] {
+  --thinking-item-radius: 1px;
+  --thinking-container-radius: 1px;
+}

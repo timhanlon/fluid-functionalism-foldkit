@@ -1,0 +1,87 @@
+.ff-chat-message {
+  display: flex;
+  max-width: 80%;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  align-self: flex-start;
+  transform-origin: bottom left;
+}
+.ff-chat-message[data-from='user'] {
+  align-items: flex-end;
+  align-self: flex-end;
+  transform-origin: bottom right;
+}
+.ff-chat-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-start;
+}
+.ff-chat-message[data-from='user'] .ff-chat-files {
+  justify-content: flex-end;
+}
+.ff-chat-bubble {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  padding: 8px 0;
+  color: var(--foreground);
+  font-size: var(--fs-subtitle, 14px);
+  line-height: var(--lh-subtitle, 20px);
+}
+.ff-chat-message[data-from='user'] .ff-chat-bubble {
+  border-radius: 8px;
+  padding-left: 14px;
+  padding-right: 14px;
+  background: color-mix(in oklab, var(--accent), var(--background) 45%);
+  text-wrap: pretty;
+}
+.ff-chat-message[data-radius='pill'][data-from='user'] .ff-chat-bubble {
+  border-radius: 20px;
+}
+.ff-chat-message[data-size='compact'] .ff-chat-bubble {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: var(--fs-subtitle-compact, 13px);
+  line-height: var(--lh-subtitle-compact, 18px);
+}
+.ff-chat-message[data-size='compact'][data-from='user'] .ff-chat-bubble {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.ff-chat-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  color: var(--muted-foreground);
+  user-select: none;
+  font-size: var(--fs-caption, 12px);
+  line-height: var(--lh-caption, 16px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms;
+}
+.ff-chat-message[data-size='compact'] .ff-chat-meta {
+  font-size: var(--fs-caption-compact, 11px);
+  line-height: var(--lh-caption-compact, 14px);
+}
+.ff-chat-message:is(:hover, :focus-within) .ff-chat-meta,
+.ff-chat-message[data-touch='true'] .ff-chat-meta {
+  opacity: 1;
+  pointer-events: auto;
+}
+.ff-chat-time {
+  font-variant-numeric: tabular-nums;
+}
+.ff-chat-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Sharp uses the source shape-context radii. */
+.ff-chat-message[data-radius='sharp'][data-from='user'] .ff-chat-bubble {
+  border-radius: 1px;
+}

@@ -1,0 +1,244 @@
+:is(
+  .ff-field,
+  .ff-field-group,
+  .ff-field-set,
+  .ff-field-label,
+  .ff-field-legend,
+  .ff-field-content,
+  .ff-field-title,
+  .ff-field-description,
+  .ff-field-error,
+  .ff-field-separator
+)[data-size='compact'] {
+  --ff-field-body: var(--fs-body-compact, 12px);
+  --ff-field-line: var(--lh-body-compact, 18px);
+  --ff-field-caption: var(--fs-caption-compact, 11px);
+  --ff-field-caption-line: var(--lh-caption-compact, 14px);
+  --ff-field-subtitle: var(--fs-subtitle-compact, 13px);
+  --ff-field-subtitle-line: var(--lh-subtitle-compact, 18px);
+  --ff-field-gap: 4px;
+  --ff-field-padding: 10px;
+  --ff-field-error-icon: 12px;
+}
+:is(
+  .ff-field,
+  .ff-field-group,
+  .ff-field-set,
+  .ff-field-label,
+  .ff-field-legend,
+  .ff-field-content,
+  .ff-field-title,
+  .ff-field-description,
+  .ff-field-error,
+  .ff-field-separator
+)[data-size='default'] {
+  --ff-field-body: var(--fs-body, 13px);
+  --ff-field-line: var(--lh-body, 20px);
+  --ff-field-caption: var(--fs-caption, 12px);
+  --ff-field-caption-line: var(--lh-caption, 16px);
+  --ff-field-subtitle: var(--fs-subtitle, 14px);
+  --ff-field-subtitle-line: var(--lh-subtitle, 20px);
+  --ff-field-gap: 8px;
+  --ff-field-padding: 12px;
+  --ff-field-error-icon: 14px;
+}
+.ff-field {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 4px;
+}
+.ff-field[data-orientation='horizontal'] {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--ff-field-gap, 8px);
+}
+.ff-field[data-orientation='horizontal']:has(> .ff-field-content) {
+  align-items: flex-start;
+}
+.ff-field[data-orientation='horizontal']:has(> .ff-field-content) > [role='checkbox'],
+.ff-field[data-orientation='horizontal']:has(> .ff-field-content)
+  > .ff-checkbox-control-root
+  > [role='checkbox'] {
+  margin-top: 2px;
+}
+.ff-field-content {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+.ff-field-set {
+  display: flex;
+  margin: 0;
+  min-width: 0;
+  flex-direction: column;
+  gap: 12px;
+  border: 0;
+  padding: 0;
+}
+.ff-field-group {
+  container: ff-field-group / inline-size;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 12px;
+}
+.ff-field-label,
+.ff-field-title {
+  width: fit-content;
+  font-size: var(--ff-field-body, var(--fs-body, 13px));
+  line-height: var(--ff-field-line, var(--lh-body, 20px));
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+}
+.ff-field-label {
+  color: var(--muted-foreground);
+}
+.ff-field[data-orientation='horizontal'] > .ff-field-label,
+.ff-field[data-orientation='horizontal'] > .ff-field-content > .ff-field-label,
+.ff-field-title {
+  color: var(--foreground);
+}
+/* Invalid turns a stacked field's label red. A horizontal (checkbox, switch)
+ * label stays foreground, as upstream, where the orientation utility wins. */
+.ff-field[data-invalid='true']:not([data-orientation='horizontal']) > .ff-field-label,
+.ff-field[data-invalid='true']:not([data-orientation='horizontal'])
+  > .ff-field-content
+  > .ff-field-label {
+  color: var(--destructive);
+}
+.ff-field-description {
+  margin: 0;
+  text-wrap: pretty;
+  color: var(--muted-foreground);
+  font-size: var(--ff-field-caption, var(--fs-caption, 12px));
+  line-height: var(--ff-field-caption-line, var(--lh-caption, 16px));
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+}
+.ff-field-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ff-field-gap, 8px);
+  color: var(--destructive);
+  font-size: var(--ff-field-caption, var(--fs-caption, 12px));
+  line-height: var(--ff-field-caption-line, var(--lh-caption, 16px));
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+}
+.ff-field-error-icon {
+  display: flex;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.ff-field-error-icon svg {
+  width: var(--ff-field-error-icon, 14px);
+  height: var(--ff-field-error-icon, 14px);
+  stroke-width: 1.75;
+}
+.ff-field-error-content {
+  min-width: 0;
+}
+.ff-field-error ul {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex-direction: column;
+  gap: 4px;
+}
+.ff-field-legend {
+  margin: 0 0 4px;
+  padding: 0;
+  color: var(--foreground);
+  font-size: var(--ff-field-subtitle, var(--fs-subtitle, 14px));
+  line-height: var(--ff-field-subtitle-line, var(--lh-subtitle, 20px));
+  font-variation-settings:
+    'wght' 550,
+    'opsz' 18;
+}
+.ff-field-legend[data-variant='label'] {
+  font-size: var(--ff-field-body, var(--fs-body, 13px));
+  line-height: var(--ff-field-line, var(--lh-body, 20px));
+  color: var(--muted-foreground);
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+}
+.ff-field-separator {
+  position: relative;
+  display: flex;
+  height: 20px;
+  align-items: center;
+}
+.ff-field-separator-line {
+  position: absolute;
+  height: 1px;
+  left: 0;
+  right: 0;
+  top: 50%;
+  background: var(--border);
+}
+.ff-field-separator-text {
+  position: relative;
+  margin: 0 auto;
+  padding: 0 8px;
+  background: var(--background);
+  color: var(--muted-foreground);
+  font-size: var(--ff-field-caption, var(--fs-caption, 12px));
+  line-height: var(--ff-field-caption-line, var(--lh-caption, 16px));
+}
+.ff-field-label:has(> .ff-field) {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--ff-field-padding, 12px);
+  transition:
+    background-color 80ms,
+    border-color 80ms;
+}
+.ff-field-label[data-radius='pill']:has(> .ff-field) {
+  border-radius: 24px;
+}
+.ff-field-label:has(> .ff-field):hover {
+  background: var(--hover);
+}
+/* No checked-card border: upstream's source asks for foreground/40 on a
+ * checked card, but its compiled order lets border-border win, so a checked
+ * card renders the plain border. Matched as rendered. */
+.ff-field-label:has(> .ff-field):has(:focus-visible) {
+  box-shadow: 0 0 0 1px var(--focus-ring, #6b97ff);
+}
+.ff-field-label:has(> .ff-field) [role='checkbox']:focus-visible {
+  box-shadow: none;
+}
+@container ff-field-group (min-width:28rem) {
+  .ff-field[data-orientation='responsive'] {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--ff-field-gap, 8px);
+  }
+  .ff-field[data-orientation='responsive'] > * {
+    width: auto;
+  }
+  .ff-field[data-orientation='responsive']:has(> .ff-field-content) {
+    align-items: flex-start;
+  }
+  .ff-field[data-orientation='responsive']:has(> .ff-field-content) > [role='checkbox'],
+  .ff-field[data-orientation='responsive']:has(> .ff-field-content)
+    > .ff-checkbox-control-root
+    > [role='checkbox'] {
+    margin-top: 2px;
+  }
+}
+
+/* Sharp uses the source shape-context radii. */
+.ff-field-label[data-radius='sharp']:has(> .ff-field) {
+  border-radius: 1px;
+}

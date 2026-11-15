@@ -1,0 +1,3 @@
+patchedDependencies:
+  '@foldkit/ui@0.170.0': patches/@foldkit__ui@0.170.0.patch
+  'foldkit@0.170.0': patches/foldkit@0.170.0.patch

@@ -1,0 +1,132 @@
+.ff-settings-dialog {
+  display: flex;
+  height: min(640px, calc(100dvh - 64px));
+  overflow: hidden;
+  padding: 0;
+}
+.ff-settings-shell {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border-radius: inherit;
+}
+.ff-settings-sidebar {
+  flex: none;
+  width: 208px;
+  height: 100%;
+  background: light-dark(rgb(0 0 0/0.03), rgb(255 255 255/0.03));
+  border-end-start-radius: inherit;
+}
+/* The navigation viewport reaches the dialog's lower corner. Its inset
+ * keyboard focus ring must follow that same curve rather than be clipped
+ * as a square by the panel's overflow. Other viewport corners stay square. */
+.ff-settings-sidebar > [data-sidebar='sidebar'],
+.ff-settings-sidebar > [data-sidebar='sidebar'] > .ff-scroll-area {
+  border-end-start-radius: inherit;
+}
+.ff-settings-sidebar-heading {
+  padding: 20px 16px 8px;
+}
+.ff-settings-sidebar-heading h2,
+.ff-settings-panel-heading h2,
+.ff-settings-panel-heading h3 {
+  margin: 0;
+  color: var(--foreground);
+  font: var(--fs-title, 16px)/var(--lh-title, 22px) var(--font-sans, Inter, system-ui, sans-serif);
+  font-variation-settings:
+    'wght' 400,
+    'opsz' 14;
+}
+.ff-settings-dialog[data-size='compact'] .ff-settings-sidebar-heading h2 {
+  font-size: var(--fs-title-compact, 15px);
+  line-height: var(--lh-title-compact, 20px);
+}
+.ff-settings-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.ff-settings-panel-heading {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  gap: 4px;
+  padding: 20px 48px 16px 24px;
+}
+.ff-settings-panel-heading p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font: var(--fs-body, 13px)/var(--lh-body, 20px) var(--font-sans, Inter, system-ui, sans-serif);
+}
+.ff-settings-scroll {
+  flex: 1;
+  min-height: 0;
+}
+.ff-settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0 24px 24px;
+}
+.ff-settings-general {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.ff-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+}
+.ff-settings-row:last-child {
+  border-bottom: 0;
+}
+.ff-settings-row-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+  color: var(--foreground);
+  font: var(--fs-body, 13px)/var(--lh-body, 20px) var(--font-sans, Inter, system-ui, sans-serif);
+}
+.ff-settings-caption {
+  color: var(--muted-foreground);
+  font-size: var(--fs-caption, 12px);
+  line-height: var(--lh-caption, 16px);
+}
+.ff-settings-control {
+  flex: none;
+}
+.ff-settings-switch .ff-switch-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+.ff-settings-invite {
+  padding-top: 16px;
+}
+.ff-settings-mobile {
+  display: none;
+}
+@media (max-width: 639px) {
+  .ff-settings-sidebar,
+  .ff-settings-desktop {
+    display: none;
+  }
+  .ff-settings-mobile {
+    display: block;
+  }
+  .ff-settings-mobile h2 {
+    margin-bottom: 12px;
+  }
+}

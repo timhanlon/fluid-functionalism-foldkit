@@ -1,0 +1,125 @@
+.ff-playground-controls {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  color: var(--foreground);
+  font: var(--fs-site-body, 12px)/var(--lh-site-body, 18px) var(--font-sans, Inter, sans-serif);
+  opacity: 1;
+  transition: opacity 150ms;
+}
+.ff-playground-controls[data-shown='false'] {
+  opacity: 0;
+  pointer-events: none;
+}
+.ff-playground-controls[data-placement='rail'] {
+  padding-top: 32px;
+}
+.ff-playground-controls[data-placement='inline'] {
+  margin-left: -8px;
+  margin-right: -8px;
+}
+.ff-playground-rows {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.ff-playground-heading,
+.ff-playground-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 8px;
+}
+.ff-playground-heading {
+  height: 32px;
+}
+.ff-playground-controls h2,
+.ff-playground-controls h3 {
+  margin: 0;
+  font: inherit;
+}
+.ff-playground-controls h2 {
+  font-size: var(--fs-site-caption, 11px);
+  line-height: var(--lh-site-caption, 14px);
+}
+.ff-playground-controls h3 {
+  padding: 8px 8px 4px;
+  font-variation-settings:
+    'wght' 550,
+    'opsz' 18;
+}
+.ff-playground-controls hr {
+  border: 0;
+  height: 1px;
+  flex: none;
+  background: var(--border);
+  margin: 8px;
+}
+.ff-playground-copy-prompt {
+  align-self: flex-start;
+}
+@media (min-width: 1280px) {
+  .ff-playground-controls[data-placement='rail'] .ff-playground-copy-prompt {
+    width: 100%;
+  }
+}
+.ff-playground-hairline {
+  height: 1px;
+  flex: none;
+  background: var(--border);
+  margin: 0 8px 4px;
+}
+.ff-playground-field > span {
+  color: var(--muted-foreground);
+}
+.ff-playground-field .ff-select[data-size] .ff-select-trigger {
+  /* Upstream's PlaySelect: min-w-0 w-auto px-2, hugging its value. */
+  width: auto;
+  min-width: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.ff-playground-field .ff-select-trigger:hover {
+  background: transparent;
+}
+.ff-playground-controls .ff-playground-switch {
+  width: 100%;
+  min-height: 28px;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.ff-playground-controls .ff-switch-label {
+  margin-right: auto;
+}
+.ff-playground-controls .ff-playground-shuffle {
+  height: 28px;
+  padding: 0 6px;
+  margin-right: 2px;
+}
+.ff-playground-shuffle kbd {
+  display: inline-flex;
+  height: 18px;
+  min-width: 18px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  background: rgb(var(--overlay, 0 0 0) / 0.08);
+  border-radius: 2px;
+  font: var(--fs-micro, 10px)/1 monospace;
+}
+.ff-playground-shuffle .ff-button-reserved {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ff-playground-shuffle svg {
+  width: 16px;
+  height: 16px;
+}
+@media (pointer: coarse) {
+  .ff-playground-shuffle kbd {
+    display: none;
+  }
+}
