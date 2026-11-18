@@ -1,6 +1,6 @@
 # Fluid Functionalism Foldkit
 
-A port of [Micka Touillaud](https://x.com/micka_design)'s [Fluid Functionalism](https://www.fluidfunctionalism.com/) to Foldkit, completed mostly by GPT-6.1 Sol, with some input from Opus 5.5, over the course of about a week.
+A port of [Micka Touillaud](https://x.com/micka_design)'s [Fluid Functionalism](https://www.fluidfunctionalism.com/) to Foldkit, completed mostly by GPT-6.1 Sol, with some input from Opus 5.5, over the course of about two weeks.
 
 Thanks to Micka for his blessing to release this, and Devin Jameson for his encouragement and feedback.
 

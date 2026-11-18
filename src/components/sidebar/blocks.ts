@@ -2,6 +2,7 @@ import { shapeClass } from '../shape';
 import type { Attribute, ChildAttribute, Html } from 'foldkit/html';
 import { cn } from '../../lib/utils';
 import { icon } from '../icons';
+import * as KeyCap from '../key-cap';
 import { trigger, input, menu, glyphSize, type Kit, type Render } from './index';
 import { CalloutStackMounted } from './runtime';
 import type { Model } from './state';
@@ -144,13 +145,13 @@ export function searchField<P>(
         'pl-8 pr-12',
       ),
       shortcut
-        ? h.kbd(
-            [
-              h.Class(
-                'pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 font-sans text-[length:var(--fs-micro,11px)] leading-[var(--lh-micro,14px)] text-muted-foreground opacity-0 transition-opacity duration-80 group-hover/search:opacity-100 group-focus-within/search:opacity-100',
-              ),
-            ],
-            [shortcut],
+        ? KeyCap.keys(
+            {
+              keys: shortcut,
+              className:
+                'pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 opacity-0 transition-opacity duration-80 group-hover/search:opacity-100 group-focus-within/search:opacity-100',
+            },
+            h,
           )
         : null,
     ],

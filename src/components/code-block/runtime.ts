@@ -1,7 +1,6 @@
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
-export const Mounted = Mount.define('CodeBlock.Highlight', {
-  messages: [Schema.Never],
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
+export const Mounted = defineSilentMount('CodeBlock.Highlight', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {
@@ -39,8 +38,7 @@ export const Mounted = Mount.define('CodeBlock.Highlight', {
 
 /** Reader intent starts loading on the whole preview header, matching the
  * reference's pointer/focus warm-up without loading Shiki with every preview. */
-export const Wanted = Mount.define('CodeBlock.ReaderIntent', {
-  messages: [Schema.Never],
+export const Wanted = defineSilentMount('CodeBlock.ReaderIntent', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

@@ -2,6 +2,11 @@
 
 Install editable native Foldkit source with the standard shadcn CLI. Tailwind CSS v4 is required. React and components.json are not required.
 
+- [KeyCap](https://fff.timhanlon.com/docs/key-cap.md): Shared filled keyboard caps with semantic kbd elements, combo splitting and inverted tone. [Craft](craft.md#key-cap).
+- [MessageScroller](https://fff.timhanlon.com/docs/message-scroller.md): A native conversation viewport with following, anchored turns and an animated return-to-latest control. [Craft](craft.md#message-scroller).
+- [ContextMenu](https://fff.timhanlon.com/docs/context-menu.md): The shared Dropdown tree opened at a pointer or focused trigger, with native text-field menus and return focus. Requires the guide's pnpm compatibility step. [Craft](craft.md#context-menu).
+- [CodeBlock](https://fff.timhanlon.com/docs/code-block.md): Code and command output with copy feedback, optional line numbers, caller-owned highlighting and shared scrollbars. [Craft](craft.md#code-block).
+- [Confirmation](https://fff.timhanlon.com/docs/confirmation.md): Inline approval questions composed from Banner with parent-owned requested, approved and denied states. [Craft](craft.md#confirmation).
 - [Breadcrumb](https://fff.timhanlon.com/docs/breadcrumb.md): Navigation trails with shared hover, sibling menus, truncation tooltips and responsive collapse. Requires the guide's pnpm compatibility step. [Craft](craft.md#breadcrumb).
 - [Button](https://fff.timhanlon.com/docs/button.md): A stateless button with variants, sizes and shapes. [Craft](craft.md#button).
 - [Select](https://fff.timhanlon.com/docs/select.md): A controlled selection with keyboard navigation and a portalled popup. [Craft](craft.md#select).
@@ -33,6 +38,7 @@ Install editable native Foldkit source with the standard shadcn CLI. Tailwind CS
 - [Sidebar](https://fff.timhanlon.com/docs/sidebar.md): Composable responsive navigation with collapse, resize, groups and mobile drawers. [Craft](craft.md#sidebar).
 - [CommandMenu](https://fff.timhanlon.com/docs/command-menu.md): Searchable commands and a keyboard-opened modal palette. [Craft](craft.md#command-menu).
 - [Table](https://fff.timhanlon.com/docs/table.md): Semantic tables with controlled sorting, empty states and scoped row hover. [Craft](craft.md#table).
+- [DataTable](https://fff.timhanlon.com/docs/data-table.md): TanStack row models with Foldkit sorting, filters, selection, inline editors, column layout and pagination. Requires the guide's pnpm compatibility step. [Craft](craft.md#data-table).
 - [ChatMessage](https://fff.timhanlon.com/docs/chat-message.md): Conversation bubbles with owned file previews and consumer actions. [Craft](craft.md#chat-message).
 - [InputMessage](https://fff.timhanlon.com/docs/input-message.md): Controlled composer with attachments, suggestions, history and queued messages. [Craft](craft.md#input-message).
 - [AskUserQuestions](https://fff.timhanlon.com/docs/ask-user-questions.md): Stateful question flows with validated answers and completion events. [Craft](craft.md#ask-user-questions).

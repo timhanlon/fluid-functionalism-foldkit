@@ -1,12 +1,11 @@
+import { defineSilentMountWithArgs } from '../silent-mount';
 import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
 import { animate, type AnimationPlaybackControls } from 'motion';
 /** Entrance finishes before position-only FLIP begins. Measuring subtracts the
  * current translation so an interrupted layout spring continues from where it
  * is actually painted, rather than stacking a second jump on top. */
-export const Mounted = Mount.define('ChatMessage.Motion', {
+export const Mounted = defineSilentMountWithArgs('ChatMessage.Motion', {
   args: { entrance: Schema.Boolean },
-  messages: [Schema.Never],
   execute: ({ element, entrance }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

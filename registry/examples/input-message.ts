@@ -14,7 +14,7 @@ export const Model = Schema.Struct({
   value: Schema.String,
   files: Schema.Array(NativeFile.File),
   queue: Schema.Array(InputMessage.QueuedMessage),
-  streaming: Schema.Boolean,
+  status: InputMessage.Status,
   sent: Schema.String,
   shown: Schema.Boolean,
 });
@@ -23,6 +23,7 @@ export const Message = defineMessageUnion({
   Composer: { message: InputMessage.Message },
   Stack: { message: QueuedStack.Message },
   Finished: {},
+  StatusChanged: { status: InputMessage.Status },
   VisibilityToggled: {},
 });
 export type Message = typeof Message.Type;
@@ -33,7 +34,7 @@ export const init = (): { model: Model } => ({
     value: '',
     files: [],
     queue: [],
-    streaming: false,
+    status: 'idle',
     sent: 'none',
     shown: true,
   },
@@ -42,27 +43,34 @@ const options = (model: Model): InputMessage.Options => ({
   value: model.value,
   files: model.files,
   queue: model.queue,
-  status: model.streaming ? 'streaming' : 'idle',
+  status: model.status,
   maxFiles: 3,
   history: ['Earlier message'],
   suggestions: ['Review this code', 'Explain this change'],
 });
+function withStatus(model: Model, status: InputMessage.Status): Model {
+  const released = InputMessage.releaseOnStatusChange(
+    model.composer,
+    model.queue,
+    model.status,
+    status,
+  );
+  return {
+    ...model,
+    composer: released.model,
+    queue: released.queue,
+    status: released.sent ? 'streaming' : status,
+    sent: released.sent?.text ?? model.sent,
+  };
+}
 export function update(model: Model, message: Message): Update.Return<Model, Message> {
   switch (message._tag) {
     case 'VisibilityToggled':
       return { model: { ...model, shown: !model.shown } };
-    case 'Finished': {
-      const released = InputMessage.release(model.composer, model.queue);
-      return {
-        model: {
-          ...model,
-          composer: released.model,
-          queue: released.queue,
-          streaming: !!released.sent,
-          sent: released.sent?.text ?? model.sent,
-        },
-      };
-    }
+    case 'Finished':
+      return { model: withStatus(model, 'idle') };
+    case 'StatusChanged':
+      return { model: withStatus(model, message.status) };
     case 'Stack': {
       const result = QueuedStack.update(model.stack, message.message, model.queue);
       const base = { ...model, stack: result.model };
@@ -106,7 +114,7 @@ export function update(model: Model, message: Message): Update.Return<Model, Mes
           next = { ...next, files: out.files };
           break;
         case 'Sent':
-          next = { ...next, value: '', files: [], sent: out.value, streaming: true };
+          next = { ...next, value: '', files: [], sent: out.value, status: 'streaming' };
           break;
         case 'QueueChanged':
           next = {
@@ -121,7 +129,7 @@ export function update(model: Model, message: Message): Update.Return<Model, Mes
           next = { ...next, value: out.value, files: out.files, queue: out.queue };
           break;
         case 'Stopped':
-          next = { ...next, streaming: false };
+          next = withStatus(next, 'idle');
           break;
       }
       return {
@@ -195,8 +203,18 @@ export function view(model: Model, h: HtmlBuilder<Message>) {
         h.p(
           [],
           [
-            `Last sent: ${model.sent}; status: ${model.streaming ? 'streaming' : 'idle'}; queued: ${model.queue.length}; files: ${model.files.length}`,
+            `Last sent: ${model.sent}; status: ${model.status}; queued: ${model.queue.length}; files: ${model.files.length}`,
           ],
+        ),
+        ...(
+          [
+            ['submitted', 'Await reply'],
+            ['streaming', 'Stream reply'],
+            ['error', 'Fail response'],
+            ['ready', 'Clear error'],
+          ] as const
+        ).map(([status, label]) =>
+          h.button([h.Type('button'), h.OnClick(Message.StatusChanged({ status }))], [label]),
         ),
         h.button([h.Type('button'), h.OnClick(Message.Finished())], ['Finish response']),
         h.button(

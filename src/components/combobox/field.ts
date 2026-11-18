@@ -143,6 +143,12 @@ export function fieldInputs<Message, Data extends ItemData>(
     buttonClassName: 'ff-combobox-toggle',
     buttonAttributes: childAttributes([h.AriaLabel('Open'), h.Disabled(!!props.disabled)]),
     backdropClassName: 'ff-popup-backdrop ff-combobox-backdrop',
+    backdropAttributes: childAttributes([
+      h.AriaHidden(true),
+      h.DataAttribute('slot', 'popup-shield'),
+      h.DataAttribute('shield-for', `${state.combo.id}-items`),
+      h.DataAttribute('shield-anchor', `${state.combo.id}-input-wrapper`),
+    ]),
     itemsClassName: 'ff-popup ff-combobox-popup',
     itemsAttributes: childAttributes([
       h.DataAttribute('size', props.size ?? 'default'),

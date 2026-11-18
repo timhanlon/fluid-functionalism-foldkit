@@ -6,12 +6,17 @@ import { PanelMounted } from './collapse-runtime';
 import { TriggerMounted } from './trigger-runtime';
 import { Entered } from './entrance-runtime';
 import './styles.css';
-export type StepStatus = 'complete' | 'active' | 'pending';
+export type StepStatus = 'complete' | 'active' | 'pending' | 'upcoming' | 'error';
 type Attributes<Message> = readonly (Attribute<Message> | ChildAttribute)[];
 export interface Props<Message> {
   readonly id: string;
-  /** Parents own open state; initialize to true for the reference default. */
-  readonly open: boolean;
+  /** A parent-owned reader choice. Omit to follow running, then defaultOpen.
+   * Persist onOpenChange here so the reader's choice survives status changes. */
+  readonly open?: boolean;
+  readonly defaultOpen?: boolean;
+  readonly running?: boolean;
+  /** Muted header content, such as a duration or step count. */
+  readonly meta?: readonly (Html | string)[];
   readonly onOpenChange: (open: boolean) => Message;
   readonly header?: readonly (Html | string)[];
   readonly children: readonly Html[];
@@ -24,6 +29,8 @@ export interface Props<Message> {
 }
 export interface HeaderProps<Message> {
   readonly open: boolean;
+  readonly running?: boolean;
+  readonly meta?: readonly (Html | string)[];
   readonly children?: readonly (Html | string)[];
   readonly icons?: string;
   /** Use the Disclosure button attribute bundle to retain native semantics. */
@@ -44,14 +51,24 @@ export function header<Message>(props: HeaderProps<Message>, h: HtmlBuilder<Mess
         ],
         [
           h.span(
-            [h.Class('ff-thinking-trigger-label')],
+            [h.Key('label'), h.Class('ff-thinking-trigger-label')],
             [
               h.span([h.Class('ff-thinking-trigger-reserve'), h.AriaHidden(true)], label),
-              h.span([h.Class('ff-thinking-trigger-text')], label),
+              h.span(
+                [
+                  h.Class(
+                    `ff-thinking-trigger-text${props.running ? ' ff-thinking-step-shimmer' : ''}`,
+                  ),
+                ],
+                label,
+              ),
             ],
           ),
+          props.meta === undefined
+            ? null
+            : h.span([h.Key('meta'), h.Class('ff-thinking-trigger-meta')], props.meta),
           h.span(
-            [h.Class('ff-thinking-chevron'), h.AriaHidden(true)],
+            [h.Key('chevron'), h.Class('ff-thinking-chevron'), h.AriaHidden(true)],
             [icon('chevron-right', props.icons, h)],
           ),
         ],
@@ -88,11 +105,16 @@ function panel<Message>(
     ],
   );
 }
+/** Resolve source precedence without storing primitive state outside the parent. */
+export const resolveOpen = (
+  props: Pick<Props<never>, 'open' | 'running' | 'defaultOpen'>,
+): boolean => props.open ?? props.running ?? props.defaultOpen ?? true;
 export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): Html {
+  const open = resolveOpen(props);
   return Disclosure.view(
     {
       id: props.id,
-      isOpen: props.open,
+      isOpen: open,
       onToggle: props.onOpenChange,
       toView: (attributes) =>
         h.div(
@@ -105,7 +127,9 @@ export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): H
           [
             header(
               {
-                open: props.open,
+                open,
+                running: props.running,
+                meta: props.meta,
                 children: props.header,
                 icons: props.icons,
                 attributes: [
@@ -118,7 +142,7 @@ export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): H
             ),
             panel(
               {
-                open: props.open,
+                open,
                 attributes: attributes.panel,
                 children: [
                   content({ children: props.children, attributes: props.contentAttributes }, h),
@@ -139,6 +163,9 @@ export interface StepProps<Message> {
   readonly showIcon?: boolean;
   readonly label: string;
   readonly description?: string;
+  readonly meta?: readonly (Html | string)[];
+  /** Only http(s) addresses and single-slash site paths become links. */
+  readonly href?: string;
   readonly status?: StepStatus;
   readonly delay?: number;
   readonly isLast?: boolean;
@@ -148,6 +175,11 @@ export interface StepProps<Message> {
 export function step<Message>(props: StepProps<Message>, h: HtmlBuilder<Message>): Html {
   if (props.status === 'pending') return null;
   const active = props.status === 'active';
+  const href = props.href && /^(https?:\/\/|\/(?!\/))/i.test(props.href) ? props.href : undefined;
+  const labelAttributes = [
+    h.Class(`ff-thinking-step-label${active ? ' ff-thinking-step-shimmer' : ''}`),
+  ];
+  const label = [props.label, active ? '…' : null];
   return h.div(
     [
       ...(props.key ? [h.Key(props.key)] : []),
@@ -183,8 +215,23 @@ export function step<Message>(props: StepProps<Message>, h: HtmlBuilder<Message>
                 [h.Class('ff-thinking-step-copy')],
                 [
                   h.span(
-                    [h.Class(`ff-thinking-step-label${active ? ' ff-thinking-step-shimmer' : ''}`)],
-                    [props.label, active ? '…' : null],
+                    [h.Class('ff-thinking-step-heading')],
+                    [
+                      href
+                        ? h.a(
+                            [
+                              ...labelAttributes,
+                              h.Href(href),
+                              h.Target('_blank'),
+                              h.Rel('noreferrer'),
+                            ],
+                            [...label, h.span([h.Class('sr-only')], [' (opens in a new tab)'])],
+                          )
+                        : h.span(labelAttributes, label),
+                      props.meta === undefined
+                        ? null
+                        : h.span([h.Class('ff-thinking-step-meta')], props.meta),
+                    ],
                   ),
                   props.description
                     ? h.span([h.Class('ff-thinking-step-description')], [props.description])

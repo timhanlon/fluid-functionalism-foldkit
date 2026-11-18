@@ -2,6 +2,36 @@
 
 Read the installed implementation for exact current props, durations and cleanup. The following constraints explain how to compose with each control; the corresponding public guide provides its runtime wiring.
 
+## key-cap
+
+One fixed 18px filled cap per key, with 2px corners and gaps. Letters use the mono face; symbols use sans. A combo splits modifiers and separators, while an array preserves names with spaces. Tone controls the substrate; size and corner preferences do not resize the keys.
+
+[Complete KeyCap guide](https://fff.timhanlon.com/docs/key-cap.md)
+
+## message-scroller
+
+Give the viewport a bounded height. Existing rows open at the end; newly mounted anchor rows glide to the top with a sliver of the prior reply, then a shrinking spacer lets the reply grow in place. Reader scrolling releases following. Keep native scrolling and the scoped observers; do not move messages into the scrolling Model.
+
+[Complete MessageScroller guide](https://fff.timhanlon.com/docs/message-scroller.md)
+
+## context-menu
+
+It is the Dropdown at a pointer or keyboard target. Preserve native text-field menus, prior handlers and nested event claims. Keep the body anchor outside scaled containers, mark only the active trigger, and return focus after the primitive finishes without stealing it from another control.
+
+[Complete ContextMenu guide](https://fff.timhanlon.com/docs/context-menu.md)
+
+## code-block
+
+Keep the exact plain code separate from rendered highlighting. Copy feedback announces success or failure beside the stably named button; the shared keyboard-focusable ScrollArea owns overflow. Highlighted content owns its own line numbers.
+
+[Complete CodeBlock guide](https://fff.timhanlon.com/docs/code-block.md)
+
+## confirmation
+
+An inline Banner question keeps its answer in the transcript. The parent owns approval state and any actual action; requested buttons become a same-height live status. Keep the question group semantics and native Button behavior.
+
+[Complete Confirmation guide](https://fff.timhanlon.com/docs/confirmation.md)
+
 ## breadcrumb
 
 Keep destinations as native links and the current step noninteractive. Collapse is measured against available width; hiding arbitrary steps without that measurement loses the overflow contract.
@@ -112,7 +142,7 @@ Status text and the glyph cycle form one status presentation. Reduced motion nee
 
 ## thinking-steps
 
-Completion and expanded details are distinct states. Retain step transitions and disclosure cleanup; avoid nesting competing measured-height collapse owners.
+Completion and expanded details are distinct states. A parent-owned open choice overrides running; leave it absent to follow running and defaultOpen. Running shimmers the header; metadata remains quiet beside the label. Pending steps are absent, upcoming steps are visible and muted, and failed steps use destructive text/icons. Preserve safe step links and their new-tab announcement. Retain step transitions and Disclosure cleanup; avoid nesting competing measured-height collapse owners.
 
 [Complete ThinkingSteps guide](https://fff.timhanlon.com/docs/thinking-steps.md)
 
@@ -148,7 +178,7 @@ Value and transient drag state differ. Lift subscriptions, including the Range p
 
 ## tooltip
 
-Preserve delayed show, retained exit, trigger attributes and accessible description linkage. A portal inherits root tokens. Keep ids unique and release its Mount when the trigger disappears.
+Preserve delayed show, retained exit, trigger attributes and accessible description linkage. A portal inherits root tokens. Keep ids unique and release its Mount when the trigger disappears. Keep primitive tooltip interactions and anchors. A group hands its shape and label between closed/open neighbors on the same resolved side; hold150ms bridges a gap, and a side flip enters separately. Reduce motion removes geometric travel while keeping the label crossfade. The shared side resets when the viewport or scroll room changes.
 
 [Complete Tooltip guide](https://fff.timhanlon.com/docs/tooltip.md)
 
@@ -187,6 +217,12 @@ Filtering, grouping, tabs and focus highlight must use the same visible item set
 Use semantic table/header/body/cell structure and real controls for sorting. One Mount owns row hover. Empty content spans the actual column count. Consumer alignment classes override default cell alignment.
 
 [Complete Table guide](https://fff.timhanlon.com/docs/table.md)
+
+## data-table
+
+Keep row IDs stable and parent-owned edits controlled. Do not replace the TanStack row pipeline with hand-coded sorting or filtering. Pass identical data and column definitions to update and view; preserve the editing order hold, all child Commands, scoped Mounts and lifted drag subscriptions. A hidden filter row still filters. Browser checks establish geometry and focus separately from Story and Scene.
+
+[Complete DataTable guide](https://fff.timhanlon.com/docs/data-table.md)
 
 ## chat-message
 

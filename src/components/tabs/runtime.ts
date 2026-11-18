@@ -1,13 +1,12 @@
+import { defineSilentMount } from '../silent-mount';
 import { shapeRadius } from '../shape';
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
+import { Effect } from 'effect';
 import { animate, type AnimationPlaybackControls } from 'motion';
 import { mountHover } from '../../fluid-hover/engine';
 import { mountListFocus } from '../list-focus';
 import '../../fluid-hover/styles.css';
 
-export const Mounted = Mount.define('Tabs.Visuals', {
-  messages: [Schema.Never],
+export const Mounted = defineSilentMount('Tabs.Visuals', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

@@ -15,7 +15,12 @@ export interface Props<Message> {
   readonly style?: string;
   readonly attributes?: readonly Attribute<Message>[];
 }
-export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): Html {
+/** Compose an existing native viewport (Table's surface, for example) with
+ * the same scroll tracks and scoped runtime used by view. */
+export function decoration<Message>(
+  props: Omit<Props<Message>, 'children'>,
+  h: HtmlBuilder<Message>,
+) {
   const orientation = props.orientation ?? 'vertical';
   const bar = (axis: 'vertical' | 'horizontal') =>
     h.div(
@@ -27,8 +32,8 @@ export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): H
       ],
       [h.div([h.Class('ff-scroll-thumb'), h.DataAttribute('slot', 'scroll-area-thumb')], [])],
     );
-  return h.div(
-    [
+  return {
+    attributes: [
       h.Class(`ff-scroll-area ${props.className ?? ''}`),
       h.DataAttribute('slot', 'scroll-area'),
       h.DataAttribute('scroll-orientation', orientation),
@@ -37,21 +42,23 @@ export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): H
       ...(props.style ? [h.Attribute('style', props.style)] : []),
       ...(props.attributes ?? []),
     ],
-    [
-      h.div(
-        [
-          h.Class(`ff-scroll-viewport base-ui-disable-scrollbar ${props.viewportClassName ?? ''}`),
-          h.DataAttribute('slot', 'scroll-area-viewport'),
-          h.Tabindex(props.viewportFocusable === false ? -1 : 0),
-          // A region needs a name; unnamed, the viewport stays a plain div
-          // as upstream's Radix viewport.
-          ...(props.viewportFocusable === false || !props.label ? [] : [h.Role('region')]),
-          ...(props.label ? [h.AriaLabel(props.label)] : []),
-        ],
-        [h.div([h.Class('ff-scroll-content')], props.children)],
-      ),
+    viewportAttributes: [
+      h.Class(`ff-scroll-viewport base-ui-disable-scrollbar ${props.viewportClassName ?? ''}`),
+      h.DataAttribute('slot', 'scroll-area-viewport'),
+      h.Tabindex(props.viewportFocusable === false ? -1 : 0),
+      ...(props.viewportFocusable === false || !props.label ? [] : [h.Role('region')]),
+      ...(props.label ? [h.AriaLabel(props.label)] : []),
+    ],
+    tracks: [
       ...(orientation !== 'horizontal' ? [bar('vertical')] : []),
       ...(orientation !== 'vertical' ? [bar('horizontal')] : []),
     ],
-  );
+  };
+}
+export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): Html {
+  const parts = decoration(props, h);
+  return h.div(parts.attributes, [
+    h.div(parts.viewportAttributes, [h.div([h.Class('ff-scroll-content')], props.children)]),
+    ...parts.tracks,
+  ]);
 }

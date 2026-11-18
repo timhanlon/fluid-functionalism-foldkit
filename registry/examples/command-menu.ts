@@ -9,13 +9,22 @@ import { Subscription } from 'foldkit';
 const items: readonly CommandMenu.Item[] = [
   { value: 'files', label: 'Open files', group: 'Navigate', keywords: ['documents'] },
   { value: 'settings', label: 'Settings', group: 'Navigate' },
-  { value: 'delete', label: 'Delete workspace', group: 'Admin', disabled: true },
+  { value: 'delete', label: 'Delete workspace', group: 'Admin', disabled: true, destructive: true },
   { value: 'save', label: 'Save document', group: 'Actions', shortcut: 'mod+s' },
+  {
+    value: 'discard',
+    label: 'Discard draft',
+    description: 'Unsaved changes',
+    group: 'Actions',
+    destructive: true,
+    shortcut: 'mod+Backspace',
+  },
 ];
 
 export const Model = Schema.Struct({
   menu: CommandMenu.Model,
   palette: CommandDialog.Model,
+  embedded: CommandDialog.Model,
   selected: Schema.String,
   shown: Schema.Boolean,
 });
@@ -23,6 +32,7 @@ export interface Model extends Schema.Schema.Type<typeof Model> {}
 export const Message = defineMessageUnion({
   Menu: { message: CommandMenu.Message },
   Palette: { message: CommandDialog.Message },
+  Embedded: { message: CommandDialog.Message },
   PaletteToggled: {},
   VisibilityToggled: {},
 });
@@ -31,6 +41,7 @@ export const init = (): { model: Model } => ({
   model: {
     menu: CommandMenu.init({ id: 'inline-commands' }),
     palette: CommandDialog.init({ id: 'palette' }),
+    embedded: CommandDialog.init({ id: 'embedded-palette' }),
     selected: 'none',
     shown: true,
   },
@@ -51,17 +62,20 @@ export function update(model: Model, message: Message): Update.Return<Model, Mes
         ),
       };
     }
-    case 'Palette': {
-      const result = CommandDialog.update(model.palette, message.message, { items });
+    case 'Palette':
+    case 'Embedded': {
+      const key = message._tag === 'Palette' ? 'palette' : 'embedded';
+      const wrap = message._tag === 'Palette' ? Message.Palette : Message.Embedded;
+      const result = CommandDialog.update(model[key], message.message, { items });
       return {
         model: {
           ...model,
-          palette: result.model,
+          [key]: result.model,
           selected:
             result.outMessage?._tag === 'Selected' ? result.outMessage.value : model.selected,
         },
         commands: (result.commands ?? []).map((command) =>
-          Command.mapMessage(command, (message) => Message.Palette({ message })),
+          Command.mapMessage(command, (message) => wrap({ message })),
         ),
       };
     }
@@ -77,19 +91,35 @@ export function update(model: Model, message: Message): Update.Return<Model, Mes
             : {
                 menu: CommandMenu.init({ id: 'inline-commands' }),
                 palette: CommandDialog.init({ id: 'palette' }),
+                embedded: CommandDialog.init({ id: 'embedded-palette' }),
               }),
         },
       };
   }
 }
 export const subscriptions = Subscription.make<Model, Message>()((entry) => ({
+  embeddedShortcut: entry(
+    { active: Schema.Boolean },
+    {
+      modelToDependencies: (model) => ({ active: model.shown }),
+      dependenciesToStream: ({ active }) =>
+        active
+          ? CommandDialog.shortcut('mod+k', {
+              id: 'embedded-palette',
+              inScope: () => !!document.activeElement?.closest('[data-embedded-palette]'),
+            }).pipe(
+              Stream.map(() => Message.Embedded({ message: CommandDialog.Message.Toggled() })),
+            )
+          : Stream.empty,
+    },
+  ),
   paletteShortcut: entry(
     { active: Schema.Boolean },
     {
       modelToDependencies: (model) => ({ active: model.shown }),
       dependenciesToStream: ({ active }) =>
         active
-          ? CommandDialog.shortcut('mod+k').pipe(
+          ? CommandDialog.shortcut('mod+k', { id: 'palette' }).pipe(
               Stream.map(() => Message.Palette({ message: CommandDialog.Message.Toggled() })),
             )
           : Stream.empty,
@@ -104,6 +134,29 @@ export function view(model: Model, h: HtmlBuilder<Message>) {
       [],
       [
         h.h1([], ['CommandMenu']),
+        h.section(
+          [h.DataAttribute('keyboard-scope', '')],
+          [h.input([h.AriaLabel('Isolated editor')])],
+        ),
+        h.section(
+          [h.DataAttribute('keyboard-scope', ''), h.DataAttribute('embedded-palette', '')],
+          [
+            h.input([h.AriaLabel('Scoped editor')]),
+            model.shown
+              ? h.submodel({
+                  slotId: 'embedded',
+                  model: model.embedded,
+                  view: CommandDialog.view,
+                  toParentMessage: (message) => Message.Embedded({ message }),
+                  viewInputs: {
+                    items,
+                    title: 'Embedded palette',
+                    placeholder: 'Search embedded commands',
+                  },
+                })
+              : null,
+          ],
+        ),
         model.shown
           ? h.submodel({
               slotId: 'inline',

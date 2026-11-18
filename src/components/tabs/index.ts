@@ -1,6 +1,6 @@
 import { Tabs as Primitive } from '@foldkit/ui';
 import { Submodel } from 'foldkit';
-import type { Html } from 'foldkit/html';
+import type { ChildAttribute, Html } from 'foldkit/html';
 import { Mounted } from './runtime';
 import './styles.css';
 
@@ -19,6 +19,7 @@ export interface Item {
   readonly icon?: Html;
   readonly content?: Html | string;
   readonly disabled?: boolean;
+  readonly className?: string;
 }
 export interface Props {
   readonly items: readonly Item[];
@@ -28,6 +29,8 @@ export interface Props {
   readonly size?: 'default' | 'compact';
   readonly radius?: 'rounded' | 'pill' | 'sharp';
   readonly className?: string;
+  /** Parent-owned attributes composed onto each tab, such as sortable pointer handlers. */
+  readonly itemToAttributes?: (value: string, index: number) => readonly ChildAttribute[];
   /** Renders the active panel. Use it when panel content carries Mounts or
    * parent messages: Foldkit allows functions only at the top level of
    * viewInputs, where they are scoped to the parent boundary. It takes
@@ -65,9 +68,12 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
                 return h.button(
                   [
                     ...tab.tab,
-                    h.Class('ff-tab'),
+                    h.Key(item.value),
+                    h.DataAttribute('tab-value', item.value),
+                    h.Class(`ff-tab ${item.className ?? ''}`),
                     h.DataAttribute('collapse-label', String(collapse)),
                     ...(collapse ? [h.AriaLabel(item.label)] : []),
+                    ...(props.itemToAttributes?.(item.value, tab.index) ?? []),
                   ],
                   [
                     item.icon

@@ -6,6 +6,7 @@ import * as Tabs from '../tabs';
 import * as ScrollArea from '../scroll-area';
 import { icon as projectIcon } from '../icons';
 import { formatShortcut } from './shortcuts';
+import * as KeyCap from '../key-cap';
 import {
   firstEnabled,
   resolve,
@@ -203,14 +204,17 @@ export function shortcut<Message>(
   },
   h: HtmlBuilder<Message>,
 ): Html {
-  return h.kbd(
-    [
-      h.Class('ff-command-shortcut'),
-      h.DataAttribute('slot', 'command-menu-shortcut'),
-      h.DataAttribute('size', props.size ?? 'default'),
-      ...(props.inline ? [h.DataAttribute('inline', '')] : []),
-    ],
-    caps(keys, props.mac ?? true).map((cap) => h.span([h.Class('ff-command-cap')], [cap])),
+  return KeyCap.keys(
+    {
+      keys: caps(keys, props.mac ?? true),
+      className: 'ff-command-shortcut',
+      attributes: [
+        h.DataAttribute('slot', 'command-menu-shortcut'),
+        h.DataAttribute('size', props.size ?? 'default'),
+        ...(props.inline ? [h.DataAttribute('inline', '')] : []),
+      ],
+    },
+    h,
   );
 }
 
@@ -343,6 +347,7 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
         h.DataAttribute('slot', 'command-menu-item'),
         ...(isActive ? [h.DataAttribute('active', '')] : []),
         h.Class('ff-command-item'),
+        ...(item.destructive ? [h.DataAttribute('destructive', '')] : []),
         h.OnClick(Message.Picked({ index })),
       ],
       [

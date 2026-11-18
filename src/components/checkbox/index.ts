@@ -6,6 +6,7 @@ export interface Props<Message> {
   readonly id: string;
   readonly label: string;
   readonly checked: boolean;
+  readonly indeterminate?: boolean;
   readonly onToggle: (checked: boolean) => Message;
   readonly disabled?: boolean;
   readonly readOnly?: boolean;
@@ -19,6 +20,7 @@ export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): H
     {
       id: props.id,
       isChecked: props.checked,
+      isIndeterminate: props.indeterminate,
       onToggle: props.onToggle,
       isDisabled: props.disabled,
       isReadOnly: props.readOnly,
@@ -52,7 +54,15 @@ export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): H
                         h.StrokeLinecap('round'),
                         h.StrokeLinejoin('round'),
                       ],
-                      [h.path([h.D('M6 12L10 16L18 8'), h.PathLength('1')], [])],
+                      [
+                        h.path(
+                          [
+                            h.D(props.indeterminate ? 'M7 12H17' : 'M6 12L10 16L18 8'),
+                            h.PathLength('1'),
+                          ],
+                          [],
+                        ),
+                      ],
                     ),
                   ],
                 ),

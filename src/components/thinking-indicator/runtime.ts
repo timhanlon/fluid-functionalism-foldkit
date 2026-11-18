@@ -1,9 +1,8 @@
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
 import { animate, type AnimationPlaybackControls } from 'motion';
 import { circleA, circleB, infinity, words } from './data';
-export const Mounted = Mount.define('ThinkingIndicator.Motion', {
-  messages: [Schema.Never],
+export const Mounted = defineSilentMount('ThinkingIndicator.Motion', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

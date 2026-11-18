@@ -1,56 +1,50 @@
-import { Schema } from 'effect';
-import { Command, type Update } from 'foldkit';
-import { defineMessageUnion } from 'foldkit/message';
-import { Tooltip as Primitive } from '@foldkit/ui';
-import * as Tooltip from './state';
-
-/** Keyed ownership for a collection of independent Foldkit tooltips. */
-export const Model = Schema.Struct({
-  id: Schema.String,
-  delayDuration: Schema.Number,
-  tooltips: Schema.Record(Schema.String, Tooltip.Model),
-});
-export type Model = typeof Model.Type;
-export const Message = defineMessageUnion({
-  Tip: { key: Schema.String, message: Tooltip.Message },
-});
-export type Message = typeof Message.Type;
-export const OutMessage = defineMessageUnion({
-  VisibilityChanged: { key: Schema.String, message: Primitive.OutMessage },
-});
-export type OutMessage = typeof OutMessage.Type;
-export const init = (config: { readonly id: string; readonly delayDuration?: number }): Model => ({
-  id: config.id,
-  delayDuration: config.delayDuration ?? 200,
-  tooltips: {},
-});
-export const tooltipModel = (model: Model, key: string): Tooltip.Model =>
-  model.tooltips[key] ?? Tooltip.init({ id: `${model.id}-${key}`, showDelay: model.delayDuration });
-export function update(
-  model: Model,
-  message: Message,
-  options: { readonly delayDuration?: number } = {},
-): Update.ReturnWithOutMessage<Model, Message, OutMessage> {
-  const current = tooltipModel(model, message.key);
-  const result = Tooltip.update(
-    {
-      ...current,
-      tooltip: Primitive.reflectShowDelay(
-        current.tooltip,
-        options.delayDuration ?? model.delayDuration,
-      ),
-    },
-    message.message,
+import { Mount } from 'foldkit';
+import type { Html, HtmlBuilder } from 'foldkit/html';
+import { Model, Message, tooltipModel } from './group-state';
+import { GroupMounted } from './group-runtime';
+import { view as tooltipView, type Props as TooltipProps } from './index';
+export * from './group-state';
+export interface Props<M> {
+  readonly children: readonly (Html | string)[];
+  readonly toMessage: (message: Message) => M;
+  readonly className?: string;
+}
+export function view<M>(model: Model, props: Props<M>, h: HtmlBuilder<M>): Html {
+  return h.span(
+    [
+      h.Id(model.id),
+      h.Key(`${model.id}:${model.lifetime}`),
+      h.Class(`ff-tooltip-group ${props.className ?? ''}`),
+      h.DataAttribute('tooltip-group-side', model.side ?? 'none'),
+      h.DataAttribute('tooltip-group-lifetime', String(model.lifetime)),
+      h.OnMount(Mount.mapMessage(GroupMounted({ lifetime: model.lifetime }), props.toMessage)),
+      h.OnUnmount(props.toMessage(Message.Unmounted({ lifetime: model.lifetime }))),
+    ],
+    props.children,
   );
-  return {
-    model: { ...model, tooltips: { ...model.tooltips, [message.key]: result.model } },
-    commands: result.commands?.map((command) =>
-      Command.mapMessage(command, (message_) =>
-        Message.Tip({ key: message.key, message: message_ }),
-      ),
-    ),
-    outMessage: result.outMessage
-      ? OutMessage.VisibilityChanged({ key: message.key, message: result.outMessage })
-      : undefined,
-  };
+}
+export function tip<M>(
+  model: Model,
+  key: string,
+  props: TooltipProps,
+  toMessage: (message: Message) => M,
+  h: HtmlBuilder<M>,
+): Html {
+  return h.submodel({
+    slotId: `${model.id}-${key}`,
+    model: tooltipModel(model, key),
+    view: tooltipView,
+    toParentMessage: (message) =>
+      toMessage(Message.Tip({ key, message, lifetime: model.lifetime })),
+    viewInputs: {
+      ...props,
+      group: {
+        id: model.id,
+        key,
+        lifetime: model.lifetime,
+        side: model.side,
+        sideVersion: model.sideVersion,
+      },
+    },
+  });
 }

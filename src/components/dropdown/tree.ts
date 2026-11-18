@@ -32,6 +32,9 @@ export interface Props extends Omit<
   readonly creatable?: boolean;
   readonly createIcon?: Searchable.Props['createIcon'];
   readonly createLabel?: Searchable.Props['createLabel'];
+  readonly popupAttributesForPath?: (
+    path: readonly number[],
+  ) => readonly import('foldkit/html').ChildAttribute[];
 }
 export const view = Submodel.defineView<Model, Message, Props>((model, props, h) => {
   const visibleItems = props.search ? Searchable.matches(props.items, model.query) : props.items;
@@ -69,6 +72,7 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
       const isAncestor = path.every((value, index) => value === model.openPath[index]);
       const viewInputs: Dropdown.Props = {
         ...props,
+        trigger: path.length ? undefined : props.trigger,
         selection: props.selectionForPath?.(path) ?? props.selection,
         items: children.map((item) => ({
           ...item,
@@ -89,6 +93,7 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
         hideTrigger: path.length > 0,
         submenu: path.length > 0,
         surfaceLevel: Math.min((props.surfaceLevel ?? 3) + path.length * 2, 8),
+        anchorGap: path.length ? 6 : props.anchorGap,
         anchorOffset: path.length ? -4 : 0,
         placement: path.length
           ? props.direction === 'rtl'
@@ -99,16 +104,19 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
           isAncestor && model.openPath[path.length] !== undefined
             ? renderedIndex(path, model.openPath[path.length]!)
             : undefined,
-        popupAttributes: childAttributes([
-          h.DataAttribute('menu-tree', model.id),
-          h.DataAttribute('menu-path', pathKey(path)),
-          h.DataAttribute('direction', props.direction ?? 'ltr'),
-          h.DataAttribute('menu-parent', pathKey(parentPath)),
-          h.DataAttribute(
-            'menu-parent-index',
-            parentIndex === undefined ? '' : String(renderedIndex(parentPath, parentIndex)),
-          ),
-        ]),
+        popupAttributes: [
+          ...childAttributes([
+            h.DataAttribute('menu-tree', model.id),
+            h.DataAttribute('menu-path', pathKey(path)),
+            h.DataAttribute('direction', props.direction ?? 'ltr'),
+            h.DataAttribute('menu-parent', pathKey(parentPath)),
+            h.DataAttribute(
+              'menu-parent-index',
+              parentIndex === undefined ? '' : String(renderedIndex(parentPath, parentIndex)),
+            ),
+          ]),
+          ...(props.popupAttributesForPath?.(path) ?? []),
+        ],
         itemToAttributes: (value, index) =>
           children[index]?.children?.length
             ? childAttributes([

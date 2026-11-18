@@ -1,10 +1,9 @@
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
 
 /** Closed dialogs retain their native node. Keep those shells out of the
  * anchor host, which a later popup must create after it isolates siblings. */
-export const DialogPortal = Mount.define('Dialog.Portal', {
-  messages: [Schema.Never],
+export const DialogPortal = defineSilentMount('Dialog.Portal', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

@@ -35,6 +35,19 @@ export function view(model: Model, h: HtmlBuilder<Message>) {
           h,
         ),
         Badge.view({ children: ['Preview'], color: 'violet', size: 'compact', radius: 'sharp' }, h),
+        h.div(
+          [
+            h.DataAttribute('badge-narrow', ''),
+            h.Style({ display: 'flex', width: '100px', gap: '4px', alignItems: 'center' }),
+          ],
+          [
+            h.span([h.Style({ width: '16px', flexShrink: '0' }), h.AriaHidden(true)], ['•']),
+            Badge.view(
+              { children: ['Waiting for available workers'], variant: 'ghost', color: 'amber' },
+              h,
+            ),
+          ],
+        ),
         h.p(
           [],
           [h.button([h.Type('button'), h.OnClick(Message.Toggled())], ['Toggle publication'])],

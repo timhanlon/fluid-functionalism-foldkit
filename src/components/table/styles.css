@@ -4,6 +4,7 @@
  * replace a default; this ordering gives consumer classes the same win. */
 @layer components {
   :where(.ff-table) {
+    display: block;
     position: relative;
   }
   /* --table-cell-py is the one source for row height: cells pad by it and an
@@ -11,7 +12,8 @@
   :where(.ff-table-element) {
     --table-cell-py: 8px;
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: var(--fs-body, 13px);
     line-height: var(--lh-body, 20px);
   }
@@ -23,8 +25,6 @@
   :where(.ff-table-row) {
     position: relative;
     z-index: 10;
-    border-bottom: 1px solid color-mix(in oklab, var(--accent) 40%, transparent);
-    transition: border-color 80ms;
     font-variation-settings:
       'wght' 550,
       'opsz' 18;
@@ -34,7 +34,12 @@
       'wght' 400,
       'opsz' 14;
   }
-  :where(.ff-table-row[data-table-hide-border]) {
+  /* Each cell paints its divider so sticky cells cover scrolling rules. */
+  :where(.ff-table-row > *) {
+    border-bottom: 1px solid color-mix(in oklab, var(--accent) 40%, transparent);
+    transition: border-color 80ms;
+  }
+  :where(.ff-table-row[data-table-hide-border] > *) {
     border-bottom-color: transparent;
   }
   :where(.ff-table-head) {
@@ -46,7 +51,9 @@
   :where(.ff-table-cell) {
     padding: var(--table-cell-py) 12px;
     color: var(--muted-foreground);
-    transition: color 80ms;
+    transition:
+      color 80ms,
+      border-color 80ms;
   }
   :where(
     .ff-table[data-size='compact']
@@ -61,8 +68,11 @@
     padding: 0;
   }
   :where(.ff-table-empty) {
+    position: sticky;
+    left: 0;
+    width: var(--table-view-w, 100%);
     display: flex;
-    min-height: calc(var(--table-empty-rows, 3) * (1lh + 2 * var(--table-cell-py)));
+    min-height: calc(var(--table-empty-rows, 3) * (1lh + 2 * var(--table-cell-py) + 1px));
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -82,9 +92,39 @@
   :where(.ff-table-empty-action) {
     margin-top: 8px;
   }
+  :where(.ff-table[data-snap-rules] > .ff-table-element > * > .ff-table-row > *) {
+    transition-duration: 0ms;
+  }
+  :where(.ff-table-row[data-under-highlight] > *) {
+    border-bottom-color: transparent;
+    transition-duration: 0ms;
+  }
 }
 /* Like upstream's `group-[.is-active]/row:` variant, the lit row outranks a
  * consumer's resting text colour, so it stays unlayered. */
 .ff-table-row.is-active > .ff-table-cell {
   color: var(--foreground);
+}
+/* The hover fill paints above merged selection fills and below native rows. */
+.ff-table > .ff-hover-highlight {
+  z-index: 1;
+}
+.ff-table-head-highlight {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  background: var(--hover);
+  transition: background-color 80ms;
+  will-change: transform;
+}
+.ff-table-head-highlight[data-pressed] {
+  background: var(--active);
+}
+.ff-table-marker-carrier {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
 }

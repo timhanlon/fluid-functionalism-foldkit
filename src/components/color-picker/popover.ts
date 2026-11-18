@@ -1,7 +1,8 @@
+import { defineSilentMount } from '../silent-mount';
 import { shapeRadius } from '../shape';
 import { Popover } from '@foldkit/ui';
 import { Effect, Schema } from 'effect';
-import { Command, Mount, Submodel, type Update } from 'foldkit';
+import { Command, Submodel, type Update } from 'foldkit';
 import { defineMessageUnion } from 'foldkit/message';
 import type { Html } from 'foldkit/html';
 import { mountHover } from '../../fluid-hover/engine';
@@ -235,8 +236,7 @@ export interface Props extends Omit<PickerProps, 'surface' | 'portalMenu'> {
 }
 
 /** One fluid hover across the open segment and the remove X. */
-const SegmentsMounted = Mount.define('ColorPicker.TriggerSegments', {
-  messages: [Schema.Never],
+const SegmentsMounted = defineSilentMount('ColorPicker.TriggerSegments', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {
@@ -344,7 +344,7 @@ export const view = Submodel.defineView<Model, Message, Props>((stored, props, h
                   [
                     ...info.panel,
                     h.Role('dialog'),
-                    h.AriaLabel(props.triggerLabel ?? 'Color picker'),
+                    h.AriaLabel(props.triggerLabel || 'Color picker'),
                     h.Class('ff-popup ff-cp-popover'),
                     h.OnUnmount(
                       Message.PanelUnmounted({

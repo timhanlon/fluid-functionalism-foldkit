@@ -50,6 +50,7 @@
   transform: translateY(var(--popup-enter-y)) scaleY(0.96);
 }
 .ff-popup-backdrop {
+  pointer-events: auto;
   position: fixed;
   inset: 0;
   z-index: calc(var(--z-popover, 60) - 1);
@@ -106,7 +107,8 @@
   [aria-selected='true'],
   [aria-checked='true'],
   [data-active],
-  [data-fluid-hover-active]
+  [data-fluid-hover-active],
+  [data-selected='true']
 ) {
   color: var(--foreground, #171717);
 }
@@ -145,11 +147,13 @@
   stroke-dashoffset: 1;
   transition: stroke-dashoffset 40ms ease-in;
 }
-.ff-popup-row:is([aria-selected='true'], [aria-checked='true']) .ff-popup-row-check path {
+.ff-popup-row:is([aria-selected='true'], [aria-checked='true'], [data-selected='true'])
+  .ff-popup-row-check
+  path {
   stroke-dashoffset: 0;
   transition: stroke-dashoffset 80ms ease-out;
 }
-.ff-popup-row[aria-checked='true'] .ff-popup-row-label {
+.ff-popup-row:is([aria-checked='true'], [data-selected='true']) .ff-popup-row-label {
   font-variation-settings:
     'wght' 550,
     'opsz' 18;
@@ -162,7 +166,8 @@
     [aria-selected='true'],
     [aria-checked='true'],
     [data-active],
-    [data-fluid-hover-active]
+    [data-fluid-hover-active],
+    [data-selected='true']
   )
   .ff-popup-row-icon
   svg {
@@ -204,4 +209,27 @@
 }
 .ff-popup[data-radius='sharp'] .ff-list-focus {
   border-radius: 3px;
+}
+
+/* Source MenuItem colors only the label and primary icon. Selection does not
+ * brighten a destructive row; the active/hovered row does. */
+.ff-popup-row-content[data-destructive]
+  :is(.ff-popup-row-label, .ff-popup-row-icon:not(.ff-popup-row-trailing)) {
+  color: color-mix(in oklab, var(--destructive) 80%, transparent);
+  transition: color 80ms;
+}
+.ff-popup-row:is([data-active], [data-fluid-hover-active])
+  .ff-popup-row-content[data-destructive]
+  :is(.ff-popup-row-label, .ff-popup-row-icon:not(.ff-popup-row-trailing)) {
+  color: var(--destructive);
+}
+
+.ff-popup-row-leading {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+.ff-popup-row[data-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
 }

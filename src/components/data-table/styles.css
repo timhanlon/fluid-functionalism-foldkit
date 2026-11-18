@@ -1,0 +1,795 @@
+@layer components {
+  :where(.ff-data-table) {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    font-size: var(--fs-body, 13px);
+    line-height: var(--lh-body, 20px);
+  }
+  :where(.ff-data-table[data-size='compact']) {
+    font-size: var(--fs-body-compact, 12px);
+    line-height: var(--lh-body-compact, 18px);
+  }
+  :where(
+    .ff-data-table-toolbar,
+    .ff-data-table-tools,
+    .ff-data-table-pagination,
+    .ff-data-table-pagination > div,
+    .ff-data-table-page-size,
+    .ff-data-table-page-navigation,
+    .ff-data-table-heading,
+    .ff-data-table-tree
+  ) {
+    display: flex;
+    align-items: center;
+  }
+  :where(.ff-data-table-toolbar, .ff-data-table-pagination) {
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  :where(.ff-data-table-toolbar) {
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  :where(.ff-data-table-tools) {
+    display: contents;
+  }
+  :where(.ff-data-table-search) {
+    position: relative;
+    width: 224px;
+    max-width: 100%;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+  :where(.ff-data-table-search .ff-input) {
+    width: 100%;
+    border-color: transparent;
+    padding-left: 36px;
+  }
+  :where(.ff-data-table-search .ff-input:focus) {
+    border-color: transparent;
+    background: var(--hover);
+  }
+  :where(.ff-data-table-search-icon) {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.5;
+    color: var(--muted-foreground);
+  }
+  :where(.ff-data-table[data-size='compact'] .ff-data-table-search .ff-input) {
+    padding-left: 28px;
+  }
+  :where(.ff-data-table[data-size='compact'] .ff-data-table-search-icon) {
+    left: 7px;
+    width: 14px;
+    height: 14px;
+  }
+  :where(.ff-data-table-title) {
+    margin: 0;
+    padding-left: 0;
+    font-size: var(--fs-display, 28px);
+    line-height: var(--lh-display, 34px);
+    font-variation-settings:
+      'wght' 550,
+      'opsz' 18;
+    color: var(--foreground);
+  }
+  :where(
+    .ff-data-table[data-size='compact'] .ff-data-table-title,
+    .ff-data-table-title[data-size='compact']
+  ) {
+    font-size: var(--fs-display-compact, 24px);
+    line-height: var(--lh-display-compact, 30px);
+  }
+  :where(.ff-data-table-title[data-leading='select']) {
+    padding-left: 28px;
+  }
+  :where(.ff-data-table-title[data-leading='drag']) {
+    padding-left: 20px;
+  }
+  :where(.ff-data-table-title[data-leading='both']) {
+    padding-left: 48px;
+  }
+  :where(.ff-data-table-scroll) {
+    overflow: auto;
+    isolation: isolate;
+  }
+  :where(.ff-data-table[data-fill='true']) {
+    height: 100%;
+    min-height: 0;
+  }
+  :where(.ff-data-table[data-fill='true'] > .ff-data-table-frame) {
+    flex: 1;
+    min-height: 0;
+  }
+  :where(.ff-data-table-element) {
+    table-layout: fixed;
+    min-width: max-content;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  :where(.ff-data-table-cell) {
+    position: relative;
+    overflow-wrap: anywhere;
+    vertical-align: middle;
+  }
+  .ff-data-table-element[data-measuring] :is(th, td) {
+    width: auto !important;
+    max-width: none !important;
+  }
+  .ff-data-table-element[data-measuring] * {
+    white-space: nowrap !important;
+  }
+  .ff-data-table-element[data-measuring] .ff-data-table-text {
+    display: block;
+    overflow: visible;
+  }
+  .ff-data-table-element[data-measuring] .ff-data-table-heading {
+    width: max-content;
+  }
+  .ff-data-table-element[data-measuring] .ff-data-table-header-trigger {
+    width: max-content;
+  }
+  :where(.ff-data-table-element .ff-table-head) {
+    position: relative;
+    z-index: 3;
+    color: var(--muted-foreground);
+  }
+  :where(.ff-data-table-element .ff-table-cell) {
+    color: var(--foreground);
+  }
+  :where(.ff-data-table[data-fill='true'] .ff-table-head) {
+    position: sticky;
+    top: 0;
+    background: var(--background);
+  }
+  :where(.ff-data-table[data-fill='true'] thead .ff-table-row) {
+    z-index: 20;
+  }
+  :where(.ff-data-table) {
+    --data-table-head-radius: 8px;
+  }
+  :where(.ff-data-table[data-radius='sharp']) {
+    --data-table-head-radius: 1px;
+  }
+  :where(.ff-data-table[data-radius='pill']) {
+    --data-table-head-radius: 20px;
+  }
+  :where(
+    .ff-data-table[data-fill='true'] .ff-table-head[data-head-action],
+    .ff-data-table .ff-table-head[data-head-action][data-pinned]
+  )::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 1px;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: var(--data-table-head-radius);
+    background: transparent;
+    transition: background-color 80ms;
+  }
+  :where(.ff-data-table .ff-table-head[data-head-action]:hover)::before {
+    background: var(--hover);
+  }
+  :where(
+    .ff-data-table .ff-table-head[data-head-action]:hover,
+    .ff-data-table .ff-table-head[data-held]
+  ) {
+    color: var(--foreground);
+  }
+  :where(
+    .ff-data-table .ff-table-head[data-head-action]:active,
+    .ff-data-table .ff-table-head[data-head-action][data-held]
+  )::before {
+    background: var(--active);
+  }
+  :where(.ff-data-table .ff-table-head[data-head-action][data-dragged='true'])::before {
+    background: transparent;
+  }
+  :where(.ff-data-table-cell[data-pinned]) {
+    position: sticky;
+    z-index: 2;
+    background: var(--background);
+  }
+  :where(.ff-data-table-element .ff-table-head[data-pinned]) {
+    z-index: 4;
+  }
+  :where(.ff-data-table-cell[data-lines='1']) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  :where(.ff-data-table-cell[data-lines='2']) {
+    max-height: 2lh;
+    overflow: hidden;
+  }
+  :where(.ff-data-table-cell[data-lines='wrap']) {
+    white-space: normal;
+  }
+  :where(.ff-data-table[data-align='top'] .ff-data-table-cell) {
+    vertical-align: top;
+  }
+  :where(.ff-data-table-heading) {
+    position: relative;
+    justify-content: space-between;
+    gap: 2px;
+  }
+  :where(.ff-data-table[data-reorder-columns='true'] .ff-data-table-heading) {
+    padding-right: 28px;
+  }
+  @media (max-width: 639px) {
+    :where(.ff-data-table[data-reorder-columns='true'] .ff-data-table-heading) {
+      padding-right: 0;
+    }
+    :where(
+      .ff-data-table-heading:hover .ff-data-table-column-handle,
+      .ff-data-table-column-handle:focus-visible
+    ) {
+      background: var(--background);
+    }
+  }
+  :where(.ff-data-table-header-trigger) {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  :where(.ff-data-table-header-label) {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  :where(.ff-data-table svg) {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  :where(.ff-data-table[data-size='compact'] svg) {
+    width: 14px;
+    height: 14px;
+  }
+  :where(.ff-data-table-sort-glyph) {
+    display: flex;
+    align-items: center;
+    flex: none;
+    width: 14px;
+    height: 14px;
+    color: var(--foreground);
+  }
+  :where(.ff-data-table-sort-glyph svg) {
+    width: 14px;
+    height: 14px;
+  }
+  :where(.ff-data-table-sort-arrow) {
+    display: flex;
+    opacity: 1;
+    scale: 1;
+    filter: blur(0px);
+    transition:
+      opacity 80ms ease-out,
+      scale 80ms ease-out,
+      filter 80ms ease-out;
+  }
+  :where(.ff-data-table-sort-arrow[data-sort='none']) {
+    opacity: 0;
+    scale: 0.6;
+    filter: blur(4px);
+    transition-duration: 60ms;
+    transition-timing-function: ease-in;
+  }
+  :where(
+    .ff-data-table-header-trigger:hover,
+    .ff-data-table-header-trigger[aria-expanded='true'],
+    .ff-data-table-header-trigger[data-sorted='true']
+  ) {
+    color: var(--foreground);
+  }
+  :where(.ff-data-table-cell[data-column='actions']) {
+    padding-block: 0;
+  }
+
+  :where(.ff-data-table-cell[data-lines='2'] > .ff-data-table-text) {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: normal;
+  }
+  :where(.ff-table-row.is-active > .ff-data-table-cell[data-pinned]) {
+    color: var(--foreground);
+  }
+  :where(.ff-data-table-sort) {
+    min-width: 0;
+    padding-inline: 0;
+  }
+  :where(.ff-data-table-cell[data-column='select'] .ff-checkbox-label) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  :where(
+    .ff-data-table-cell[data-column='select'],
+    .ff-data-table-cell[data-column='drag'],
+    .ff-data-table-cell[data-column='actions']
+  ) {
+    padding-inline: 4px;
+  }
+  :where(.ff-data-table-element .ff-table-row[data-selected='true'] > td) {
+    color: var(--foreground);
+  }
+  :where(:is(.ff-data-table-cell, .ff-data-table-tree-value) > .ff-input) {
+    height: 24px;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    padding-inline: 0;
+  }
+  :where(:is(.ff-data-table-cell, .ff-data-table-tree-value) > .ff-input:focus) {
+    border-color: var(--border);
+  }
+  :where(.ff-data-table-resize) {
+    position: absolute;
+    inset-block: 0;
+    right: -4px;
+    z-index: 20;
+    width: 8px;
+    cursor: col-resize;
+    touch-action: none;
+    user-select: none;
+    outline: none;
+  }
+  :where(th:last-child .ff-data-table-resize) {
+    right: 0;
+  }
+  :where(.ff-data-table-resize)::after {
+    position: absolute;
+    inset-block: 6px;
+    left: 50%;
+    width: 1px;
+    translate: -50%;
+    content: '';
+    transition: background-color 80ms;
+  }
+  :where(th:last-child .ff-data-table-resize)::after {
+    left: auto;
+    right: 0;
+    translate: none;
+  }
+  :where(.ff-data-table-resize:hover)::after {
+    background: color-mix(in oklab, var(--foreground) 40%, transparent);
+  }
+  :where(.ff-data-table-resize:focus-visible)::after {
+    background: var(--focus-ring, #6b97ff);
+  }
+  :where(.ff-data-table-resize[data-resizing])::after {
+    background: color-mix(in oklab, var(--foreground) 60%, transparent);
+  }
+  :where(.ff-data-table-filters) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+  }
+  :where(.ff-data-table-filters[hidden]) {
+    display: none;
+  }
+  :where(.ff-data-table-pagination) {
+    row-gap: 8px;
+    color: var(--muted-foreground);
+    font-variant-numeric: tabular-nums;
+  }
+  :where(.ff-data-table-pagination > span) {
+    padding-left: 8px;
+  }
+  :where(.ff-data-table-pagination > div) {
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    white-space: nowrap;
+  }
+  :where(.ff-data-table-page-size, .ff-data-table-page-navigation) {
+    gap: 4px;
+  }
+  :where(.ff-data-table-selection) {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    transform-origin: bottom center;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 4px 4px 20px;
+    font-size: var(--fs-body, 13px);
+    line-height: var(--lh-body, 20px);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--bar-fg);
+    background: var(--bar-bg);
+    border: 0;
+    border-radius: 12px;
+    box-shadow: var(--shadow-3);
+    --foreground: var(--bar-fg);
+    --background: var(--bar-bg);
+    --hover: color-mix(in oklab, var(--bar-fg) 12%, transparent);
+    --active: color-mix(in oklab, var(--bar-fg) 20%, transparent);
+    --muted-foreground: color-mix(in oklab, var(--bar-fg) 65%, transparent);
+  }
+  :where(.ff-data-table-selection[data-radius='sharp']) {
+    border-radius: 1px;
+  }
+  :where(.ff-data-table-selection-count, .ff-data-table-selection-digits) {
+    position: relative;
+    display: inline-flex;
+    justify-content: flex-end;
+  }
+  :where(.ff-data-table-selection[data-radius='pill']) {
+    border-radius: 999px;
+  }
+  :where(.ff-data-table-selection[data-size='compact']) {
+    padding-left: 18px;
+    font-size: var(--fs-body-compact, 12px);
+    line-height: var(--lh-body-compact, 18px);
+  }
+  :where(.ff-data-table-selection-actions) {
+    margin-left: 4px;
+  }
+  :where(.ff-data-table-action-shortcut) {
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  :where(.ff-data-table-cell[data-dragged='true']) {
+    opacity: 0.4;
+  }
+  :where(.ff-data-table-column-handle) {
+    opacity: 0;
+  }
+  :where(
+    .ff-data-table-heading:hover .ff-data-table-column-handle,
+    .ff-data-table-column-handle:focus-visible
+  ) {
+    opacity: 1;
+  }
+  :where(
+    .ff-data-table[data-radius='sharp'] .ff-data-table-filter,
+    .ff-data-table[data-radius='sharp'] .ff-data-table-selection
+  ) {
+    border-radius: 1px;
+  }
+  :where(
+    .ff-data-table[data-radius='pill'] .ff-data-table-filter,
+    .ff-data-table[data-radius='pill'] .ff-data-table-selection
+  ) {
+    border-radius: 999px;
+  }
+  :where(.ff-data-table-skeleton) {
+    display: block;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--hover);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ff-data-table-sort-arrow {
+    transition-property: opacity, filter;
+  }
+}
+
+/* The shared controls have unlayered defaults. Cell editors keep their
+ * primitive behavior, with the source's bare one-line table presentation. */
+.ff-data-table-heading > .ff-data-table-column-handle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ff-data-table-date-editor {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  margin-block: calc(-1 * var(--table-cell-py));
+  margin-inline: -8px;
+}
+.ff-data-table[data-size='compact'] .ff-data-table-date-editor {
+  margin-inline: -6px;
+}
+.ff-data-table-date-editor > .ff-date-picker {
+  min-width: 0;
+  flex: 1;
+}
+.ff-data-table-cell .ff-data-table-date-editor .ff-date-picker-trigger {
+  padding: 0 8px;
+}
+.ff-data-table-cell
+  .ff-data-table-date-editor
+  .ff-date-picker[data-size='compact']
+  .ff-date-picker-trigger {
+  padding: 0 6px;
+}
+.ff-data-table-cell[data-column='select'] .ff-checkbox {
+  min-height: 0;
+  height: 1lh;
+  padding: 0;
+  gap: 0;
+}
+:is(.ff-data-table-cell, .ff-data-table-tree-value) > .ff-input,
+.ff-data-table-cell .ff-select-trigger,
+.ff-data-table-cell .ff-combobox-input-wrapper,
+.ff-data-table-cell .ff-date-picker-trigger {
+  min-height: 0;
+  height: 1lh;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  font-size: inherit;
+  line-height: inherit;
+}
+/* Resting text editors use the source cell's ellipsis; focus restores
+ * the native input's scrolling and caret. */
+:is(.ff-data-table-cell, .ff-data-table-tree-value) > .ff-input:not(:focus) {
+  text-overflow: ellipsis;
+}
+/* Select editors cover the row's padding, as the source's cell trigger
+ * does, without adding their control height to the row. */
+.ff-data-table-cell > .ff-select-field {
+  margin-block: calc(-1 * var(--table-cell-py));
+}
+.ff-data-table-cell .ff-select[data-size] .ff-select-trigger {
+  height: calc(1lh + 2 * var(--table-cell-py));
+  padding: 0;
+}
+:is(.ff-data-table-cell, .ff-data-table-tree-value) > .ff-textarea {
+  min-height: 1lh;
+  max-height: 400px;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  font-size: inherit;
+  line-height: inherit;
+}
+.ff-data-table-cell[data-lines='2'] > .ff-textarea,
+.ff-data-table-cell[data-lines='2'] .ff-data-table-tree-value > .ff-textarea {
+  max-height: 2lh;
+}
+.ff-data-table-link-field {
+  min-width: 0;
+  cursor: text;
+}
+.ff-data-table-link {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: color-mix(in oklab, var(--foreground) 30%, transparent);
+}
+.ff-data-table-badge-slot {
+  display: flex;
+  align-items: center;
+  height: 1lh;
+}
+.ff-data-table-tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.ff-data-table-tag {
+  border-radius: 4px;
+  padding: 1px 6px;
+  background: var(--accent);
+  font-size: var(--fs-caption, 12px);
+  line-height: 16px;
+}
+.ff-data-table[data-radius='sharp'] .ff-data-table-tag {
+  border-radius: 1px;
+}
+.ff-data-table[data-radius='pill'] .ff-data-table-tag {
+  border-radius: 999px;
+}
+.ff-data-table[data-fill='true'] .ff-data-table-element > thead {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+@layer components {
+  :where(.ff-data-table) {
+    --ff-context-row-radius: 8px;
+  }
+  :where(.ff-data-table[data-radius='pill']) {
+    --ff-context-row-radius: 20px;
+  }
+  :where(.ff-data-table[data-radius='sharp']) {
+    --ff-context-row-radius: 1px;
+  }
+  :where(.ff-data-table .ff-table-row[data-context-open] > td) {
+    background: var(--hover);
+  }
+  :where(.ff-data-table .ff-table-row[data-context-open] > td[data-pinned]) {
+    background: linear-gradient(var(--hover), var(--hover)), var(--background);
+  }
+  :where(.ff-data-table .ff-table-row[data-context-open] > td:first-child) {
+    border-top-left-radius: var(--ff-context-row-radius);
+    border-bottom-left-radius: var(--ff-context-row-radius);
+  }
+  :where(.ff-data-table .ff-table-row[data-context-open] > td:last-child) {
+    border-top-right-radius: var(--ff-context-row-radius);
+    border-bottom-right-radius: var(--ff-context-row-radius);
+  }
+}
+
+/* The highlight carries decorative copies. The native controls remain in
+ * their rows for input, focus, checked state and opaque frozen cells. */
+.ff-data-table-marker {
+  position: absolute;
+  inset-block: 0;
+  display: flex;
+  align-items: center;
+  transition: opacity 80ms;
+}
+.ff-data-table-marker[data-shown='false'] {
+  opacity: 0;
+}
+.ff-data-table-marker-grip {
+  left: 4px;
+  width: 16px;
+  justify-content: center;
+  color: var(--muted-foreground);
+}
+.ff-data-table-marker-grip > svg {
+  width: 16px;
+  height: 16px;
+}
+.ff-data-table-marker-box {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+.ff-data-table[data-size='compact'] .ff-data-table-marker-grip > svg,
+.ff-data-table[data-size='compact'] .ff-data-table-marker-box {
+  width: 14px;
+  height: 14px;
+}
+.ff-data-table[data-size='compact'] .ff-data-table-marker-box {
+  border-radius: 4px;
+}
+.ff-data-table[data-radius='sharp'] .ff-data-table-marker-box {
+  border-radius: 0;
+}
+.ff-data-table[data-align='top'] .ff-data-table-marker {
+  top: 0;
+  bottom: auto;
+  height: 36px;
+}
+.ff-data-table[data-align='top'][data-size='compact'] .ff-data-table-marker {
+  height: 28px;
+}
+.ff-data-table-cell[data-column='select'] {
+  padding-inline: 8px 4px;
+  border-bottom-color: transparent;
+}
+.ff-data-table-cell[data-column='drag'] {
+  padding-inline: 4px 0;
+  border-bottom-color: transparent;
+}
+.ff-data-table-cell[data-column='select'] .ff-checkbox-item {
+  opacity: 0;
+  transition: opacity 80ms;
+}
+.ff-data-table-row-handle {
+  display: none;
+  width: 16px;
+  height: calc(1lh + 2 * var(--table-cell-py));
+  margin-block: calc(-1 * var(--table-cell-py));
+  padding: 0;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 80ms;
+}
+.ff-data-table-row-handle[data-size='icon-compact'] {
+  width: 16px;
+  height: calc(1lh + 2 * var(--table-cell-py));
+  font-size: inherit;
+  line-height: inherit;
+}
+.ff-data-table .ff-data-table-row-handle[data-size] {
+  color: var(--foreground);
+}
+.ff-data-table-row-handle .ff-button-background {
+  display: none;
+}
+.ff-table[data-row-reorder='true'] .ff-data-table-row-handle {
+  display: flex;
+}
+.ff-data-table .ff-data-table-row-handle[data-size] .ff-button-content svg {
+  width: 16px;
+  height: 16px;
+}
+.ff-data-table[data-size='compact'] .ff-data-table-row-handle[data-size] .ff-button-content svg {
+  width: 14px;
+  height: 14px;
+}
+.ff-data-table-cell[data-check-revealed='true'] .ff-checkbox-item,
+.ff-data-table-cell .ff-checkbox-item:hover,
+.ff-data-table thead .ff-table-row:is(:hover, :focus-within) .ff-checkbox-item,
+.ff-data-table .ff-table-row.is-active:is(:focus-visible, :has(:focus-visible)) .ff-checkbox-item,
+.ff-data-table .ff-table-row.is-active > .ff-data-table-cell[data-pinned] .ff-checkbox-item,
+.ff-data-table .ff-table-row.is-active[data-selectable='false'] .ff-checkbox-item,
+.ff-table[data-carried-check='false'] .ff-table-row.is-active .ff-checkbox-item,
+.ff-data-table-row-handle:hover,
+.ff-data-table
+  .ff-table-row.is-active
+  > .ff-data-table-cell[data-pinned]
+  .ff-data-table-row-handle {
+  opacity: 1;
+}
+.ff-data-table .ff-table-row:not(:hover, :focus-within) .ff-checkbox-item,
+.ff-table[data-snap-rules] .ff-checkbox-item {
+  transition-duration: 0ms;
+}
+@media (hover: none) {
+  .ff-data-table-markers {
+    display: none;
+  }
+  .ff-data-table .ff-data-table-cell .ff-checkbox-item,
+  .ff-data-table .ff-data-table-row-handle {
+    opacity: 1;
+  }
+}
+.ff-table[data-hold-row-highlight='true'] .ff-data-table-row-handle {
+  opacity: 0 !important;
+  transition-duration: 0ms;
+}
+
+.ff-dropdown-popup[data-table-row-menu] {
+  width: 224px;
+}
+
+/* Skeletons occupy a body line, rather than collapsing to the painted bar. */
+.ff-data-table-skeleton-slot {
+  display: flex;
+  height: 1lh;
+  align-items: center;
+}
+/* Multi-value editors retain their own controls while spending the cell's padding. */
+.ff-data-table-cell > .ff-combobox-field {
+  margin-block: calc(-1 * var(--table-cell-py));
+}
+/* A table's tags are a single-line editor; the outer cell clips its run. */
+.ff-data-table-cell .ff-combobox[data-multiple='true'] .ff-combobox-chips {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+/* Borderless page sizes read as an inline part of the footer sentence. */
+.ff-data-table-pagination .ff-select-trigger {
+  width: auto;
+  min-width: 0;
+  padding-inline: 8px;
+  gap: 4px;
+}

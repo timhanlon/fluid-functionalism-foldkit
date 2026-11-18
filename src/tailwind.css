@@ -4,6 +4,8 @@
 @import 'tailwindcss' source(none);
 @source "./";
 /* Classes the view builds at runtime, which no scanner can read. */
+/* Typography specimens assemble these token classes at runtime. */
+@source inline("text-[length:var(--fs-display,28px)] leading-[var(--lh-display,34px)] text-[length:var(--fs-display-compact,24px)] leading-[var(--lh-display-compact,30px)] text-[length:var(--fs-title,16px)] leading-[var(--lh-title,22px)] text-[length:var(--fs-title-compact,15px)] leading-[var(--lh-title-compact,20px)] text-[length:var(--fs-subtitle,14px)] leading-[var(--lh-subtitle,20px)] text-[length:var(--fs-subtitle-compact,13px)] leading-[var(--lh-subtitle-compact,18px)] text-[length:var(--fs-body,13px)] leading-[var(--lh-body,20px)] text-[length:var(--fs-body-compact,12px)] leading-[var(--lh-body-compact,18px)] text-[length:var(--fs-caption,12px)] leading-[var(--lh-caption,16px)] text-[length:var(--fs-caption-compact,11px)] leading-[var(--lh-caption-compact,14px)]");
 @source inline("{hover:,}bg-surface-{1..8}");
 @source inline("shadow-surface-{1..8}");
 @source inline("group-has-[>[data-sidebar=menu-badge]]/{menu-item,menu-sub-item}:right-8.5");
@@ -410,8 +412,8 @@ body {
 @layer base {
   /* Text selection in the accent, tuned per theme: 25% over the light page
      under dark text, 40% over the dark page, where a lighter tint is needed
-     to read as a highlight. Text keeps its own color. */
-  ::selection {
+     to read as a highlight. Descendants inherit the root highlight. */
+  :root::selection {
     background-color: light-dark(
       color-mix(in oklab, var(--fluid-accent, #6b97ff) 25%, transparent),
       color-mix(in oklab, var(--fluid-accent, #6b97ff) 40%, transparent)
@@ -1893,4 +1895,9 @@ html.transitioning *::after {
 .changelog-diff .shiki .line.diff.remove::before {
   content: '-';
   color: var(--destructive);
+}
+
+/* PlaygroundLayout holds the expanded table width while its frame moves. */
+[data-preview-moving] [data-slot='scroll-area-viewport'] table {
+  min-width: var(--preview-table-w) !important;
 }

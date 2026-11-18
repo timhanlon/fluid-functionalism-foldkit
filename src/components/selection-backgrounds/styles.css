@@ -3,3 +3,13 @@
   background: var(--active, rgb(0 0 0 / 0.08));
   pointer-events: none;
 }
+
+.ff-selection-background[data-selection-restored] {
+  animation: ff-selection-restore 120ms ease-out;
+}
+
+@keyframes ff-selection-restore {
+  from {
+    opacity: 0;
+  }
+}

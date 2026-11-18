@@ -26,6 +26,7 @@ import {
   Message,
   dayId,
   navigationTarget,
+  navigationTooltipGroup,
   selection,
   viewMonth,
   visibleMonths,
@@ -87,61 +88,75 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
     Option.getOrUndefined(model.focused),
   );
   const gridStart = grids[0] ? ordinal(grids[0].first) : 0;
-  const nav = (directions: readonly (-1 | 1)[]) =>
-    h.div(
+  const nav = (directions: readonly (-1 | 1)[]) => {
+    const key = directions.length === 2 ? 'pair' : directions[0]! < 0 ? 'previous' : 'next';
+    const group = navigationTooltipGroup(model, key);
+    const toMessage = (message: Tooltip.Group.Message) =>
+      Message.NavigationTooltip({ key, message });
+    return h.div(
       [
         h.Class('ff-calendar-nav'),
         h.DataAttribute('slot', 'calendar-nav'),
         h.DataAttribute('calendar-inert', ''),
       ],
-      directions.map((direction) =>
-        h.span(
-          [h.Class('ff-calendar-nav-slot')],
-          [
-            h.submodel({
-              slotId: direction < 0 ? 'previous-tooltip' : 'next-tooltip',
-              model: direction < 0 ? model.previousTooltip : model.nextTooltip,
-              view: Tooltip.view,
-              toParentMessage: (message) => Message.Tooltip({ direction, message }),
-              viewInputs: {
-                content: direction < 0 ? 'Previous month' : 'Next month',
-                radius: props.radius,
-                renderTrigger: (attributes) =>
-                  Button.view(
+      [
+        Tooltip.Group.view(
+          group,
+          {
+            toMessage,
+            children: directions.map((direction) =>
+              h.span(
+                [h.Class('ff-calendar-nav-slot')],
+                [
+                  Tooltip.Group.tip(
+                    group,
+                    direction < 0 ? 'previous' : 'next',
                     {
-                      variant: 'ghost',
-                      // Upstream's icon-compact: the chevron renders at 14px.
-                      size: 'icon-compact',
+                      content: direction < 0 ? 'Previous month' : 'Next month',
                       radius: props.radius,
-                      label:
-                        direction < 0
-                          ? (customLabels?.previousMonth ?? 'Go to the Previous Month')
-                          : (customLabels?.nextMonth ?? 'Go to the Next Month'),
-                      disabled: !navigationTarget(model, props, direction),
-                      onClick: Message.Navigate({ direction }),
-                      className: 'ff-calendar-nav-button',
-                      attributes: [
-                        ...attributes,
-                        h.DataAttribute('calendar-nav', direction < 0 ? 'previous' : 'next'),
-                      ],
-                      children: [
-                        h.span(
-                          [
-                            h.Class('ff-calendar-nav-chevron'),
-                            h.DataAttribute('direction', String(direction)),
-                          ],
-                          [icon('chevron-right', props.icons, h)],
+                      renderTrigger: (attributes) =>
+                        Button.view(
+                          {
+                            variant: 'ghost',
+                            // Upstream's icon-compact: the chevron renders at 14px.
+                            size: 'icon-compact',
+                            radius: props.radius,
+                            label:
+                              direction < 0
+                                ? (customLabels?.previousMonth ?? 'Go to the Previous Month')
+                                : (customLabels?.nextMonth ?? 'Go to the Next Month'),
+                            disabled: !navigationTarget(model, props, direction),
+                            onClick: Message.Navigate({ direction }),
+                            className: 'ff-calendar-nav-button',
+                            attributes: [
+                              ...attributes,
+                              h.DataAttribute('calendar-nav', direction < 0 ? 'previous' : 'next'),
+                            ],
+                            children: [
+                              h.span(
+                                [
+                                  h.Class('ff-calendar-nav-chevron'),
+                                  h.DataAttribute('direction', String(direction)),
+                                ],
+                                [icon('chevron-right', props.icons, h)],
+                              ),
+                            ],
+                          },
+                          h,
                         ),
-                      ],
                     },
+                    toMessage,
                     h,
                   ),
-              },
-            }),
-          ],
+                ],
+              ),
+            ),
+          },
+          h,
         ),
-      ),
+      ],
     );
+  };
   const weekdays = (grid: (typeof grids)[number], visual = false) =>
     h.div(
       [

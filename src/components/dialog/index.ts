@@ -22,6 +22,7 @@ export interface Props {
   readonly title: string;
   readonly description?: string;
   readonly triggerLabel?: string;
+  readonly triggerSize?: 'default' | 'compact';
   readonly triggerVariant?: Button.Variant;
   readonly hideTrigger?: boolean;
   readonly width?: 'sm' | 'lg' | 'xl';
@@ -72,7 +73,7 @@ export const view = Submodel.defineView<Primitive.Model, Primitive.Message, Prop
                   {
                     children: [props.triggerLabel ?? 'Open dialog'],
                     variant: props.triggerVariant ?? 'tertiary',
-                    size: props.size,
+                    size: props.triggerSize ?? props.size,
                     radius: props.radius,
                     attributes: triggerAttributes,
                   },

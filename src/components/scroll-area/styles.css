@@ -22,7 +22,7 @@
 }
 .ff-scroll-content {
   min-width: 100%;
-  width: max-content;
+  width: 100%;
   display: flow-root;
 }
 .ff-scroll-area[data-scroll-orientation='vertical'] .ff-scroll-content {

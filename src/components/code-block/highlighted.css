@@ -1,0 +1,33 @@
+.ff-code-highlight {
+  overflow: auto;
+  font-size: 13px;
+  line-height: 20px;
+}
+.ff-code-highlight pre {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 16px;
+  min-height: var(--ff-code-min-height, 120px);
+  background: transparent !important;
+  font-family: var(
+    --font-mono,
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    'Liberation Mono',
+    'Courier New',
+    monospace
+  );
+  font-size: inherit;
+  line-height: inherit;
+}
+.ff-code-highlight code {
+  font-family: inherit;
+}
+.ff-code-highlight .shiki,
+.ff-code-highlight .shiki span {
+  color: light-dark(var(--shiki-light), var(--shiki-dark)) !important;
+  background-color: transparent !important;
+}

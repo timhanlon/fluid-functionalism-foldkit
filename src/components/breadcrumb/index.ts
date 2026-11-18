@@ -18,6 +18,7 @@ export { init, Model, Message, OutMessage, update, collapseCount } from './state
 export interface Item {
   readonly value: string;
   readonly label: string;
+  readonly selected?: string;
   readonly href?: string;
   readonly icon?: IconName;
   /** Keep a name for an icon-only home link. */
@@ -150,7 +151,10 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
                   placement: 'bottom-start',
                   anchorGap: 4,
                   rootClassName: 'contents',
-                  checkmarks: false,
+                  checkmarks: item.selected !== undefined,
+                  ...(item.selected !== undefined
+                    ? { selection: { mode: 'single' as const, value: item.selected } }
+                    : {}),
                   trigger: {
                     attributes: [
                       ...content.attributes,
@@ -183,7 +187,7 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
                 [...content.attributes, h.Href(item.href ?? '#'), ...attributes],
                 content.children,
               );
-    return more || item.iconOnly
+    return (more && (props.openOnHover || props.reveal === 'expand')) || item.iconOnly
       ? target()
       : h.submodel({
           slotId: `tip-${key}`,
@@ -191,8 +195,8 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
           view: Tooltip.view,
           toParentMessage: (message) => Message.TooltipMessage({ key, message }),
           viewInputs: {
-            content: item.label,
-            forceOpen: model.cuts[key] && !model.menus[key]?.isOpen ? undefined : false,
+            content: more ? `${menuItems?.length ?? 0} hidden steps` : item.label,
+            forceOpen: (more || model.cuts[key]) && !model.menus[key]?.isOpen ? undefined : false,
             side: 'bottom',
             radius: props.radius,
             renderTrigger: (attributes) =>

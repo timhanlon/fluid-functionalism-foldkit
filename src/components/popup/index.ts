@@ -1,9 +1,10 @@
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
 import { animate, type AnimationPlaybackControls } from 'motion';
 import { mountHover } from '../../fluid-hover/engine';
 import { mountScrollArea } from '../scroll-area';
 import { mountSelections } from '../selection-backgrounds/runtime';
+import { mountPopupShieldFor } from './shield';
 import '../../fluid-hover/styles.css';
 import '../scroll-area/styles.css';
 import '../list-focus/styles.css';
@@ -11,8 +12,7 @@ import './styles.css';
 
 /** Shared popup projection. The enclosing Foldkit UI primitive owns semantics,
  * positioning, portals, dismissal, keyboard navigation, and animation lifetime. */
-export const Mounted = Mount.define('Popup.Visuals', {
-  messages: [Schema.Never],
+export const Mounted = defineSilentMount('Popup.Visuals', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {
@@ -20,6 +20,7 @@ export const Mounted = Mount.define('Popup.Visuals', {
         const root = element.closest<HTMLElement>('.ff-popup'),
           viewport = element;
         if (!root) return () => {};
+        const disposeShield = mountPopupShieldFor(root);
         const focusOwner = root.dataset.focusOwner
           ? document.getElementById(root.dataset.focusOwner)
           : undefined;
@@ -41,7 +42,7 @@ export const Mounted = Mount.define('Popup.Visuals', {
         root.append(bar);
         const scroll = mountScrollArea(root, { manageAria: false });
         const rowSelector =
-          '[role=option],[role=menuitem],[role=menuitemradio],[role=menuitemcheckbox]';
+          '[role=option],[role=menuitem],[role=menuitemradio],[role=menuitemcheckbox],.ff-popup-row';
         const rows = () => [...viewport.querySelectorAll<HTMLElement>(rowSelector)];
         const multiple = root.dataset.selection === 'multiple';
         const selections = multiple ? mountSelections(viewport, rows) : () => {};
@@ -107,9 +108,11 @@ export const Mounted = Mount.define('Popup.Visuals', {
         const sync = () => {
           viewport.dataset.radius = root.dataset.radius;
           const items = rows();
-          const focused = items.find(
-            (row) => row === document.activeElement && row.matches(':focus-visible'),
-          );
+          const focused = items.find((row) => {
+            const control =
+              row.querySelector<HTMLElement>(':scope > [data-popup-row-control]') ?? row;
+            return control === document.activeElement && control.matches(':focus-visible');
+          });
           const highlighted =
             root.dataset.heldIndex === undefined
               ? items.find((row) => row.hasAttribute('data-active'))
@@ -128,7 +131,8 @@ export const Mounted = Mount.define('Popup.Visuals', {
               : items.find(
                   (row) =>
                     row.getAttribute('aria-selected') === 'true' ||
-                    row.getAttribute('aria-checked') === 'true',
+                    row.getAttribute('aria-checked') === 'true' ||
+                    row.dataset.selected === 'true',
                 ),
             false,
           );
@@ -172,7 +176,13 @@ export const Mounted = Mount.define('Popup.Visuals', {
           childList: true,
           attributes: true,
           subtree: true,
-          attributeFilter: ['aria-selected', 'aria-checked', 'data-active', 'data-held-index'],
+          attributeFilter: [
+            'aria-selected',
+            'aria-checked',
+            'data-active',
+            'data-held-index',
+            'data-selected',
+          ],
         });
         observer.observe(root, {
           attributes: true,
@@ -190,6 +200,7 @@ export const Mounted = Mount.define('Popup.Visuals', {
         focusOwner?.addEventListener('focusout', sync);
         sync();
         return () => {
+          disposeShield();
           observer.disconnect();
           resize.disconnect();
           root.removeEventListener('keydown', key, true);

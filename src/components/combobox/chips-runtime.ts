@@ -216,7 +216,7 @@ export const Mounted = Mount.defineStream('Combobox.Chips', {
           root.addEventListener('pointerdown', pointer, true);
           root.addEventListener('blur', blur, true);
           root.addEventListener('focusout', focusout);
-          measure();
+          // ResizeObserver schedules the initial measurement without forcing layout on mount.
           return () => {
             cancelAnimationFrame(frame);
             observer.disconnect();

@@ -1,9 +1,14 @@
+/* Consumer width utilities override the default group width, as upstream twMerge does. */
+@layer components {
+  .ff-input-group {
+    width: 288px;
+  }
+}
 .ff-input-group {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 288px;
   max-width: 100%;
 }
 .ff-input-field {

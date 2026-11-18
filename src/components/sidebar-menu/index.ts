@@ -1,3 +1,4 @@
+import { defineSilentMountWithArgs } from '../silent-mount';
 import { shapeRadius } from '../shape';
 import { Button } from '@foldkit/ui';
 import { Effect, Schema } from 'effect';
@@ -8,9 +9,8 @@ import { mountListFocus } from '../list-focus';
 import './styles.css';
 import '../../fluid-hover/styles.css';
 
-const Mounted = Mount.define('SidebarMenu.Mount', {
+const Mounted = defineSilentMountWithArgs('SidebarMenu.Mount', {
   args: { focusRing: Schema.Boolean },
-  messages: [Schema.Never],
   execute: ({ element, focusRing }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

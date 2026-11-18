@@ -1,11 +1,10 @@
+import { defineSilentMount } from '../silent-mount';
 import { shapeRadius } from '../shape';
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
+import { Effect } from 'effect';
 import { mountHover } from '../../fluid-hover/engine';
 import { dividers } from './layout';
 import '../../fluid-hover/styles.css';
-export const Mounted = Mount.define('CardGroup.HoverAndDividers', {
-  messages: [Schema.Never],
+export const Mounted = defineSilentMount('CardGroup.HoverAndDividers', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

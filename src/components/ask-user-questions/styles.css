@@ -249,19 +249,8 @@
   align-items: center;
   gap: 6px;
 }
-/* Upstream's ShortcutChip, inverted tone: 18px tall, 4px inset, shape radius. */
-.auq-submit-shortcut {
+.auq-flow .auq-submit-shortcut {
   display: none;
-  align-items: center;
-  justify-content: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 4px;
-  border-radius: 8px;
-  background: color-mix(in oklab, var(--background) 15%, transparent);
-  font-family: var(--font-sans, Inter, system-ui, sans-serif);
-  font-size: var(--fs-micro, 11px);
-  line-height: 1;
 }
 .auq-error {
   font-size: 12px;
@@ -280,8 +269,8 @@
   .auq-body.auq-with-footer {
     padding-bottom: 4px;
   }
-  .auq-submit-shortcut {
-    display: inline-flex;
+  .auq-flow .auq-submit-shortcut {
+    display: contents;
   }
   /* Skip's arrow and Continue's chip act as trailing icons: tighter right. */
   .auq-flow [data-auq-action='skip'],
@@ -315,7 +304,8 @@
 .auq-flow[data-size='compact'] .auq-body.auq-with-footer {
   padding-bottom: 4px;
 }
-.auq-flow[data-size='compact'] .auq-option {
+.auq-flow[data-size='compact'] .auq-option,
+.auq-flow[data-size='compact'] .auq-other {
   min-height: 32px;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -376,8 +366,7 @@
 .auq-flow[data-radius='pill'] .auq-other,
 .auq-flow[data-radius='pill'] .auq-footer-button,
 .auq-flow[data-radius='pill'] .auq-arrow,
-.auq-flow[data-radius='pill'] .auq-checkbox,
-.auq-flow[data-radius='pill'] .auq-submit-shortcut {
+.auq-flow[data-radius='pill'] .auq-checkbox {
   border-radius: 20px;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -396,8 +385,7 @@
 .auq-flow[data-radius='sharp'] .auq-other,
 .auq-flow[data-radius='sharp'] .auq-footer-button,
 .auq-flow[data-radius='sharp'] .auq-arrow,
-.auq-flow[data-radius='sharp'] .auq-checkbox,
-.auq-flow[data-radius='sharp'] .auq-submit-shortcut {
+.auq-flow[data-radius='sharp'] .auq-checkbox {
   border-radius: 1px;
 }
 

@@ -1,4 +1,4 @@
-import { animate, type AnimationPlaybackControls } from 'motion';
+import { animate, frame, cancelFrame, type AnimationPlaybackControls } from 'motion';
 import { pickNearest, type ItemRect } from './geometry';
 
 export interface HoverOptions {
@@ -17,16 +17,25 @@ export interface HoverOptions {
   selectedAttribute?: 'aria-selected' | 'aria-current';
   /** Headless primitives can own keyboard navigation while this projects visuals. */
   keyboardNavigation?: boolean;
-  /** Pointer-only surfaces such as semantic tables do not highlight on focus. */
+  /** An owner can project focus itself while reusing this geometry renderer. */
   focusHighlight?: boolean;
   menu?: boolean;
   fromSelector?: string;
   followLayout?: boolean;
+  /** A scoped visual controller can arbitrate pointer versus native focus. */
+  trackPointer?: boolean;
+  isInstant?: () => boolean;
+  /** Visual-only slot moves do not change registered item geometry. */
+  ignoreLayoutMutation?: (record: MutationRecord) => boolean;
+  /** Live animated geometry, without reading layout during motion frames. */
+  onFrame?: (box: { x: number; y: number; width: number; height: number; opacity: number }) => void;
 }
 export interface HoverEngine {
   move(x: number, y: number, target?: EventTarget | null): void;
   leave(): void;
   measure(): void;
+  /** Project a row without moving focus or handling keyboard navigation. */
+  highlight(index: number | null): void;
   dispose(): void;
   readonly rects: readonly ItemRect[];
   readonly active: number | null;
@@ -51,16 +60,63 @@ export function mountHover(container: HTMLElement, options: HoverOptions): Hover
   let latest: { x: number; y: number; target?: EventTarget | null } | undefined;
   const hiddenItems = new WeakSet<HTMLElement>();
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const live = { x: 0, y: 0, width: 0, height: 0, opacity: 0 };
+  const emit = () => {
+    if (!disposed) options.onFrame?.({ ...live });
+  };
+  const notify = () => {
+    if (options.onFrame && !disposed) frame.postRender(emit);
+  };
+  const moveLayer = (rect: ItemRect, duration: number) => {
+    const node = layer!;
+    const from = { ...live };
+    const paint = (progress: number) => {
+      if (node !== layer || disposed) return;
+      live.x = from.x + (rect.left - from.x) * progress;
+      live.y = from.y + (rect.top - from.y) * progress;
+      live.width = from.width + (rect.width - from.width) * progress;
+      live.height = from.height + (rect.height - from.height) * progress;
+      Object.assign(node.style, {
+        transform: `translateX(${live.x}px) translateY(${live.y}px)`,
+        width: `${live.width}px`,
+        height: `${live.height}px`,
+      });
+      notify();
+    };
+    // One numeric Motion clock owns the paint and its reported geometry,
+    // as for opacity below. Instant snaps never enter Motion's cached DOM
+    // transform path, so a later pointer move cannot restore stale axes.
+    if (duration === 0) {
+      paint(1);
+      return undefined;
+    }
+    return animate(0, 1, { type: 'spring', duration, bounce: 0, onUpdate: paint });
+  };
+  const fadeLayer = (target: number, duration: number) => {
+    const node = layer!;
+    if (!options.onFrame) return animate(node, { opacity: target }, { duration });
+    // DOM opacity can run on WAAPI without per-value callbacks. A numeric
+    // Motion animation keeps its paint and reported opacity on the same clock.
+    return animate(live.opacity, target, {
+      duration,
+      onUpdate: (value) => {
+        if (node !== layer || disposed) return;
+        node.style.opacity = String(value);
+        live.opacity = value;
+        notify();
+      },
+    });
+  };
   const disabled = (item: HTMLElement) =>
     item.matches(':disabled,[aria-disabled=true],[data-disabled]') ||
     !!item.closest('[data-sidebar=menu-sub][data-state=closed]') ||
     hiddenItems.has(item);
   const selectionAttribute = options.selectedAttribute ?? 'aria-selected';
   const selectedIndex = () =>
-    items.findIndex(
-      (item) =>
-        item.getAttribute(selectionAttribute) ===
-        (selectionAttribute === 'aria-current' ? 'page' : 'true'),
+    items.findIndex((item) =>
+      selectionAttribute === 'aria-current'
+        ? ['page', 'location'].includes(item.getAttribute(selectionAttribute) ?? '')
+        : item.getAttribute(selectionAttribute) === 'true',
     );
   const clearMark = () => {
     if (active !== null) items[active]?.removeAttribute('data-fluid-hover-active');
@@ -71,13 +127,21 @@ export function mountHover(container: HTMLElement, options: HoverOptions): Hover
     opacity?.stop();
     layer?.remove();
     layer = undefined;
+    live.opacity = 0;
+    notify();
   };
   const show = (index: number | null, point: { x: number; y: number } | null) => {
     options.onPick?.(index, point);
+    let crossesSelected = false;
     if (options.tabs) {
       const selected = selectedIndex();
       container.classList.toggle('ff-tabs-hovering', index !== null && index !== selected);
       if (index === selected) index = null;
+      crossesSelected =
+        active !== null &&
+        index !== null &&
+        Math.min(active, index) < selected &&
+        selected < Math.max(active, index);
     }
     if (layer) layer.style.borderRadius = options.radius?.() ?? '8px';
     if (index === active && !sessionPending) return;
@@ -88,16 +152,9 @@ export function mountHover(container: HTMLElement, options: HoverOptions): Hover
       if (layer) {
         if (exitTimer) clearTimeout(exitTimer);
         opacity?.stop();
-        const selected = options.tabs && !pointerInside ? rects[selectedIndex()] : undefined;
         travel?.stop();
-        if (selected)
-          travel = animate(
-            layer,
-            { x: selected.left, y: selected.top, width: selected.width, height: selected.height },
-            { type: 'spring', duration: reduced.matches ? 0 : 0.16, bounce: 0 },
-          );
-        opacity = animate(layer, { opacity: 0 }, { duration: 0.06 });
-        exitTimer = setTimeout(removeLayer, selected ? 160 : 60);
+        opacity = fadeLayer(0, 0.06);
+        exitTimer = setTimeout(removeLayer, 60);
       }
       return;
     }
@@ -111,17 +168,17 @@ export function mountHover(container: HTMLElement, options: HoverOptions): Hover
       return;
     }
     if (exitTimer) clearTimeout(exitTimer);
-    const fresh = sessionPending || !layer;
+    const fresh = sessionPending || !layer || crossesSelected;
     sessionPending = false;
     if (fresh) {
       removeLayer();
       layer = document.createElement('div');
       layer.dataset.slot = 'fluid-hover-highlight';
       layer.className = 'ff-hover-highlight';
-      const originIndex = options.fromSelector
-        ? items.findIndex((item) => item.matches(options.fromSelector!))
-        : selectedIndex();
-      const origin = options.tabs || options.fromSelector ? (rects[originIndex] ?? rect) : rect;
+      const origin =
+        options.fromSelector && !options.tabs
+          ? (rects[items.findIndex((item) => item.matches(options.fromSelector!))] ?? rect)
+          : rect;
       Object.assign(layer.style, {
         left: '0px',
         top: '0px',
@@ -131,26 +188,26 @@ export function mountHover(container: HTMLElement, options: HoverOptions): Hover
         opacity: '0',
         borderRadius: options.radius?.() ?? '8px',
       });
+      Object.assign(live, {
+        x: origin.left,
+        y: origin.top,
+        width: origin.width,
+        height: origin.height,
+        opacity: 0,
+      });
+      notify();
       container.prepend(layer);
-      opacity = animate(layer, { opacity: options.tabs ? 0.4 : 1 }, { duration: 0.08 });
-      if (options.tabs || options.fromSelector)
-        travel = animate(
-          layer,
-          { x: rect.left, y: rect.top, width: rect.width, height: rect.height },
-          { type: 'spring', duration: reduced.matches ? 0 : 0.08, bounce: 0 },
-        );
+      opacity = fadeLayer(options.tabs ? 0.4 : 1, 0.08);
+      if (options.fromSelector && !options.tabs)
+        travel = moveLayer(rect, reduced.matches ? 0 : 0.08);
       return;
     }
     if (!layer) return;
     opacity?.stop();
-    opacity = animate(layer, { opacity: options.tabs ? 0.4 : 1 }, { duration: 0.08 });
+    opacity = fadeLayer(options.tabs ? 0.4 : 1, 0.08);
     travel?.stop();
     // Motion uses the same critically damped fast token as the reference.
-    travel = animate(
-      layer,
-      { x: rect.left, y: rect.top, width: rect.width, height: rect.height },
-      { type: 'spring', duration: reduced.matches ? 0 : 0.08, bounce: 0 },
-    );
+    travel = moveLayer(rect, reduced.matches || options.isInstant?.() ? 0 : 0.08);
   };
   const measure = () => {
     const previous = active !== null ? items[active] : undefined;
@@ -194,6 +251,8 @@ export function mountHover(container: HTMLElement, options: HoverOptions): Hover
           width: `${rect.width}px`,
           height: `${rect.height}px`,
         });
+        Object.assign(live, { x: rect.left, y: rect.top, width: rect.width, height: rect.height });
+        notify();
       }
     }
   };
@@ -384,12 +443,17 @@ export function mountHover(container: HTMLElement, options: HoverOptions): Hover
     if (
       records.some(
         (r) =>
-          (r.type === 'attributes' &&
-            ['data-state', 'data-size'].includes(r.attributeName ?? '')) ||
-          (r.type === 'childList' &&
-            [...r.addedNodes, ...r.removedNodes].some(
-              (n) => n instanceof Element && !n.matches('[data-slot=fluid-hover-highlight]'),
-            )),
+          !options.ignoreLayoutMutation?.(r) &&
+          ((r.type === 'attributes' &&
+            (['data-state', 'data-size'].includes(r.attributeName ?? '') ||
+              (options.tabs &&
+                r.attributeName === 'class' &&
+                r.target instanceof HTMLElement &&
+                items.includes(r.target)))) ||
+            (r.type === 'childList' &&
+              [...r.addedNodes, ...r.removedNodes].some(
+                (n) => n instanceof Element && !n.matches('[data-slot=fluid-hover-highlight]'),
+              ))),
       )
     )
       scheduleMeasure();
@@ -402,12 +466,20 @@ export function mountHover(container: HTMLElement, options: HoverOptions): Hover
     childList: true,
     subtree: true,
     attributes: true,
-    attributeFilter: ['data-state', selectionAttribute, 'data-radius', 'data-size'],
+    attributeFilter: [
+      'data-state',
+      selectionAttribute,
+      'data-radius',
+      'data-size',
+      ...(options.tabs ? ['class'] : []),
+    ],
   });
   container.classList.add('ff-hover-scope');
-  container.addEventListener('pointerenter', onEnter);
-  container.addEventListener('pointermove', onMove);
-  container.addEventListener('pointerleave', leave);
+  if (options.trackPointer !== false) {
+    container.addEventListener('pointerenter', onEnter);
+    container.addEventListener('pointermove', onMove);
+    container.addEventListener('pointerleave', leave);
+  }
   container.addEventListener('focusin', onFocus);
   container.addEventListener('focusout', onBlur);
   container.addEventListener('keydown', onKey);
@@ -416,6 +488,13 @@ export function mountHover(container: HTMLElement, options: HoverOptions): Hover
     move,
     leave,
     measure,
+    highlight(index) {
+      if (disposed) return;
+      cancelAnimationFrame(moveFrame);
+      moveFrame = 0;
+      latest = undefined;
+      show(index !== null && index >= 0 && index < items.length ? index : null, null);
+    },
     get rects() {
       return rects;
     },
@@ -427,6 +506,7 @@ export function mountHover(container: HTMLElement, options: HoverOptions): Hover
     },
     dispose() {
       disposed = true;
+      if (options.onFrame) cancelFrame(emit);
       shapeObserver.disconnect();
       ro.disconnect();
       mo.disconnect();

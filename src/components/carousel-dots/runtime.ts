@@ -101,7 +101,10 @@ export const Mounted = Mount.defineStream('CarouselDots.Visuals', {
               const result = tick(clock, elapsed, {
                 count: Number(root.dataset.count),
                 duration: Number(root.dataset.duration),
-                paused: root.dataset.paused === 'true',
+                paused:
+                  root.dataset.paused === 'true' ||
+                  root.closest('[data-preview-playing]')?.getAttribute('data-preview-playing') ===
+                    'false',
                 loop: root.dataset.loop !== 'false',
               });
               clock = result.clock;

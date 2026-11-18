@@ -5,6 +5,10 @@ import * as NativeFile from 'foldkit/file';
 import { FileDrop } from '@foldkit/ui';
 import * as Tooltip from '../tooltip';
 
+/** The AI SDK status values plus the source's legacy idle spelling. */
+export const Status = Schema.Literals(['idle', 'streaming', 'submitted', 'ready', 'error']);
+export type Status = typeof Status.Type;
+
 /** A message held while the assistant responds: the trimmed text plus the
  * files attached when it was queued, so editing restores both. */
 export const QueuedMessage = Schema.Struct({
@@ -25,6 +29,7 @@ export const Model = Schema.Struct({
   suggestionSource: Schema.Literals(['keyboard', 'pointer']),
   drop: FileDrop.Model,
   tooltips: Schema.Record(Schema.String, Tooltip.Model),
+  attachmentTooltips: Tooltip.Group.Model,
   /** Politely announces auto-dispatched queue items. */
   live: Schema.String,
   nextQueueId: Schema.Number,
@@ -38,6 +43,7 @@ export const init = (config: { readonly id: string }): Model => ({
   suggestionSource: 'keyboard',
   drop: FileDrop.init({ id: `${config.id}-drop` }),
   tooltips: {},
+  attachmentTooltips: Tooltip.Group.init({ id: `${config.id}-attachments` }),
   live: '',
   nextQueueId: 0,
 });
@@ -60,6 +66,7 @@ export const Message = defineMessageUnion({
   QueueMoved: { id: Schema.String, step: Schema.Literals([-1, 1]) },
   Drop: { message: FileDrop.Message },
   Tip: { key: Schema.String, message: Tooltip.Message },
+  AttachmentTip: { message: Tooltip.Group.Message },
   OpenFilePicker: { accept: Schema.NullOr(Schema.String) },
   Completed: {},
 });

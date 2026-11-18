@@ -1,0 +1,17 @@
+.ff-confirmation-answer {
+  display: flex;
+  height: 28px;
+  align-items: center;
+  gap: 6px;
+  color: var(--foreground);
+  font-size: var(--fs-body, 13px);
+  line-height: var(--lh-body, 20px);
+}
+.ff-banner[data-size='compact'] .ff-confirmation-answer {
+  font-size: var(--fs-body-compact, 12px);
+  line-height: var(--lh-body-compact, 18px);
+}
+.ff-confirmation-answer svg {
+  width: 14px;
+  height: 14px;
+}

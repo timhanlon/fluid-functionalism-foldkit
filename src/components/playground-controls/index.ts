@@ -1,9 +1,12 @@
+import { defineSilentMountWithArgs } from '../silent-mount';
 import { shapeRadius } from '../shape';
 import { Effect, Queue, Schema, Stream } from 'effect';
 import { Mount } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { mountHover } from '../../fluid-hover/engine';
 import * as Button from '../button';
+import * as Search from './search';
+export { Search };
 import './styles.css';
 const PlacementChanged = Schema.TaggedStruct('PlacementChanged', { isRail: Schema.Boolean });
 export const PlacementObserved = Mount.defineStream('Playground.Placement', {
@@ -24,9 +27,8 @@ export const PlacementObserved = Mount.defineStream('Playground.Placement', {
     ),
 });
 
-const Mounted = Mount.define('Playground.Controls', {
+const Mounted = defineSilentMountWithArgs('Playground.Controls', {
   args: { previewId: Schema.String, observePreview: Schema.Boolean },
-  messages: [Schema.Never],
   execute: ({ element, previewId, observePreview }) =>
     Effect.acquireRelease(
       Effect.sync(() => {
@@ -66,6 +68,8 @@ export interface Props<Message> {
   readonly previewId: string;
   readonly placement: 'inline' | 'rail' | 'menu';
   readonly radius?: 'rounded' | 'pill' | 'sharp';
+  readonly icons?: string;
+  readonly search?: Search.Props<Message>;
 }
 export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): Html {
   return h.div(
@@ -74,9 +78,18 @@ export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): H
       h.DataAttribute('radius', props.radius ?? 'rounded'),
       h.DataAttribute('shown', 'true'),
       h.DataAttribute('placement', props.placement),
+      h.DataAttribute('searchable', String((props.search?.model.total ?? 0) >= 8)),
+      h.DataAttribute('search-empty', String(props.search?.model.shown === 0)),
+      h.DataAttribute('search-query', props.search?.model.query ?? ''),
       h.OnMount(
         Mounted({ previewId: props.previewId, observePreview: props.placement === 'rail' }),
       ),
+      ...(props.search && props.placement === 'menu' && props.search.model.total >= 8
+        ? [h.OnMount(Search.FocusMenu({ id: `${props.previewId}-${props.placement}-search` }))]
+        : []),
+      ...(props.search
+        ? [h.OnMount(Mount.mapMessage(Search.Filter({}), props.search.toMessage))]
+        : []),
     ],
     [
       h.div(
@@ -119,7 +132,25 @@ export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): H
         ],
       ),
       h.div([h.Class('ff-playground-hairline'), h.AriaHidden(true)], []),
+      props.search
+        ? Search.view(
+            props.search,
+            `${props.previewId}-${props.placement}-search`,
+            props.icons ?? 'Untitled UI',
+            h,
+          )
+        : null,
       h.div([h.Class('ff-playground-rows')], props.children),
+      props.search
+        ? h.p(
+            [
+              h.Class('ff-playground-no-matches'),
+              h.Role('status'),
+              h.Hidden(props.search.model.total < 8 || props.search.model.shown !== 0),
+            ],
+            ['No option matches.'],
+          )
+        : null,
     ],
   );
 }

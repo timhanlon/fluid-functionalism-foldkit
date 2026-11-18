@@ -1,5 +1,5 @@
 diff --git a/dist/combobox/shared.d.ts b/dist/combobox/shared.d.ts
-index 9d4c69e12da99a79de5d6345331cd572e9968321..7a9c64261636390a9dd301afb1cc0135dd8db4e9 100644
+index 9d4c69e..7a9c642 100644
 --- a/dist/combobox/shared.d.ts
 +++ b/dist/combobox/shared.d.ts
 @@ -399,6 +399,11 @@ export type BaseViewInputsCommon<Item extends string> = Readonly<{
@@ -15,7 +15,7 @@ index 9d4c69e12da99a79de5d6345331cd572e9968321..7a9c64261636390a9dd301afb1cc0135
      inputAttributes?: ReadonlyArray<ChildAttribute>;
      inputPlaceholder?: string;
 diff --git a/dist/combobox/shared.js b/dist/combobox/shared.js
-index f5ee8f571123f7e2f71c77f707499caf1f127763..444e360151df828d779699ef863ab0bddbc9ee65 100644
+index f5ee8f5..444e360 100644
 --- a/dist/combobox/shared.js
 +++ b/dist/combobox/shared.js
 @@ -469,7 +469,7 @@ export const PortalComboboxBackdrop = Mount.define('PortalComboboxBackdrop', {
@@ -48,7 +48,7 @@ index f5ee8f571123f7e2f71c77f707499caf1f127763..444e360151df828d779699ef863ab0bd
              ]),
              ...(isBackdropVisible ? [backdrop] : []),
 diff --git a/dist/menu/index.d.ts b/dist/menu/index.d.ts
-index 15cee8d86bccbb9cf3dfc6d3c8d3428580cc1d6b..1cf5e4fe8259860ba0569fb7f5afd02e4648861d 100644
+index 15cee8d..1cf5e4f 100644
 --- a/dist/menu/index.d.ts
 +++ b/dist/menu/index.d.ts
 @@ -400,6 +400,8 @@ export declare const selectItem: (model: Model, item: string, index: number) =>
@@ -80,7 +80,7 @@ index 15cee8d86bccbb9cf3dfc6d3c8d3428580cc1d6b..1cf5e4fe8259860ba0569fb7f5afd02e
      ariaLabel?: string;
      ariaLabelledBy?: string;
 diff --git a/dist/menu/index.js b/dist/menu/index.js
-index eeb17e214a91888657f7d4f2aee84382d8df0ce4..72449372f46625613d8c8b24352b7a58410e2206 100644
+index eeb17e2..7244937 100644
 --- a/dist/menu/index.js
 +++ b/dist/menu/index.js
 @@ -483,7 +483,7 @@ const internalView = () =>

@@ -277,25 +277,6 @@
 .ff-command-shortcut[data-inline] {
   margin-left: 0;
 }
-.ff-command-cap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 20px;
-  min-width: 20px;
-  padding: 0 4px;
-  border-radius: 5px;
-  background: var(--hover);
-  color: var(--muted-foreground);
-  font-size: var(--fs-micro, 11px);
-  line-height: var(--lh-micro, 14px);
-}
-.ff-command-shortcut[data-size='compact'] .ff-command-cap {
-  height: 16px;
-  min-width: 16px;
-  font-size: var(--fs-micro-compact, 10px);
-  line-height: var(--lh-micro-compact, 12px);
-}
 
 .ff-command-empty {
   padding: 24px 12px;
@@ -358,4 +339,11 @@
   flex-direction: column;
   overflow: hidden;
   padding: 0;
+}
+
+.ff-command-item[data-destructive] {
+  color: color-mix(in oklab, var(--destructive) 80%, transparent);
+}
+.ff-command-item[data-destructive][aria-selected='true'] {
+  color: var(--destructive);
 }

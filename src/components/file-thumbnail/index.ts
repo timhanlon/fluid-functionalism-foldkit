@@ -1,25 +1,28 @@
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html';
-import { fileIdentity } from './object-urls';
+import { attachmentIdentity, attachmentName, attachmentType, type Attachment } from './types';
 import { Mounted } from './runtime';
 import './styles.css';
 export { loadPdfjs, renderPdfFirstPage, setPdfWorkerSrc } from './pdf';
+export type { Attachment, RemoteFile } from './types';
 export interface Props<Message> {
-  readonly file: File;
+  readonly file: Attachment;
   readonly size: number;
   readonly radius?: number;
   readonly shape?: 'rounded' | 'pill' | 'sharp';
   readonly attributes?: readonly (Attribute<Message> | ChildAttribute)[];
 }
 export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): Html {
-  const kind = props.file.type.startsWith('image/')
-    ? 'image'
-    : props.file.type === 'application/pdf'
-      ? 'pdf'
-      : 'file';
+  const type = attachmentType(props.file);
+  const kind =
+    type === 'image' || type.startsWith('image/')
+      ? 'image'
+      : !('url' in props.file) && type === 'application/pdf'
+        ? 'pdf'
+        : 'file';
   return h.div(
     [
       h.Class('ff-file-thumbnail'),
-      h.DataAttribute('file', fileIdentity(props.file)),
+      h.DataAttribute('file', attachmentIdentity(props.file)),
       h.DataAttribute('kind', kind),
       h.DataAttribute('size', String(props.size)),
       h.DataAttribute('shape', props.shape ?? 'rounded'),
@@ -44,7 +47,7 @@ export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): H
         ],
       ),
       h.div(
-        [h.Class('ff-thumbnail-fallback'), h.Role('img'), h.AriaLabel(props.file.name)],
+        [h.Class('ff-thumbnail-fallback'), h.Role('img'), h.AriaLabel(attachmentName(props.file))],
         [
           h.svg(
             [

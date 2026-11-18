@@ -56,6 +56,8 @@ export interface Props {
   readonly className?: string;
   /** false: the format menu renders inside the panel (in a popover). */
   readonly portalMenu?: boolean;
+  /** Outside-click policy for the format menu; defaults to dismiss. */
+  readonly formatBackdrop?: Dropdown.Props['backdrop'];
   /** Controlled menu state; user toggles are ignored. Rows still switch format. */
   readonly formatOpen?: boolean;
 }
@@ -84,21 +86,38 @@ export const view = Submodel.defineView<Model, Message, Props>((stored, props, h
   const solidColor = `rgb(${solid.r}, ${solid.g}, ${solid.b})`;
 
   const tip = (
-    key: string,
+    channel: string,
     content: string,
     trigger: (attributes: readonly ChildAttribute[]) => Html,
-  ) =>
-    h.submodel({
-      slotId: `tip-${key}`,
-      model: model.tooltips[key] ?? tipInit(model, key),
+  ) => {
+    const tipProps = { content, radius: props.radius, renderTrigger: trigger };
+    // The same three ChannelTooltip positions survive RGB/HSL/OKLCH changes.
+    // HEX has no source group; entering it releases the group's native scope.
+    if (model.format !== 'hex') {
+      const key =
+        channel === 'alphaPercent'
+          ? 'alpha'
+          : ['r', 'hSL', 'L'].includes(channel)
+            ? 'first'
+            : ['g', 'sSL', 'C'].includes(channel)
+              ? 'second'
+              : 'third';
+      return Tooltip.Group.tip(
+        model.channelTooltips,
+        key,
+        tipProps,
+        (message) => Message.ChannelTip({ message }),
+        h,
+      );
+    }
+    return h.submodel({
+      slotId: `tip-${channel}`,
+      model: model.tooltips[channel] ?? tipInit(model, channel),
       view: Tooltip.view,
-      toParentMessage: (message) => Message.Tip({ key, message }),
-      viewInputs: {
-        content,
-        ...(props.radius ? { radius: props.radius } : {}),
-        renderTrigger: trigger,
-      },
+      toParentMessage: (message) => Message.Tip({ key: channel, message }),
+      viewInputs: tipProps,
     });
+  };
 
   const square = h.div(
     [
@@ -181,8 +200,10 @@ export const view = Submodel.defineView<Model, Message, Props>((stored, props, h
     props.formatOpen ?? model.formatMenuInternalOpen,
     model.format,
     size,
+    props.radius,
     props.icons,
     props.portalMenu,
+    props.formatBackdrop,
     props.formatOpen,
     h,
   ]);
@@ -254,53 +275,57 @@ export const view = Submodel.defineView<Model, Message, Props>((stored, props, h
     );
   };
   const alphaField = field('alphaPercent', 'Alpha', 'Alpha', `${Math.round(parsed.a * 100)}%`);
+  const inputRow = (fields: readonly Html[]) =>
+    h.div(
+      [h.Class('ff-cp-inputs'), h.DataAttribute('columns', model.format === 'hex' ? '2' : '4')],
+      model.format === 'hex'
+        ? fields
+        : [
+            Tooltip.Group.view(
+              model.channelTooltips,
+              {
+                toMessage: (message) => Message.ChannelTip({ message }),
+                children: fields,
+              },
+              h,
+            ),
+          ],
+    );
   const inputs = (() => {
     switch (model.format) {
       case 'hex':
-        return h.div(
-          [h.Class('ff-cp-inputs'), h.DataAttribute('columns', '2')],
-          [
-            field('hex', 'Hex value', 'Hex', parsed.hex.replace(/^#/, '').toUpperCase(), {
-              prefix: '#',
-            }),
-            alphaField,
-          ],
-        );
+        return inputRow([
+          field('hex', 'Hex value', 'Hex', parsed.hex.replace(/^#/, '').toUpperCase(), {
+            prefix: '#',
+          }),
+          alphaField,
+        ]);
       case 'rgb':
-        return h.div(
-          [h.Class('ff-cp-inputs'), h.DataAttribute('columns', '4')],
-          [
-            field('r', 'Red', 'Red', String(parsed.r)),
-            field('g', 'Green', 'Green', String(parsed.g)),
-            field('b', 'Blue', 'Blue', String(parsed.b)),
-            alphaField,
-          ],
-        );
+        return inputRow([
+          field('r', 'Red', 'Red', String(parsed.r)),
+          field('g', 'Green', 'Green', String(parsed.g)),
+          field('b', 'Blue', 'Blue', String(parsed.b)),
+          alphaField,
+        ]);
       case 'hsl': {
         const hsl = rgbToHsl(parsed.r, parsed.g, parsed.b);
-        return h.div(
-          [h.Class('ff-cp-inputs'), h.DataAttribute('columns', '4')],
-          [
-            field('hSL', 'Hue', 'Hue', String(Math.round(hsl.h))),
-            field('sSL', 'Saturation', 'Saturation', String(Math.round(hsl.s * 100))),
-            field('lSL', 'Lightness', 'Lightness', String(Math.round(hsl.l * 100))),
-            alphaField,
-          ],
-        );
+        return inputRow([
+          field('hSL', 'Hue', 'Hue', String(Math.round(hsl.h))),
+          field('sSL', 'Saturation', 'Saturation', String(Math.round(hsl.s * 100))),
+          field('lSL', 'Lightness', 'Lightness', String(Math.round(hsl.l * 100))),
+          alphaField,
+        ]);
       }
       case 'oklch': {
         const oklch = rgbToOklch(parsed.r, parsed.g, parsed.b);
-        return h.div(
-          [h.Class('ff-cp-inputs'), h.DataAttribute('columns', '4')],
-          [
-            field('L', 'Lightness', 'Lightness', (oklch.L * 100).toFixed(0), {
-              inputMode: 'decimal',
-            }),
-            field('C', 'Chroma', 'Chroma', oklch.C.toFixed(2), { inputMode: 'decimal' }),
-            field('H', 'Hue', 'Hue', (model.oklchHue ?? oklch.H).toFixed(0)),
-            alphaField,
-          ],
-        );
+        return inputRow([
+          field('L', 'Lightness', 'Lightness', (oklch.L * 100).toFixed(0), {
+            inputMode: 'decimal',
+          }),
+          field('C', 'Chroma', 'Chroma', oklch.C.toFixed(2), { inputMode: 'decimal' }),
+          field('H', 'Hue', 'Hue', (model.oklchHue ?? oklch.H).toFixed(0)),
+          alphaField,
+        ]);
       }
     }
   })();
@@ -359,7 +384,7 @@ function swatchStrip(
   const items = swatches.map((item) =>
     typeof item === 'string' ? { color: item, label: undefined } : item,
   );
-  return h.div(
+  const row = h.div(
     [h.Class('ff-cp-swatches')],
     items.map(({ color, label }, index) => {
       const cell = (attributes: readonly ChildAttribute[]) =>
@@ -386,21 +411,30 @@ function swatchStrip(
         );
       if (!label) return cell([]);
       const key = `swatch-${index}`;
-      return h.submodel({
-        slotId: `tip-${key}`,
-        model: Tooltip.Group.tooltipModel(tooltips, key),
-        view: Tooltip.view,
-        toParentMessage: (message) =>
-          Message.SwatchTip({ message: Tooltip.Group.Message.Tip({ key, message }) }),
-        viewInputs: {
+      return Tooltip.Group.tip(
+        tooltips,
+        key,
+        {
           content: label,
           sideOffset: 2,
           ...(radius ? { radius } : {}),
           renderTrigger: cell,
         },
-      });
+        (message) => Message.SwatchTip({ message }),
+        h,
+      );
     }),
   );
+  return items.some((item) => item.label)
+    ? Tooltip.Group.view(
+        tooltips,
+        {
+          toMessage: (message) => Message.SwatchTip({ message }),
+          children: [row],
+        },
+        h,
+      )
+    : row;
 }
 
 /** Drag and Escape subscriptions for the two rails, keyed under `prefix` so
@@ -453,8 +487,10 @@ function formatControlView(
   open: boolean,
   selectedFormat: Model['format'],
   size: NonNullable<Props['size']>,
+  radius: Props['radius'],
   icons: Props['icons'],
   portalMenu: Props['portalMenu'],
+  formatBackdrop: Props['formatBackdrop'],
   controlledOpen: Props['formatOpen'],
   h: HtmlBuilder<Message>,
 ): Html {
@@ -494,8 +530,10 @@ function formatControlView(
       selection: { mode: 'single' as const, value: selectedFormat },
       checkmarks: false,
       size,
+      radius,
       surfaceLevel: 5,
       portal: portalMenu ?? true,
+      backdrop: formatBackdrop,
       popupAttributes: childAttributes([h.DataAttribute('cp-format', '')]),
       trigger: formatTrigger(formatOpen),
     },

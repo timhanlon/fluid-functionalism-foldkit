@@ -1,0 +1,70 @@
+.ff-data-table-ghost {
+  position: fixed;
+  z-index: var(--z-popover, 60);
+  overflow: hidden;
+  opacity: 0.8;
+  pointer-events: none;
+}
+.ff-data-table-row-copy {
+  position: absolute;
+  inset: 0;
+}
+.ff-data-table-drag-block {
+  position: absolute;
+  inset-inline: 0;
+  overflow: hidden;
+  background: var(--background);
+  border-radius: 8px;
+}
+.ff-data-table-ghost[data-radius='pill'] .ff-data-table-drag-block {
+  border-radius: 20px;
+}
+.ff-data-table-ghost[data-radius='sharp'] .ff-data-table-drag-block {
+  border-radius: 1px;
+}
+.ff-data-table-drag-block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  background: var(--active);
+  border-radius: inherit;
+}
+.ff-data-table-drag-count {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 30;
+  padding-inline: 6px;
+  color: var(--background);
+  background: var(--foreground);
+  font-size: var(--fs-caption, 11px);
+  line-height: var(--lh-caption, 16px);
+  font-variant-numeric: tabular-nums;
+  border-radius: 999px;
+}
+.ff-data-table-ghost[data-radius='sharp'] .ff-data-table-drag-count {
+  border-radius: 1px;
+}
+.ff-data-table .ff-table-row[data-row-dragging] {
+  opacity: 0.4 !important;
+}
+
+.ff-data-table-column-copy {
+  inset-block: 0;
+}
+
+.ff-data-table-drop-line {
+  position: fixed;
+  z-index: var(--z-popover, 60);
+  pointer-events: none;
+  border-radius: 999px;
+  background: var(--fluid-accent, #6b97ff);
+}
+.ff-data-table-drop-line-row {
+  height: 2px;
+}
+.ff-data-table-drop-line-column {
+  width: 2px;
+}

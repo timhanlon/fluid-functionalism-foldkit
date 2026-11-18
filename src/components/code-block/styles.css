@@ -1,33 +1,161 @@
 .ff-code-block {
-  overflow: auto;
-  font-size: 13px;
-  line-height: 20px;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--foreground);
+  background: color-mix(in oklab, currentColor 7%, transparent);
+  border-radius: 8px;
+  font-size: var(--fs-caption, 12px);
+  line-height: var(--lh-caption, 16px);
 }
-.ff-code-block pre {
+.ff-code-block[data-radius='pill'] {
+  border-radius: 20px;
+}
+.ff-code-block[data-radius='sharp'] {
+  border-radius: 1px;
+}
+.ff-code-block[data-size='compact'] {
+  font-size: var(--fs-caption-compact, 11px);
+  line-height: var(--lh-caption-compact, 14px);
+}
+.ff-code-header {
+  display: flex;
+  height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 6px 0 1em;
+}
+.ff-code-block[data-size='compact'] .ff-code-header {
+  height: 32px;
+}
+.ff-code-heading {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+}
+.ff-code-floating-copy {
+  position: absolute;
+  z-index: 10;
+  right: 6px;
+  top: 6px;
+}
+.ff-code-copy-slot {
+  display: flex;
+  flex-shrink: 0;
+}
+.ff-code-block .ff-button.ff-code-copy {
+  width: 24px;
+  height: 24px;
+}
+.ff-code-glyphs {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  place-items: center;
+}
+.ff-code-copy-glyph,
+.ff-code-result-glyph {
+  display: flex;
+  grid-column: 1;
+  grid-row: 1;
+  transition:
+    opacity 80ms ease-out,
+    transform 80ms ease-out,
+    filter 80ms ease-out;
+}
+.ff-code-copy-glyph,
+.ff-code-glyphs[data-shown='true'] .ff-code-result-glyph {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+.ff-code-result-glyph,
+.ff-code-glyphs[data-shown='true'] .ff-code-copy-glyph {
+  opacity: 0;
+  transform: scale(0.6);
+  filter: blur(4px);
+  transition-duration: 60ms;
+  transition-timing-function: ease-in;
+}
+.ff-code-glyphs[data-result='error'] .ff-code-result-glyph {
+  color: var(--destructive);
+}
+.ff-code-glyphs[data-shown='true'] .ff-code-result-glyph path {
+  stroke-dasharray: 1;
+  animation: ff-code-draw 80ms ease-out;
+}
+@keyframes ff-code-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.ff-code-block .ff-code-viewport {
+  max-height: var(--code-max-height, none);
+}
+.ff-code-body {
   box-sizing: border-box;
+  width: max-content;
+  min-width: 100%;
+  padding: 0.75em 1em;
+  font-family: var(--font-mono, monospace);
+}
+.ff-code-block[data-hide-header='false'] .ff-code-body {
+  padding-top: 0;
+}
+.ff-code-block[data-hide-header='true'] .ff-code-body {
+  padding-right: 40px;
+}
+.ff-code-block[data-wrap='true'] .ff-scroll-content,
+.ff-code-block[data-wrap='true'] .ff-code-body {
+  width: 100%;
+}
+.ff-code-block .ff-code-body pre {
   margin: 0;
-  padding: 16px;
-  min-height: var(--ff-code-min-height, 120px);
+  padding: 0;
+  min-height: 0;
   background: transparent !important;
-  font-family: var(
-    --font-mono,
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    'Liberation Mono',
-    'Courier New',
-    monospace
-  );
-  font-size: inherit;
-  line-height: inherit;
+  font: inherit;
+  white-space: pre;
 }
-.ff-code-block code {
-  font-family: inherit;
+.ff-code-body code {
+  font: inherit;
 }
-.ff-code-block .shiki,
-.ff-code-block .shiki span {
-  color: light-dark(var(--shiki-light), var(--shiki-dark)) !important;
-  background-color: transparent !important;
+.ff-code-body .ff-code-highlight {
+  overflow: visible;
+  font: inherit;
+}
+.ff-code-block[data-wrap='true'] pre {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+.ff-code-line {
+  display: flex;
+}
+.ff-code-line-number {
+  margin-right: 16px;
+  flex-shrink: 0;
+  user-select: none;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+.ff-code-line-text {
+  min-width: 0;
+  flex: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ff-code-copy-glyph,
+  .ff-code-result-glyph {
+    transition: none;
+  }
+  .ff-code-glyphs .ff-code-result-glyph path {
+    animation: none;
+  }
 }

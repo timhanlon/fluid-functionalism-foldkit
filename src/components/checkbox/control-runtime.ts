@@ -1,7 +1,6 @@
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
-export const Mounted = Mount.define('Checkbox.ControlKeys', {
-  messages: [Schema.Never],
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
+export const Mounted = defineSilentMount('Checkbox.ControlKeys', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

@@ -26,6 +26,7 @@ export const Message = defineMessageUnion({
   },
   LabelMeasured: { key: Schema.String, cut: Schema.Boolean },
   Expanded: {},
+  Collapsed: {},
   MenuHovered: { key: Schema.String },
   MenuMessage: { key: Schema.String, message: Dropdown.Message },
   TooltipMessage: { key: Schema.String, message: Tooltip.Message },
@@ -69,6 +70,8 @@ export function update(
             ? model
             : { ...model, cuts: { ...model.cuts, [message.key]: message.cut } },
       };
+    case 'Collapsed':
+      return { model: { ...model, expanded: false } };
     case 'Expanded':
       return { model: { ...model, expanded: true } };
     case 'MenuHovered': {

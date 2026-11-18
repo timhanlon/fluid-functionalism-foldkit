@@ -46,8 +46,7 @@ export const Model = Schema.Struct({
   layout: Schema.Literals(['horizontal', 'vertical']),
   committedEnd: Schema.Option(Day),
   commitGeneration: Schema.Number,
-  previousTooltip: Tooltip.Model,
-  nextTooltip: Tooltip.Model,
+  navigationTooltips: Schema.Record(Schema.String, Tooltip.Group.Model),
 });
 export interface Model extends Schema.Schema.Type<typeof Model> {}
 export const Message = defineMessageUnion({
@@ -62,7 +61,7 @@ export const Message = defineMessageUnion({
   LayoutChanged: { layout: Schema.Literals(['horizontal', 'vertical']) },
   ClearCommitted: { generation: Schema.Number },
   FocusCompleted: {},
-  Tooltip: { direction: Schema.Literals([-1, 1]), message: Tooltip.Message },
+  NavigationTooltip: { key: Schema.String, message: Tooltip.Group.Message },
 });
 export type Message = typeof Message.Type;
 export const OutMessage = defineMessageUnion({
@@ -106,8 +105,7 @@ export const init = (options: {
   layout: 'horizontal',
   committedEnd: Option.none(),
   commitGeneration: 0,
-  previousTooltip: Tooltip.init({ id: `${options.id}-previous-tooltip` }),
-  nextTooltip: Tooltip.init({ id: `${options.id}-next-tooltip` }),
+  navigationTooltips: {},
 });
 export const selection = (model: Model, options: Options): Selection =>
   options.controlled ? (options.selected ?? none()) : model.selection;
@@ -294,17 +292,26 @@ export function update(
         ...(changeMonth ? { outMessage: OutMessage.MonthChanged({ month }) } : {}),
       };
     }
-    case 'Tooltip': {
-      const field = message.direction < 0 ? 'previousTooltip' : 'nextTooltip',
-        result = Tooltip.update(model[field], message.message);
+    case 'NavigationTooltip': {
+      const result = Tooltip.Group.update(
+        navigationTooltipGroup(model, message.key),
+        message.message,
+      );
       return {
-        model: { ...model, [field]: result.model },
+        model: {
+          ...model,
+          navigationTooltips: { ...model.navigationTooltips, [message.key]: result.model },
+        },
         commands: (result.commands ?? []).map((command) =>
           Command.mapMessage(command, (message_) =>
-            Message.Tooltip({ direction: message.direction, message: message_ }),
+            Message.NavigationTooltip({ key: message.key, message: message_ }),
           ),
         ),
       };
     }
   }
 }
+
+/** Separate source NavGroups retain independent side and hover-delay scopes. */
+export const navigationTooltipGroup = (model: Model, key: string): Tooltip.Group.Model =>
+  model.navigationTooltips[key] ?? Tooltip.Group.init({ id: `${model.id}-nav-${key}` });

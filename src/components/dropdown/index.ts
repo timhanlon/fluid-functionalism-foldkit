@@ -18,11 +18,19 @@ export interface Item {
   readonly value: string;
   readonly label: string;
   readonly icon?: Html;
+  /** Static content before the icon. Use renderLeading for parent handlers or Mounts. */
+  readonly leading?: Html;
   readonly trailing?: Html;
+  readonly shortcut?: string | readonly string[];
+  /** A destructive action: label and primary icon use the destructive color. */
+  readonly destructive?: boolean;
   readonly disabled?: boolean;
   readonly group?: string;
+  /** Empty text keeps the group separator without adding a heading. */
+  readonly groupLabel?: string;
 }
 export interface Props {
+  readonly buttonClassName?: string;
   readonly anchorTriggerId?: string;
   readonly hideTrigger?: boolean;
   readonly submenu?: boolean;
@@ -37,6 +45,8 @@ export interface Props {
   readonly selection?: Selection;
   readonly chevron?: boolean;
   readonly items: readonly Item[];
+  /** Parent-owned leading content. Its clicks do not activate the row. */
+  readonly renderLeading?: (item: Item, index: number) => Html | null;
   readonly label: string;
   readonly disabled?: boolean;
   readonly size?: 'default' | 'compact';
@@ -55,6 +65,8 @@ export interface Props {
   /** Render the popup in place instead of portalling it to the body (inside
    * another popup, so presses in it stay inside that popup). */
   readonly portal?: boolean;
+  /** Pass outside clicks through for a persistently open illustrative menu. */
+  readonly backdrop?: 'dismiss' | 'passthrough';
   /** The wrapper's class ("contents" lets a custom trigger sit in its
    * parent's layout, as a sidebar row's own button). */
   readonly rootClassName?: string;
@@ -71,6 +83,7 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
         size: props.size,
         radius: props.radius,
         variant: props.variant ?? 'ghost',
+        className: props.buttonClassName,
         leadingIcon: props.icon,
         trailingIcon:
           props.chevron === false
@@ -91,6 +104,11 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
       h,
     );
   const byValue = new Map(props.items.map((item) => [item.value, item]));
+  const groupLabels = new Map(
+    props.items
+      .filter((item) => item.group !== undefined)
+      .map((item) => [item.group!, item.groupLabel ?? item.group!]),
+  );
   const menu = h.submodel({
     slotId: 'behavior',
     model,
@@ -131,7 +149,19 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
       itemsScrollAttributes: childAttributes([h.OnMount(Mounted())]),
       backdropClassName: props.submenu
         ? 'ff-dropdown-submenu-backdrop'
-        : 'ff-popup-backdrop ff-dropdown-backdrop',
+        : `ff-popup-backdrop ff-dropdown-backdrop${props.backdrop === 'passthrough' ? ' pointer-events-none' : ''}`,
+      backdropAttributes: childAttributes([
+        h.AriaHidden(true),
+        h.Style({
+          pointerEvents: props.backdrop === 'passthrough' ? 'none' : 'auto',
+        }),
+        ...(props.submenu || props.backdrop === 'passthrough'
+          ? []
+          : [
+              h.DataAttribute('slot', 'popup-shield'),
+              h.DataAttribute('shield-for', `${model.id}-items`),
+            ]),
+      ]),
       anchorTriggerId: props.anchorTriggerId ?? Primitive.buttonId(model.id),
       anchor: {
         placement: props.placement ?? 'bottom-start',
@@ -141,8 +171,10 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
         portal: props.portal ?? true,
       },
       itemGroupKey: (value) => byValue.get(value)?.group ?? '',
-      groupToHeading: (key) =>
-        key ? { content: h.span([h.Class('ff-popup-heading')], [key]) } : undefined,
+      groupToHeading: (key) => {
+        const label = groupLabels.get(key) ?? key;
+        return label ? { content: h.span([h.Class('ff-popup-heading')], [label]) } : undefined;
+      },
       separatorClassName: 'ff-popup-separator',
       itemToConfig: (value) => {
         const selection = props.selection;
@@ -162,6 +194,7 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
                 String(props.items.findIndex((item) => item.value === value)),
               ),
               h.DataAttribute('dropdown-label', byValue.get(value)!.label),
+              h.AriaLabel(byValue.get(value)!.label),
               ...(checked === undefined
                 ? []
                 : [
@@ -177,6 +210,11 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
           content: rowContent(
             {
               ...byValue.get(value)!,
+              leading:
+                props.renderLeading?.(
+                  byValue.get(value)!,
+                  props.items.findIndex((item) => item.value === value),
+                ) ?? byValue.get(value)!.leading,
               check: checked !== undefined && props.checkmarks !== false,
             },
             h,

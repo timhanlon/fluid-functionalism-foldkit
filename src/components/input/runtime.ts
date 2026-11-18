@@ -1,5 +1,5 @@
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
 /** Let the native number implementation own step alignment and decimal
  * precision; dispatch the same input event as typing so controlled users update. */
 export function stepInput(input: HTMLInputElement, direction: 1 | -1): void {
@@ -12,8 +12,7 @@ export function stepInput(input: HTMLInputElement, direction: 1 | -1): void {
   else input.stepDown();
   input.dispatchEvent(new Event('input', { bubbles: true }));
 }
-export const Mounted = Mount.define('Input.NativeEnhancements', {
-  messages: [Schema.Never],
+export const Mounted = defineSilentMount('Input.NativeEnhancements', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

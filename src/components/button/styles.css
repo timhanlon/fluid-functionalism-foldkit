@@ -1,5 +1,9 @@
+@layer components {
+  .ff-button {
+    position: relative;
+  }
+}
 .ff-button {
-  position: relative;
   isolation: isolate;
   display: inline-flex;
   align-items: center;
@@ -25,8 +29,10 @@
   color: var(--background, #fff);
   transition: color 80ms;
 }
-.ff-button:disabled {
+.ff-button:disabled:not([aria-busy='true']) {
   opacity: 0.5;
+}
+.ff-button:disabled {
   pointer-events: none;
 }
 .ff-button:focus-visible {
@@ -66,9 +72,8 @@
 .ff-button-background {
   position: absolute;
   inset: 1px;
-  /* The surface is inset 1px. Keep its curve concentric with the outer
-   * focus ring, including the surface's resting 1px shadow spread. */
-  border-radius: max(0px, calc(var(--ff-button-radius) - 1px));
+  /* Upstream keeps the inset surface's radius equal to its button. */
+  border-radius: inherit;
   background: var(--btn-bg);
   box-shadow: 0 0 0 1px var(--btn-bg);
   transition:
@@ -79,22 +84,36 @@
 .ff-button[data-variant='primary'] {
   --btn-bg: var(--foreground, #171717);
 }
-.ff-button[data-variant='primary']:hover {
+.ff-button[data-variant='primary']:not([data-loading='true']):hover {
   --btn-bg: color-mix(in oklab, var(--foreground, #171717) 90%, var(--background, #fff));
 }
 .ff-button[data-variant='primary']:active,
-.ff-button[data-variant='primary'][data-active='true'] {
+.ff-button[data-variant='primary']:is(
+    [data-active='true'],
+    [aria-haspopup]:not(
+        [aria-haspopup='dialog'],
+        [aria-haspopup='false'],
+        [aria-haspopup='']
+      )[aria-expanded='true']
+  ) {
   --btn-bg: color-mix(in oklab, var(--foreground, #171717) 80%, var(--background, #fff));
 }
 .ff-button[data-variant='secondary'] {
   color: var(--foreground, #171717);
   --btn-bg: var(--tint, rgb(0 0 0/0.06));
 }
-.ff-button[data-variant='secondary']:hover {
+.ff-button[data-variant='secondary']:not([data-loading='true']):hover {
   --btn-bg: var(--tint-hover, rgb(0 0 0/0.09));
 }
 .ff-button[data-variant='secondary']:active,
-.ff-button[data-variant='secondary'][data-active='true'] {
+.ff-button[data-variant='secondary']:is(
+    [data-active='true'],
+    [aria-haspopup]:not(
+        [aria-haspopup='dialog'],
+        [aria-haspopup='false'],
+        [aria-haspopup='']
+      )[aria-expanded='true']
+  ) {
   --btn-bg: var(--tint, rgb(0 0 0/0.06));
 }
 .ff-button[data-variant='tertiary'] {
@@ -106,7 +125,7 @@
     0 0 0 1px var(--border, #ddd),
     inset 0 0 0 0 var(--border, #ddd);
 }
-.ff-button[data-variant='tertiary']:hover .ff-button-background {
+.ff-button[data-variant='tertiary']:not([data-loading='true']):hover .ff-button-background {
   background: var(--hover, rgb(0 0 0/0.04));
 }
 .ff-button[data-variant='tertiary']:active .ff-button-background {
@@ -115,19 +134,34 @@
     0 0 0 0 var(--border, #ddd),
     inset 0 0 0 1px var(--border, #ddd);
 }
-.ff-button[data-variant='tertiary'][data-active='true'] .ff-button-background {
+.ff-button[data-variant='tertiary']:is(
+    [data-active='true'],
+    [aria-haspopup]:not(
+        [aria-haspopup='dialog'],
+        [aria-haspopup='false'],
+        [aria-haspopup='']
+      )[aria-expanded='true']
+  )
+  .ff-button-background {
   background: var(--active, rgb(0 0 0/0.08));
 }
 .ff-button[data-variant='ghost'] {
   color: var(--muted-foreground, #737373);
   --btn-bg: transparent;
 }
-.ff-button[data-variant='ghost']:hover {
+.ff-button[data-variant='ghost']:not([data-loading='true']):hover {
   color: var(--foreground, #171717);
   --btn-bg: var(--hover, rgb(0 0 0/0.04));
 }
 .ff-button[data-variant='ghost']:active,
-.ff-button[data-variant='ghost'][data-active='true'] {
+.ff-button[data-variant='ghost']:is(
+    [data-active='true'],
+    [aria-haspopup]:not(
+        [aria-haspopup='dialog'],
+        [aria-haspopup='false'],
+        [aria-haspopup='']
+      )[aria-expanded='true']
+  ) {
   --btn-bg: var(--active, rgb(0 0 0/0.08));
 }
 .ff-button:active .ff-button-background {
@@ -170,32 +204,36 @@
   justify-content: center;
 }
 .ff-button .ff-button-spinner svg {
-  width: 36px;
-  height: 36px;
+  width: 16px;
+  height: 16px;
 }
 .ff-button[data-size='compact'] .ff-button-spinner svg,
 .ff-button[data-size='icon-compact'] .ff-button-spinner svg {
-  width: 28px;
-  height: 28px;
+  width: 14px;
+  height: 14px;
 }
-.ff-button-spinner path {
-  stroke-dasharray: 15 85;
-  animation:
-    ff-spinner-move 2s linear infinite,
-    ff-spinner-dash 4s ease-in-out infinite;
+.ff-spinner-turn {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: ff-spinner-turn 1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
-@keyframes ff-spinner-move {
+.ff-spinner-breathe {
+  animation: ff-spinner-breathe 1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes ff-spinner-turn {
   to {
-    stroke-dashoffset: -100;
+    transform: rotate(360deg);
   }
 }
-@keyframes ff-spinner-dash {
+@keyframes ff-spinner-breathe {
   0%,
   100% {
-    stroke-dasharray: 15 85;
+    stroke-dasharray: 0.01 49.99;
+    stroke-dashoffset: -25;
   }
   50% {
-    stroke-dasharray: 40 60;
+    stroke-dasharray: 26 24;
+    stroke-dashoffset: -12;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -204,8 +242,9 @@
   .ff-button-content svg {
     transition: none;
   }
-  .ff-button-spinner path {
-    animation: none;
+  .ff-spinner-turn,
+  .ff-spinner-breathe {
+    animation-duration: 2s;
   }
 }
 
@@ -220,7 +259,7 @@
     var(--color-red-400, oklch(70.4% 0.191 22.216))
   );
 }
-.ff-button[data-variant='destructive']:hover {
+.ff-button[data-variant='destructive']:not([data-loading='true']):hover {
   --btn-bg: light-dark(
     color-mix(in oklab, var(--btn-red) 25%, transparent),
     color-mix(in oklab, var(--btn-red) 30%, transparent)
@@ -236,4 +275,18 @@
 /* Sharp uses the source shape-context radii. */
 .ff-button[data-radius='sharp'] {
   --ff-button-radius: 1px;
+}
+
+.ff-button[data-variant='destructive']:is(
+    [data-active='true'],
+    [aria-haspopup]:not(
+        [aria-haspopup='dialog'],
+        [aria-haspopup='false'],
+        [aria-haspopup='']
+      )[aria-expanded='true']
+  ) {
+  --btn-bg: light-dark(
+    color-mix(in oklab, var(--btn-red) 25%, transparent),
+    color-mix(in oklab, var(--btn-red) 30%, transparent)
+  );
 }

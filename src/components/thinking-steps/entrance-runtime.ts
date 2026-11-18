@@ -1,9 +1,8 @@
+import { defineSilentMountWithArgs } from '../silent-mount';
 import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
 import { animate, type AnimationPlaybackControls } from 'motion';
-export const Entered = Mount.define('ThinkingSteps.Entrance', {
+export const Entered = defineSilentMountWithArgs('ThinkingSteps.Entrance', {
   args: { kind: Schema.Literals(['step', 'source', 'image']), delay: Schema.Number },
-  messages: [Schema.Never],
   execute: ({ element, kind, delay }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

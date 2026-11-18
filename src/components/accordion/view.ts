@@ -7,6 +7,7 @@ import './styles.css';
 
 export interface Props extends Options {
   readonly id: string;
+  readonly grouped?: boolean;
   readonly highlight?: 'trigger' | 'item';
   readonly size?: 'default' | 'compact';
   readonly radius?: 'rounded' | 'pill' | 'sharp';
@@ -23,6 +24,7 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
       h.DataAttribute('size', props.size ?? 'default'),
       h.DataAttribute('radius', props.radius ?? 'rounded'),
       h.DataAttribute('accordion-highlight', highlight),
+      h.DataAttribute('grouped', String(!!props.grouped)),
       h.OnMount(AccordionRuntime()),
     ],
     props.items.map((item) => {
@@ -40,7 +42,7 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
           h.DataAttribute('state', state),
         ],
         [
-          h.h3(
+          h.div(
             [h.Class('ff-accordion-heading')],
             [
               h.button(

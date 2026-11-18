@@ -1,9 +1,9 @@
-import { Effect, Queue, Schema, Stream } from 'effect';
+import { Schema } from 'effect';
 import { Command, Submodel, type Update } from 'foldkit';
 import { defineMessageUnion } from 'foldkit/message';
 import * as DialogBase from '../dialog';
 import { Message as MenuMessage } from './messages';
-import { hasModifier, matchesShortcut, parseShortcut } from './shortcuts';
+export { shortcut, type ShortcutOptions } from './shortcut-runtime';
 import * as Menu from './index';
 
 /** The modal shell, as upstream's CommandMenuDialog: a top-anchored dialog
@@ -86,67 +86,43 @@ export interface Props extends Omit<Menu.Props, 'inDialog'> {
 }
 export const view = Submodel.defineView<Model, Message, Props>((model, props, h) => {
   const { title, description, ...menu } = props;
-  return h.submodel({
-    slotId: 'dialog',
-    model: model.dialog,
-    view: DialogBase.view,
-    toParentMessage: (message) => Message.Dialog({ message }),
-    viewInputs: {
-      title: title ?? 'Command menu',
-      description: description ?? 'Search for a command to run.',
-      hideTrigger: true,
-      hideHeader: true,
-      showCloseButton: false,
-      width: 'lg',
-      position: 'top',
-      className: 'ff-command-dialog',
-      ...(props.size ? { size: props.size } : {}),
-      ...(props.radius ? { radius: props.radius } : {}),
-      renderContent: ({ initialFocus }) =>
-        h.submodel({
-          slotId: 'menu',
-          model: model.menu,
-          view: Menu.view,
-          toParentMessage: (message) => Message.Menu({ message }),
-          viewInputs: { ...menu, inDialog: true, inputAttributes: initialFocus },
-        }),
-    },
-  });
-});
-
-/** Keydowns that are the combo, for a page Subscription. A bare key stays out
- * of fields; a combo with a modifier fires anywhere, as upstream. `inScope`
- * restricts which presses count (upstream's shortcutScope: focus inside an
- * element), and the listener runs in the capture phase so a claimed combo is
- * handled before page-wide shortcuts such as the site's ⌘K search. */
-export function shortcut(
-  combo: string,
-  inScope: () => boolean = () => true,
-): Stream.Stream<KeyboardEvent> {
-  const parsed = parseShortcut(combo);
-  if (parsed.key === '') return Stream.empty;
-  return Stream.callback<KeyboardEvent>((queue) =>
-    Effect.acquireRelease(
-      Effect.sync(() => {
-        // preventDefault must run inside the listener: a downstream stage runs
-        // after the browser has already acted (⌘P would still print).
-        const listener = (event: KeyboardEvent) => {
-          if (event.repeat || event.defaultPrevented || !matchesShortcut(event, parsed)) return;
-          if (!inScope()) return;
-          const target = event.target;
-          if (
-            !hasModifier(parsed) &&
-            target instanceof HTMLElement &&
-            (target.closest('input,textarea,select') || target.isContentEditable)
-          )
-            return;
-          event.preventDefault();
-          Queue.offerUnsafe(queue, event);
-        };
-        document.addEventListener('keydown', listener, true);
-        return listener;
+  return h.div(
+    [h.Class('contents')],
+    [
+      h.span(
+        [
+          h.Id(`${model.menu.id}-shortcut-anchor`),
+          h.Hidden(true),
+          h.DataAttribute('command-menu-open', String(model.dialog.isOpen)),
+        ],
+        [],
+      ),
+      h.submodel({
+        slotId: 'dialog',
+        model: model.dialog,
+        view: DialogBase.view,
+        toParentMessage: (message) => Message.Dialog({ message }),
+        viewInputs: {
+          title: title ?? 'Command menu',
+          description: description ?? 'Search for a command to run.',
+          hideTrigger: true,
+          hideHeader: true,
+          showCloseButton: false,
+          width: 'lg',
+          position: 'top',
+          className: 'ff-command-dialog',
+          ...(props.size ? { size: props.size } : {}),
+          ...(props.radius ? { radius: props.radius } : {}),
+          renderContent: ({ initialFocus }) =>
+            h.submodel({
+              slotId: 'menu',
+              model: model.menu,
+              view: Menu.view,
+              toParentMessage: (message) => Message.Menu({ message }),
+              viewInputs: { ...menu, inDialog: true, inputAttributes: initialFocus },
+            }),
+        },
       }),
-      (listener) => Effect.sync(() => document.removeEventListener('keydown', listener, true)),
-    ),
+    ],
   );
-}
+});

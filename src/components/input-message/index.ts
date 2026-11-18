@@ -7,6 +7,7 @@ import { FileDrop } from '@foldkit/ui';
 import * as Button from '../button';
 import * as Tooltip from '../tooltip';
 import * as FileThumbnail from '../file-thumbnail';
+import * as KeyCap from '../key-cap';
 import { icon } from '../icons';
 import { Message, type Model, type QueuedMessage } from './state';
 import {
@@ -22,8 +23,17 @@ import {
 import { Mounted } from './runtime';
 import '../../fluid-hover/styles.css';
 import './styles.css';
-export { Model, Message, OutMessage, QueuedMessage, init, FocusField } from './state';
-export { update, release, addFiles, defaultAccept, fieldId, type Options } from './update';
+export { Model, Message, OutMessage, QueuedMessage, Status, init, FocusField } from './state';
+export {
+  update,
+  release,
+  releaseOnStatusChange,
+  isBusy,
+  addFiles,
+  defaultAccept,
+  fieldId,
+  type Options,
+} from './update';
 
 /** A chat composer, as upstream's InputMessage: an auto-growing textarea, an
  * action bar with consumer slots and a send / queue / stop button, optional
@@ -47,7 +57,7 @@ export interface Props extends Options {
   readonly sendLabel?: string;
   /** Side of each attachment tile in pixels. Defaults to 80. */
   readonly filePreviewSize?: number;
-  /** The send button becomes Stop while streaming with an empty draft. */
+  /** The send button becomes Stop while submitted or streaming with an empty draft. */
   readonly stoppable?: boolean;
   /** Render the built-in queue rows above the textarea. Defaults to true. */
   readonly showQueue?: boolean;
@@ -128,17 +138,27 @@ function composer(
           },
           h,
         ),
-        tip(`file-${fileKey(file)}`, 'Remove', (attributes) =>
-          h.button(
-            [
-              ...attributes,
-              h.Type('button'),
-              h.Class('ff-im-tile-remove'),
-              h.AriaLabel(`Remove ${file.name}`),
-              h.OnClick(Message.FileRemoved({ index })),
-            ],
-            [x(12)],
-          ),
+        Tooltip.Group.tip(
+          model.attachmentTooltips,
+          `file-${fileKey(file)}`,
+          {
+            content: 'Remove',
+            side: 'top',
+            radius: props.radius,
+            renderTrigger: (attributes) =>
+              h.button(
+                [
+                  ...attributes,
+                  h.Type('button'),
+                  h.Class('ff-im-tile-remove'),
+                  h.AriaLabel(`Remove ${file.name}`),
+                  h.OnClick(Message.FileRemoved({ index })),
+                ],
+                [x(12)],
+              ),
+          },
+          (message) => Message.AttachmentTip({ message }),
+          h,
         ),
       ],
     ),
@@ -246,7 +266,7 @@ function composer(
                 [h.Class('ff-im-ghost-line')],
                 [
                   h.span([h.Class('ff-im-ghost-text')], [props.placeholderSuggestion!]),
-                  h.kbd([h.Class('ff-im-ghost-kbd')], ['Tab']),
+                  KeyCap.view({ children: ['Tab'], className: 'ff-im-ghost-kbd' }, h),
                 ],
               ),
             ],
@@ -310,7 +330,25 @@ function composer(
     [
       props.files !== undefined ? h.input([...input, h.AriaHidden(true), h.Tabindex(-1)]) : null,
       props.files !== undefined
-        ? region('files', files.length > 0, h.div([h.Class('ff-im-files')], tiles))
+        ? region(
+            'files',
+            files.length > 0,
+            h.div(
+              [h.Class('ff-im-files')],
+              files.length > 0
+                ? [
+                    Tooltip.Group.view(
+                      model.attachmentTooltips,
+                      {
+                        toMessage: (message) => Message.AttachmentTip({ message }),
+                        children: tiles,
+                      },
+                      h,
+                    ),
+                  ]
+                : [],
+            ),
+          )
         : null,
       supportsQueue(props) && props.showQueue !== false
         ? region(

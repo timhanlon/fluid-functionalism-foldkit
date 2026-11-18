@@ -2,10 +2,12 @@ import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import * as FileThumbnail from '../file-thumbnail';
 import { Mounted } from './runtime';
 import './styles.css';
+export type { Attachment as ChatMessageFile } from '../file-thumbnail';
 export interface Props<Message> {
   readonly key?: string;
   readonly from: 'user' | 'assistant';
-  readonly files?: readonly File[];
+  /** Local File objects or remote { url, mediaType, filename? } parts from a saved conversation or the AI SDK. Remote images render from their URL; failed images and other remote types use a document glyph. Only local PDFs render their first page. */
+  readonly files?: readonly FileThumbnail.Attachment[];
   readonly thumbnailSize?: number;
   readonly time?: Html | string;
   readonly actions?: readonly Html[];
@@ -41,7 +43,13 @@ export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): H
                   file,
                   size: props.thumbnailSize ?? 64,
                   shape: props.radius,
-                  attributes: [h.Key(`${file.name}-${file.size}-${file.lastModified}-${index}`)],
+                  attributes: [
+                    h.Key(
+                      'url' in file
+                        ? `${file.url}-${index}`
+                        : `${file.name}-${file.size}-${file.lastModified}-${index}`,
+                    ),
+                  ],
                 },
                 h,
               ),

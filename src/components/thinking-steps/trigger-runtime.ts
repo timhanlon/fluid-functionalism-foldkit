@@ -1,8 +1,7 @@
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
 import { animate, type AnimationPlaybackControls } from 'motion';
-export const TriggerMounted = Mount.define('ThinkingSteps.TriggerMotion', {
-  messages: [Schema.Never],
+export const TriggerMounted = defineSilentMount('ThinkingSteps.TriggerMotion', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

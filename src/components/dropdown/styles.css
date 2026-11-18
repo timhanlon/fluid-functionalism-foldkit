@@ -64,18 +64,18 @@
 }
 .ff-dropdown-search {
   position: sticky;
-  top: 0;
+  top: -4px;
   z-index: 20;
-  margin: -4px -4px 2px;
+  margin: -4px -4px 4px;
   height: 36px;
-  padding: 0 12px;
+  padding: 4px 12px;
   display: flex;
   align-items: center;
   flex: none;
   gap: 8px;
   border-bottom: 1px solid color-mix(in srgb, var(--border, #ddd) 60%, transparent);
   background: var(--surface-3, light-dark(#fff, #262626));
-  box-sizing: border-box;
+  box-sizing: content-box;
 }
 .ff-dropdown-search > svg {
   width: 16px;
@@ -105,7 +105,7 @@
 }
 .ff-popup[data-size='compact'] .ff-dropdown-search {
   height: 28px;
-  padding: 0 10px;
+  padding: 4px 10px;
   gap: 4px;
 }
 .ff-popup[data-size='compact'] .ff-dropdown-search > svg {
@@ -121,4 +121,78 @@
   text-align: center;
   color: var(--muted-foreground, #737373);
   font: var(--fs-body, 13px)/20px var(--font-sans, Inter, system-ui, sans-serif);
+}
+
+.ff-dropdown-popup[data-search-space] > .ff-popup-viewport {
+  display: flex;
+  flex-direction: column;
+}
+.ff-dropdown-popup[data-search-space]
+  > .ff-popup-viewport
+  > :is([role='group'], .ff-popup-separator) {
+  flex: none;
+}
+.ff-dropdown-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  box-sizing: border-box;
+  min-height: var(--dropdown-empty-height, 0px);
+  margin-block: auto;
+}
+.ff-popup[data-size='compact'] .ff-dropdown-empty {
+  font-size: var(--fs-body-compact, 12px);
+  line-height: var(--lh-body-compact, 18px);
+}
+
+/* Five tracks retain the row's side insets and leading gap while letting the
+   native action cover the whole row. Leading content overlays its own track. */
+.ff-dropdown-panel-leading-row {
+  display: grid;
+  grid-template-columns: 8px max-content 8px minmax(0, 1fr) 8px;
+  gap: 0;
+  padding: 0;
+}
+.ff-popup[data-size='compact'] .ff-dropdown-panel-leading-row {
+  grid-template-columns: 6px max-content 4px minmax(0, 1fr) 6px;
+  gap: 0;
+  padding: 0;
+}
+.ff-dropdown-panel-action {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: inherit;
+}
+.ff-dropdown-panel-action > .ff-popup-row-content {
+  grid-column: 4;
+  grid-row: 1;
+}
+.ff-dropdown-panel-leading-row > .ff-popup-row-leading {
+  grid-column: 2;
+  grid-row: 1;
+  z-index: 1;
+}
+.ff-dropdown-panel-action > .ff-popup-row-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.ff-popup[data-size='compact'] .ff-dropdown-panel-action > .ff-popup-row-content {
+  gap: 4px;
 }

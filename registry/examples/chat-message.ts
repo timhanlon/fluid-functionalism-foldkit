@@ -80,6 +80,18 @@ export function view(model: Model, h: HtmlBuilder<Message>) {
                 ChatMessage.view(
                   {
                     from: 'assistant',
+                    files: [
+                      {
+                        url: `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="#22c55e"/></svg>')}`,
+                        mediaType: 'image',
+                        filename: 'Saved avatar',
+                      },
+                      {
+                        url: '/saved-report.pdf',
+                        mediaType: 'application/pdf',
+                        filename: 'Saved report',
+                      },
+                    ],
                     children: [h.p([], ['I can help with that.'])],
                     animateEntrance: false,
                   },

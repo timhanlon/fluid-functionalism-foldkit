@@ -10,6 +10,8 @@ import { formatDuration, formatTime } from './time';
 import './styles.css';
 export interface Props extends Edit.Options {
   readonly label: string;
+  readonly liveAnchorId?: string;
+  readonly radius?: 'rounded' | 'pill' | 'sharp';
   readonly placeholder: string;
   readonly prefix?: Html;
   readonly suffix?: Html;
@@ -121,9 +123,23 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
             info.isVisible
               ? h.div(
                   [
+                    ...info.backdrop,
+                    h.Class('ff-popup-backdrop'),
+                    h.AriaHidden(true),
+                    h.DataAttribute('slot', 'popup-shield'),
+                    h.DataAttribute('shield-for', `${model.popover.id}-panel`),
+                    h.DataAttribute('shield-anchor', props.liveAnchorId ?? anchorId),
+                  ],
+                  [],
+                )
+              : null,
+            info.isVisible
+              ? h.div(
+                  [
                     ...info.panel,
                     h.OnMount(Anchored({ anchorId })),
                     h.Class('ff-popup ff-time-popup'),
+                    h.DataAttribute('radius', props.radius === 'sharp' ? 'sharp' : 'rounded'),
                     h.DataAttribute('open', String(model.edit.isOpen)),
                     h.DataAttribute('size', props.size ?? 'default'),
                   ],

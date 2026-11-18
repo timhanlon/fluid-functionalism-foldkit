@@ -1,0 +1,625 @@
+diff --git a/dist/html/boundary.js b/dist/html/boundary.js
+index 97bacbc..6ee859f 100644
+--- a/dist/html/boundary.js
++++ b/dist/html/boundary.js
+@@ -23,9 +23,9 @@ export const createBoundaryRegistry = () => ({
+     boundaryWrapTransactionLog: [],
+     activeBoundaryWrapTransaction: undefined,
+     dedupeSeen: new Set(),
++    callSites: new Map(),
+ });
+-const captureCallSite = () => {
+-    const stack = new Error().stack ?? '';
++const formatCallSite = (stack) => {
+     const lines = stack.split('\n');
+     for (const line of lines) {
+         const trimmed = line.trim();
+@@ -44,6 +44,19 @@ const captureCallSite = () => {
+     }
+     return '(call site unavailable)';
+ };
++// PATCH(fluid-foldkit): every h.submodel registration captured and formatted
++// a stack trace on every render, only to word the duplicate-slotId error.
++// Capturing walks the whole stack, which is deep inside a render (~160us per
++// call on the docs pages), so registerBoundaryWrap keeps one call site per
++// boundary id, and the frames are formatted only when an error message
++// interpolates them.
++const captureCallSite = () => {
++    const error = new Error();
++    let formatted;
++    return {
++        toString: () => (formatted ??= formatCallSite(error.stack ?? '')),
++    };
++};
+ const assertBoundaryNotSeen = (registry, boundaryId) => {
+     const existingCallSite = registry.seenThisRender.get(boundaryId);
+     if (existingCallSite !== undefined) {
+@@ -68,7 +81,8 @@ export const registerBoundaryWrap = (registry, boundaryId, descriptor, mountOute
+     // Error.stack), neither map is mutated, so a later registration
+     // with the same slotId throws the duplicate error correctly instead
+     // of silently overwriting after a half-finished prior write.
+-    const callSite = captureCallSite();
++    const callSite = registry.callSites.get(boundaryId) ?? captureCallSite();
++    registry.callSites.set(boundaryId, callSite);
+     writeBoundaryWrap(registry, boundaryId, descriptor, mountOuterDispatch, callSite);
+ };
+ const writeBoundaryWrap = (registry, boundaryId, descriptor, mountOuterDispatch, callSite) => {
+@@ -231,6 +245,8 @@ export const restoreBoundaryWrapsForLazyHit = (registry, trackedBoundaries) => {
+ export const deregisterBoundaryWrap = (registry, boundaryId, descriptor, mountOuterDispatch) => {
+     if (registry.wraps.get(boundaryId) === descriptor) {
+         registry.wraps.delete(boundaryId);
++        // PATCH(fluid-foldkit): drop the cached call site with the wrap.
++        registry.callSites.delete(boundaryId);
+         const mountWrapOwners = registry.mountWrapOwners.get(boundaryId);
+         if (mountWrapOwners !== undefined) {
+             for (const owner of mountWrapOwners) {
+diff --git a/after/dist/html/boundary.js.orig b/dist/html/boundary.js.orig
+new file mode 100644
+index 0000000..97bacbc
+--- /dev/null
++++ b/dist/html/boundary.js.orig
+@@ -0,0 +1,564 @@
++const BOUNDARY_SEPARATOR = '|';
++export const ROOT_BOUNDARY = '';
++export const composeBoundary = (parent, childId) => {
++    if (childId.includes(BOUNDARY_SEPARATOR)) {
++        throw new Error(`Foldkit: h.submodel slotId cannot contain the boundary separator ` +
++            `"${BOUNDARY_SEPARATOR}". Got ${JSON.stringify(childId)}.`);
++    }
++    return parent === ROOT_BOUNDARY
++        ? childId
++        : `${parent}${BOUNDARY_SEPARATOR}${childId}`;
++};
++const splitBoundary = (boundaryId) => boundaryId === ROOT_BOUNDARY ? [] : boundaryId.split(BOUNDARY_SEPARATOR);
++export const createBoundaryRegistry = () => ({
++    wraps: new Map(),
++    boundaryDispatches: new WeakMap(),
++    mountWraps: new WeakMap(),
++    mountWrapOwners: new Map(),
++    seenThisRender: new Map(),
++    lazyTrackingStack: [],
++    keyedLazyStates: new Map(),
++    keyedLazyTrackingStack: [],
++    renderTransaction: undefined,
++    boundaryWrapTransactionLog: [],
++    activeBoundaryWrapTransaction: undefined,
++    dedupeSeen: new Set(),
++});
++const captureCallSite = () => {
++    const stack = new Error().stack ?? '';
++    const lines = stack.split('\n');
++    for (const line of lines) {
++        const trimmed = line.trim();
++        const isLazyInternalFrame = /[/\\]html[/\\]lazy\.[cm]?[jt]s/.test(trimmed);
++        if (trimmed.length === 0 ||
++            trimmed.startsWith('Error') ||
++            trimmed.includes('captureCallSite') ||
++            trimmed.includes('assertBoundaryNotSeen') ||
++            trimmed.includes('registerBoundaryWrap') ||
++            trimmed.includes('restoreBoundaryWrapsForLazyHit') ||
++            isLazyInternalFrame ||
++            trimmed.includes('at submodel')) {
++            continue;
++        }
++        return trimmed;
++    }
++    return '(call site unavailable)';
++};
++const assertBoundaryNotSeen = (registry, boundaryId) => {
++    const existingCallSite = registry.seenThisRender.get(boundaryId);
++    if (existingCallSite !== undefined) {
++        const ownSlotId = boundaryId.includes(BOUNDARY_SEPARATOR)
++            ? boundaryId.slice(boundaryId.lastIndexOf(BOUNDARY_SEPARATOR) + 1)
++            : boundaryId;
++        const newCallSite = captureCallSite();
++        throw new Error(`Foldkit: duplicate h.submodel slotId "${ownSlotId}" at boundary "${boundaryId}".\n` +
++            `  First registration: ${existingCallSite}\n` +
++            `  Second registration: ${newCallSite}\n` +
++            `Each h.submodel call inside the same parent boundary must use a unique \`slotId\`. ` +
++            `The slotId is DOM-slot identity, not model identity. If the same model is ` +
++            `rendered in two locations (desktop + mobile, master + detail), each slot ` +
++            `needs its own id (e.g. "desktop-foo", "mobile-foo"). For lists, use a stable ` +
++            `per-item identifier.`);
++    }
++};
++export const registerBoundaryWrap = (registry, boundaryId, descriptor, mountOuterDispatch) => {
++    assertBoundaryNotSeen(registry, boundaryId);
++    // NOTE: compute the call site before writing either map. If
++    // captureCallSite throws (e.g. hardened runtime without
++    // Error.stack), neither map is mutated, so a later registration
++    // with the same slotId throws the duplicate error correctly instead
++    // of silently overwriting after a half-finished prior write.
++    const callSite = captureCallSite();
++    writeBoundaryWrap(registry, boundaryId, descriptor, mountOuterDispatch, callSite);
++};
++const writeBoundaryWrap = (registry, boundaryId, descriptor, mountOuterDispatch, callSite) => {
++    const previousDescriptor = registry.wraps.get(boundaryId);
++    const existingMountWraps = registry.mountWraps.get(mountOuterDispatch);
++    const previousMountDescriptor = existingMountWraps?.get(boundaryId);
++    if (registry.activeBoundaryWrapTransaction !== undefined) {
++        registry.boundaryWrapTransactionLog.push({
++            _tag: 'Registration',
++            boundaryId,
++            descriptor,
++            mountOuterDispatch,
++            previousDescriptor,
++            previousMountDescriptor,
++        });
++    }
++    registry.wraps.set(boundaryId, descriptor);
++    let mountWraps = existingMountWraps;
++    if (mountWraps === undefined) {
++        mountWraps = new Map();
++        registry.mountWraps.set(mountOuterDispatch, mountWraps);
++    }
++    mountWraps.set(boundaryId, descriptor);
++    let mountWrapOwners = registry.mountWrapOwners.get(boundaryId);
++    if (mountWrapOwners === undefined) {
++        mountWrapOwners = new Set();
++        registry.mountWrapOwners.set(boundaryId, mountWrapOwners);
++    }
++    mountWrapOwners.add(mountOuterDispatch);
++    markBoundarySeen(registry, boundaryId, callSite);
++    for (const tracked of registry.lazyTrackingStack) {
++        trackBoundaryWrap(registry, tracked, boundaryId, {
++            callSite,
++            descriptor,
++            mountOuterDispatch,
++        });
++    }
++};
++const markBoundarySeen = (registry, boundaryId, callSite) => {
++    registry.seenThisRender.set(boundaryId, callSite);
++    registerBoundaryWrapTransactionRollback(registry, undefined, () => {
++        registry.seenThisRender.delete(boundaryId);
++    });
++};
++const trackBoundaryWrap = (registry, tracked, boundaryId, value) => {
++    const previous = tracked.get(boundaryId);
++    tracked.set(boundaryId, value);
++    registerBoundaryWrapTransactionRollback(registry, previous, restored => {
++        if (restored === undefined) {
++            tracked.delete(boundaryId);
++        }
++        else {
++            tracked.set(boundaryId, restored);
++        }
++    });
++};
++/** Starts capturing boundary registrations on a fresh set pushed onto
++ *  `lazyTrackingStack`. Used by `createLazy`/`createKeyedLazy` around the
++ *  wrapped view function. Must be paired with {@link endLazyTracking} on
++ *  the same call stack so an exception inside the view does not leak the
++ *  tracking frame to a later render. */
++export const beginLazyTracking = (registry) => {
++    const tracked = new Map();
++    registry.lazyTrackingStack.push(tracked);
++    return tracked;
++};
++/** Pops the most recent tracking set. Throws when called on an empty
++ *  stack to surface unmatched begin/end pairs immediately rather than
++ *  silently corrupting later renders. */
++export const endLazyTracking = (registry) => {
++    if (registry.lazyTrackingStack.length === 0) {
++        throw new Error('Foldkit: endLazyTracking called on an empty stack. This means a ' +
++            '`beginLazyTracking` was not paired with `endLazyTracking` upstream.');
++    }
++    registry.lazyTrackingStack.pop();
++};
++/** @internal Captures nested render-scoped cache uses while a lazy runs. */
++export const beginKeyedLazyTracking = (registry) => {
++    const usages = new Map();
++    registry.keyedLazyTrackingStack.push(usages);
++    return usages;
++};
++/** @internal Ends the matching nested keyed-cache tracking scope. */
++export const endKeyedLazyTracking = (registry) => {
++    if (registry.keyedLazyTrackingStack.length === 0) {
++        throw new Error('Foldkit: keyed lazy tracking scopes must end in order.');
++    }
++    registry.keyedLazyTrackingStack.pop();
++};
++const recordKeyedLazyUsage = (registry, usages, state, key) => {
++    const previousKeys = usages.get(state);
++    const keys = previousKeys ?? new Set();
++    if (keys.has(key)) {
++        return;
++    }
++    usages.set(state, keys);
++    keys.add(key);
++    registerBoundaryWrapTransactionRollback(registry, undefined, () => {
++        keys.delete(key);
++        if (keys.size === 0 && previousKeys === undefined) {
++            usages.delete(state);
++        }
++    });
++};
++/** @internal Marks a keyed entry and forwards its use into enclosing lazies. */
++export const trackKeyedLazyUsage = (registry, state, key) => {
++    recordKeyedLazyUsage(registry, registry.keyedLazyStates, state, key);
++    for (const usages of registry.keyedLazyTrackingStack) {
++        recordKeyedLazyUsage(registry, usages, state, key);
++    }
++};
++/** @internal Replays nested keyed uses when an enclosing view is cached. */
++export const restoreKeyedLazyUsages = (registry, usages) => {
++    for (const [state, keys] of usages) {
++        for (const key of keys) {
++            trackKeyedLazyUsage(registry, state, key);
++        }
++    }
++};
++/** Restores boundary registrations captured during a previous lazy run and
++ *  replays their ids into `seenThisRender` so the duplicate-slotId guard sees
++ *  them. Also forwards them into active tracking maps so an outer lazy
++ *  wrapping this cache hit captures the registrations in its own snapshot.
++ *
++ *  A registration that still occupies both lookup tables needs only its seen
++ *  marker restored. A registration evicted when the cached VNode left the DOM
++ *  is written back transactionally, so a surrounding Submodel render that
++ *  later fails can still roll the cache hit back. */
++export const restoreBoundaryWrapsForLazyHit = (registry, trackedBoundaries) => {
++    for (const [boundaryId, trackedBoundary] of trackedBoundaries) {
++        const { callSite, descriptor, mountOuterDispatch } = trackedBoundary;
++        assertBoundaryNotSeen(registry, boundaryId);
++        markBoundarySeen(registry, boundaryId, callSite);
++        for (const outerTracked of registry.lazyTrackingStack) {
++            if (!outerTracked.has(boundaryId)) {
++                trackBoundaryWrap(registry, outerTracked, boundaryId, trackedBoundary);
++            }
++        }
++        if (registry.wraps.get(boundaryId) === descriptor &&
++            registry.mountWraps.get(mountOuterDispatch)?.get(boundaryId) ===
++                descriptor) {
++            continue;
++        }
++        writeBoundaryWrap(registry, boundaryId, descriptor, mountOuterDispatch, callSite);
++    }
++};
++/** Removes a boundary's wrap when it still matches the descriptor owned by the
++ *  VNode being destroyed. A replacement registered earlier in the same patch
++ *  is left intact. Called by `h.submodel`'s `postdestroy` hook when snabbdom
++ *  destroys the corresponding VNode, after every `destroy` hook in that VNode's
++ *  subtree has run.
++ *
++ *  Does not touch `boundaryDispatches`: it is a WeakMap keyed by
++ *  outerDispatch, so per-outerDispatch inner Maps become unreachable and
++ *  are GC'd when their outerDispatch is. Cached dispatcher closures that
++ *  outlive a deregister become inert. `dispatchAcrossBoundary` throws
++ *  when it cannot find an ancestor wrap, which surfaces a clear error
++ *  rather than letting events from a destroyed boundary silently
++ *  misroute. */
++export const deregisterBoundaryWrap = (registry, boundaryId, descriptor, mountOuterDispatch) => {
++    if (registry.wraps.get(boundaryId) === descriptor) {
++        registry.wraps.delete(boundaryId);
++        const mountWrapOwners = registry.mountWrapOwners.get(boundaryId);
++        if (mountWrapOwners !== undefined) {
++            for (const owner of mountWrapOwners) {
++                registry.mountWraps.get(owner)?.delete(boundaryId);
++            }
++            registry.mountWrapOwners.delete(boundaryId);
++        }
++        return;
++    }
++    const mountWraps = registry.mountWraps.get(mountOuterDispatch);
++    if (mountWraps?.get(boundaryId) === descriptor) {
++        mountWraps.delete(boundaryId);
++        const mountWrapOwners = registry.mountWrapOwners.get(boundaryId);
++        mountWrapOwners?.delete(mountOuterDispatch);
++        if (mountWrapOwners?.size === 0) {
++            registry.mountWrapOwners.delete(boundaryId);
++        }
++    }
++};
++/** Restores the registry entries replaced by one boundary registration that
++ *  did not produce a VNode. Used when a Submodel view throws or returns
++ *  `null`, where no `postdestroy` hook will run and cleanup must undo only that
++ *  render owner's write without evicting descriptors retained by the
++ *  currently rendered tree. */
++const rollbackBoundaryWrapRegistration = (registry, boundaryId, descriptor, mountOuterDispatch, previousDescriptor, previousMountDescriptor) => {
++    if (registry.wraps.get(boundaryId) === descriptor) {
++        if (previousDescriptor === undefined) {
++            registry.wraps.delete(boundaryId);
++        }
++        else {
++            registry.wraps.set(boundaryId, previousDescriptor);
++        }
++    }
++    const mountWraps = registry.mountWraps.get(mountOuterDispatch);
++    if (mountWraps?.get(boundaryId) !== descriptor) {
++        return;
++    }
++    if (previousMountDescriptor === undefined) {
++        mountWraps.delete(boundaryId);
++        const mountWrapOwners = registry.mountWrapOwners.get(boundaryId);
++        mountWrapOwners?.delete(mountOuterDispatch);
++        if (mountWrapOwners?.size === 0) {
++            registry.mountWrapOwners.delete(boundaryId);
++        }
++    }
++    else {
++        mountWraps.set(boundaryId, previousMountDescriptor);
++    }
++};
++/** Starts a nested transaction for boundary registrations and cache writes. */
++export const beginBoundaryWrapTransaction = (registry) => {
++    const transaction = {
++        parent: registry.activeBoundaryWrapTransaction,
++        startIndex: registry.boundaryWrapTransactionLog.length,
++    };
++    registry.activeBoundaryWrapTransaction = transaction;
++    return transaction;
++};
++/** Commits the active transaction. Nested writes can be rolled back until
++ *  the outermost transaction commits. */
++export const commitBoundaryWrapTransaction = (registry, transaction) => {
++    if (registry.activeBoundaryWrapTransaction !== transaction) {
++        throw new Error('Foldkit: boundary wrap transactions must commit in order.');
++    }
++    registry.activeBoundaryWrapTransaction = transaction.parent;
++    if (transaction.parent === undefined) {
++        registry.boundaryWrapTransactionLog.length = 0;
++    }
++};
++/** Registers a restoration callback with the active render, lazy, or Submodel
++ *  transaction. Calls without an active transaction are ignored. */
++export const registerBoundaryWrapTransactionRollback = (registry, value, restore) => {
++    if (registry.activeBoundaryWrapTransaction !== undefined) {
++        registry.boundaryWrapTransactionLog.push({
++            _tag: 'Rollback',
++            rollback: () => {
++                restore(value);
++            },
++        });
++    }
++};
++/** Restores every boundary registration and cache write recorded since the
++ *  transaction began. */
++export const rollbackBoundaryWrapTransaction = (registry, transaction) => {
++    if (registry.activeBoundaryWrapTransaction !== transaction) {
++        throw new Error('Foldkit: boundary wrap transactions must roll back in order.');
++    }
++    const entries = registry.boundaryWrapTransactionLog.splice(transaction.startIndex);
++    entries.reverse();
++    for (const entry of entries) {
++        if (entry._tag === 'Registration') {
++            rollbackBoundaryWrapRegistration(registry, entry.boundaryId, entry.descriptor, entry.mountOuterDispatch, entry.previousDescriptor, entry.previousMountDescriptor);
++        }
++        else {
++            entry.rollback();
++        }
++    }
++    registry.activeBoundaryWrapTransaction = transaction.parent;
++};
++// NOTE: reading `_tag` can itself throw, through a getter or a Proxy trap. This
++// runs while reporting another failure, so an escape here would replace the
++// error being described with an unrelated one.
++const describeMessage = (message) => {
++    try {
++        if (typeof message === 'object' && message !== null && '_tag' in message) {
++            const tag = Reflect.get(message, '_tag');
++            if (typeof tag === 'string') {
++                return `\`${tag}\``;
++            }
++        }
++    }
++    catch {
++        return 'the Message';
++    }
++    return 'the Message';
++};
++/** Applies one boundary's `toParentMessage`, translating a rejection into an
++ *  error that names the cause.
++ *
++ *  A wrapper Message is normally a Schema constructor, so handing it a Message
++ *  outside the child's union throws a Schema error naming both shapes and
++ *  nothing else. That error is accurate and nearly undiagnosable: it fires
++ *  inside a DOM listener, the app keeps rendering, and reading it requires
++ *  already knowing that a boundary sits between the handler and `update`. The
++ *  overwhelmingly common cause is a shared view helper that built an app-level
++ *  Message inside a Submodel's view, where the dispatcher is chosen by the
++ *  current render frame rather than by the Message's type. */
++const liftAcrossBoundary = (descriptor, boundaryId, message) => {
++    try {
++        return descriptor.toParentMessage(message);
++    }
++    catch (cause) {
++        throw new Error(`Foldkit: a Message dispatched from inside Submodel boundary ` +
++            `"${boundaryId}" could not be lifted into its parent's Message type. ` +
++            `Its \`toParentMessage\` rejected ${describeMessage(message)}, which ` +
++            `means that Message is not part of the Submodel's own Message union. ` +
++            `The usual cause is a shared view helper building an app-level Message ` +
++            `inside a Submodel's view: a handler's dispatcher is chosen by where ` +
++            `the element is built, not by the Message it carries, so the boundary ` +
++            `tried to wrap a Message the Submodel does not own. Either move the ` +
++            `Message into the Submodel's union, or have the parent supply the ` +
++            `element through a \`viewInputs\` slot callback so it is built in the ` +
++            `parent's boundary.`, { cause });
++    }
++};
++const missingBoundaryWrapError = (mode, ancestorBoundary, boundaryId) => {
++    if (mode === 'Dispatch') {
++        return new Error(`Foldkit: dispatchAcrossBoundary missing wrap for ancestor ` +
++            `"${ancestorBoundary}" of boundary "${boundaryId}". The Submodel's ` +
++            `wrap was absent from the registry at dispatch time. A known cause: ` +
++            `a slot callback (an h.submodel \`viewInputs\` function value) was ` +
++            `invoked from a deferred context (setTimeout, Promise.then, a ` +
++            `stored callback) after the parent Submodel unmounted. Slot ` +
++            `callbacks must be invoked synchronously inside the render that ` +
++            `created them. It can also mean foldkit was loaded as more than ` +
++            `one instance (a bundler split foldkit and @foldkit/ui), so the ` +
++            `wrap was registered in one copy and read from another.`);
++    }
++    else if (mode === 'OnUnmount') {
++        return new Error(`Foldkit: resolveBoundaryDispatchThunk missing wrap for ancestor ` +
++            `"${ancestorBoundary}" of boundary "${boundaryId}" while resolving an ` +
++            `OnUnmount message. The Submodel's wrap was absent from the registry ` +
++            `at resolve time, which should not happen during a live render.`);
++    }
++    else if (mode === 'Scene') {
++        return new Error(`Foldkit: boundaryMappers missing wrap for ancestor ` +
++            `"${ancestorBoundary}" of boundary "${boundaryId}" while snapshotting ` +
++            `an OnMount lift. The Submodel's wrap was absent from the registry ` +
++            `during render, which should not happen for a live boundary.`);
++    }
++    else {
++        return new Error(`Foldkit: Mount dispatch missing wrap for ancestor ` +
++            `"${ancestorBoundary}" of boundary "${boundaryId}". The ` +
++            `Submodel's wrap was absent from the Mount's render owner.`);
++    }
++};
++const foldBoundaryChain = (wraps, boundaryId, mode, initial, fold) => {
++    let result = initial;
++    const parts = splitBoundary(boundaryId);
++    for (let depth = parts.length; depth > 0; depth--) {
++        const ancestorBoundary = parts.slice(0, depth).join(BOUNDARY_SEPARATOR);
++        const descriptor = wraps.get(ancestorBoundary);
++        if (descriptor === undefined) {
++            throw missingBoundaryWrapError(mode, ancestorBoundary, boundaryId);
++        }
++        result = fold(result, descriptor, ancestorBoundary);
++    }
++    return result;
++};
++const liftBoundaryMessage = (message, descriptor, ancestorBoundary) => liftAcrossBoundary(descriptor, ancestorBoundary, message);
++const collectBoundaryMapper = (mappers, descriptor) => {
++    mappers.push(descriptor.toParentMessage);
++    return mappers;
++};
++/** Applies the wrapping chain for `boundaryId` from innermost to
++ *  outermost, then dispatches the fully-wrapped message via
++ *  `outerDispatch`. Called at event-fire time by the dispatcher closure
++ *  returned from `getOrCreateBoundaryDispatch`.
++ *
++ *  Throws when an ancestor wrap is missing from the registry. DOM events
++ *  fire synchronously, so a sync handler against a live boundary always
++ *  finds a complete chain. A missing wrap implies one of: (a) the wrap
++ *  was deregistered between event scheduling and dispatch (e.g. a slot
++ *  callback captured at one render is invoked from a deferred context
++ *  after the Submodel unmounted), or (b) the registry is corrupt.
++ *  Either way, silently skipping the ancestor and applying only outer
++ *  wraps would produce a malformed Message that the outermost
++ *  `Match.tagsExhaustive` would then crash on with no useful trace. */
++const dispatchAcrossBoundary = (registry, outerDispatch, boundaryId, message) => {
++    const wrapped = foldBoundaryChain(registry.wraps, boundaryId, 'Dispatch', message, liftBoundaryMessage);
++    outerDispatch(wrapped);
++};
++/** Resolves a message through `boundaryId`'s wrapping chain immediately,
++ *  applying every `toParentMessage` from innermost to outermost against the
++ *  wraps present right now, and returns a thunk that dispatches the fully
++ *  wrapped message via `outerDispatch`. Unlike {@link getOrCreateBoundaryDispatch},
++ *  which defers the chain lookup to fire time, this snapshots the chain at call
++ *  time so the resulting thunk survives the boundary being deregistered.
++ *
++ *  Used by `OnUnmount`, whose dispatch runs during teardown or, after a failed
++ *  replay patch, later still. Resolving eagerly while the chain is live means
++ *  that dispatch does not depend on what the registry holds at teardown time.
++ *  Throws here (at resolve time, boundary alive) if a wrap is
++ *  somehow already missing, surfacing a real corruption rather than misrouting. */
++export const resolveBoundaryDispatchThunk = (registry, outerDispatch, boundaryId, message) => {
++    if (boundaryId === ROOT_BOUNDARY) {
++        return () => outerDispatch(message);
++    }
++    const rootMessage = foldBoundaryChain(registry.wraps, boundaryId, 'OnUnmount', message, liftBoundaryMessage);
++    return () => outerDispatch(rootMessage);
++};
++/** Collects the `toParentMessage` wrapping chain for `boundaryId`, innermost
++ *  ancestor first, against the wraps present right now. Folding the returned
++ *  functions left-to-right over a child message reproduces exactly what
++ *  {@link dispatchAcrossBoundary} dispatches, without dispatching. Returns an
++ *  empty array at the root boundary. Used by `OnMount` to snapshot a
++ *  Submodel-embedded mount's lift eagerly so the Scene test harness can replay
++ *  it when the mount is resolved. Throws when an ancestor wrap is missing
++ *  (boundary alive at call time), matching {@link dispatchAcrossBoundary}. */
++export const boundaryMappers = (registry, boundaryId) => {
++    return foldBoundaryChain(registry.wraps, boundaryId, 'Scene', [], collectBoundaryMapper);
++};
++export const getOrCreateBoundaryDispatch = (registry, outerDispatch, boundaryId) => {
++    if (boundaryId === ROOT_BOUNDARY) {
++        return outerDispatch;
++    }
++    let perOuterDispatch = registry.boundaryDispatches.get(outerDispatch);
++    if (perOuterDispatch === undefined) {
++        perOuterDispatch = new Map();
++        registry.boundaryDispatches.set(outerDispatch, perOuterDispatch);
++    }
++    const existing = perOuterDispatch.get(boundaryId);
++    if (existing !== undefined) {
++        return existing;
++    }
++    const dispatch = message => {
++        dispatchAcrossBoundary(registry, outerDispatch, boundaryId, message);
++    };
++    perOuterDispatch.set(boundaryId, dispatch);
++    return dispatch;
++};
++/** Returns a dispatcher for a Mount acquired inside `boundaryId`.
++ *  The root dispatcher identifies the render owner: live and replay renders
++ *  therefore consult separate wrap tables. Within that owner, the dispatcher
++ *  resolves the current wrapping chain at emission time so a surviving Mount
++ *  follows later live `toParentMessage` closures just like an event handler. */
++export const resolveMountBoundaryDispatch = (registry, mountOuterDispatch, boundaryId) => {
++    if (boundaryId === ROOT_BOUNDARY) {
++        return mountOuterDispatch;
++    }
++    const dispatch = message => {
++        const mountWraps = registry.mountWraps.get(mountOuterDispatch);
++        if (mountWraps === undefined) {
++            throw new Error(`Foldkit: Mount dispatch missing wraps for boundary "${boundaryId}". ` +
++                `The Mount's render owner has no registered Submodel boundaries.`);
++        }
++        const wrapped = foldBoundaryChain(mountWraps, boundaryId, 'Mount', message, liftBoundaryMessage);
++        mountOuterDispatch(wrapped);
++    };
++    return dispatch;
++};
++/** Starts one top-level view pass without changing registered boundaries. */
++export const beginRender = (registry) => {
++    registry.seenThisRender.clear();
++    registry.dedupeSeen.clear();
++    for (const keys of registry.keyedLazyStates.values()) {
++        keys.clear();
++    }
++};
++/** @internal Starts a view pass whose cache writes can be rolled back. */
++export const beginRenderTransaction = (registry) => {
++    if (registry.renderTransaction !== undefined) {
++        throw new Error('Foldkit: the previous render transaction has not ended.');
++    }
++    beginRender(registry);
++    registry.renderTransaction = beginBoundaryWrapTransaction(registry);
++};
++/** Commits a completed render and releases unused keyed-cache entries. */
++export const endRender = (registry) => {
++    const transaction = registry.renderTransaction;
++    if (transaction !== undefined) {
++        commitBoundaryWrapTransaction(registry, transaction);
++        registry.renderTransaction = undefined;
++    }
++    for (const [state, keys] of registry.keyedLazyStates) {
++        for (const key of state.keys()) {
++            if (!keys.has(key)) {
++                state.delete(key);
++            }
++        }
++        if (state.isEmpty()) {
++            registry.keyedLazyStates.delete(state);
++        }
++    }
++};
++/** Restores cache writes from an incomplete view without pruning entries. */
++export const abandonRender = (registry) => {
++    const transaction = registry.renderTransaction;
++    if (transaction !== undefined) {
++        rollbackBoundaryWrapTransaction(registry, transaction);
++        registry.renderTransaction = undefined;
++    }
++};
++/** @internal Releases every render-scoped cache owned by a runtime. */
++export const clearKeyedLazyCaches = (registry) => {
++    abandonRender(registry);
++    for (const state of registry.keyedLazyStates.keys()) {
++        state.clear();
++    }
++    registry.keyedLazyStates.clear();
++};

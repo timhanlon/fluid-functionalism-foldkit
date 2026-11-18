@@ -15,6 +15,10 @@ export const Message = defineMessageUnion({
   ExitFinished: { version: Schema.Number },
   ControlledOpenChanged: { value: Schema.NullOr(Schema.Boolean) },
   Unmounted: {},
+  GroupSidePlaced: {
+    side: Schema.Literals(['top', 'right', 'bottom', 'left']),
+    sideVersion: Schema.Number,
+  },
 });
 export type Message = typeof Message.Type;
 export type OutMessage = Primitive.OutMessage;
@@ -27,15 +31,19 @@ export const init = (config: InitConfig): Model => ({
 });
 /** Fluid's exiting label stays mounted after the primitive closes. */
 export const FinishExit = Command.define('FluidTooltip.FinishExit', {
-  args: { version: Schema.Number },
+  args: { version: Schema.Number, hold: Schema.optionalKey(Schema.Number) },
   messages: [Message.ExitFinished],
-  execute: ({ version }) =>
-    Effect.sleep(exitFallbackMs(spring.fast)).pipe(Effect.as(Message.ExitFinished({ version }))),
+  execute: ({ version, hold }) =>
+    Effect.sleep(exitFallbackMs(spring.fast) + (hold ?? 0)).pipe(
+      Effect.as(Message.ExitFinished({ version })),
+    ),
 });
 export function update(
   model: Model,
   message: Message,
+  options: { readonly grouped?: boolean } = {},
 ): Update.ReturnWithOutMessage<Model, Message, OutMessage> {
+  if (message._tag === 'GroupSidePlaced') return { model };
   if (message._tag === 'Unmounted') {
     const fresh = init({ id: model.tooltip.id, showDelay: model.tooltip.showDelay });
     return {
@@ -67,7 +75,9 @@ export function update(
       ...(result.commands ?? []).map((command) =>
         Command.mapMessage(command, (message) => Message.PrimitiveMessage({ message })),
       ),
-      ...(changed && !open ? [FinishExit({ version })] : []),
+      ...(changed && !open
+        ? [FinishExit({ version, ...(options.grouped ? { hold: 150 } : {}) })]
+        : []),
     ],
     outMessage: result.outMessage,
   };
@@ -80,9 +90,10 @@ export const ControlledOpen = Mount.defineStream('Tooltip.ControlledOpen', {
     Stream.callback<typeof Message.ControlledOpenChanged.Type>((queue) =>
       Effect.acquireRelease(
         Effect.sync(() => {
+          const root = element.closest('.ff-tooltip-anchor') ?? element;
           let previous: string | undefined;
           const sync = () => {
-            const value = element.getAttribute('data-tooltip-force-open') ?? 'auto';
+            const value = root.getAttribute('data-tooltip-force-open') ?? 'auto';
             if (value === previous) return;
             previous = value;
             Queue.offerUnsafe(
@@ -93,7 +104,7 @@ export const ControlledOpen = Mount.defineStream('Tooltip.ControlledOpen', {
             );
           };
           const observer = new MutationObserver(sync);
-          observer.observe(element, {
+          observer.observe(root, {
             attributes: true,
             attributeFilter: ['data-tooltip-force-open'],
           });

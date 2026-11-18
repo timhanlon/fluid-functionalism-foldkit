@@ -1,12 +1,12 @@
+import { defineSilentMount } from '../silent-mount';
 import { shapeRadius } from '../shape';
-import { Effect, Schema } from 'effect';
+import { Effect } from 'effect';
 import { Mount } from 'foldkit';
 import { animate, type AnimationPlaybackControls } from 'motion';
 import { mountHover } from '../../fluid-hover/engine';
 import { mountListFocus } from '../list-focus';
 
-export const Mounted = Mount.define('RadioGroup.Mount', {
-  messages: [Schema.Never],
+export const Mounted = defineSilentMount('RadioGroup.Mount', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

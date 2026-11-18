@@ -1,7 +1,7 @@
 import { Schema } from 'effect';
 import { Command, type Update } from 'foldkit';
 import { defineMessageUnion } from 'foldkit/message';
-import type { HtmlBuilder } from 'foldkit/html';
+import { childAttributes, type HtmlBuilder } from 'foldkit/html';
 import * as Tabs from './fluid/components/tabs';
 const items = [
   { value: 'overview', label: 'Overview' },
@@ -60,6 +60,7 @@ export function view(model: Model, h: HtmlBuilder<Message>) {
                 items,
                 label: 'Workspace tabs',
                 value: model.value,
+                itemToAttributes: (value) => childAttributes([h.DataAttribute('workspace', value)]),
                 panel: (value) =>
                   h.div(
                     [],

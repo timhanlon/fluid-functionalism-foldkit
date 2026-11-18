@@ -59,7 +59,7 @@ export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): H
               ],
               [
                 h.path(
-                  [h.D(props.indeterminate ? 'M6 12h12' : 'M6 12L10 16L18 8'), h.PathLength('1')],
+                  [h.D(props.indeterminate ? 'M7 12H17' : 'M6 12L10 16L18 8'), h.PathLength('1')],
                   [],
                 ),
               ],

@@ -31,10 +31,13 @@ export interface Props extends Options {
   readonly locale?: string;
   readonly icons?: string;
   readonly label?: string;
+  /** Size the date trigger to its current label instead of reserving the widest date. */
+  readonly fitLabel?: boolean;
   readonly name?: string;
   readonly attributes?: readonly (Attribute<Message> | ChildAttribute)[];
 }
 export const view = Submodel.defineView<Model, Message, Props>((model, props, h) => {
+  const triggerId = Popover.buttonId(model.popover.id);
   const selected = value(model, props),
     native = Calendar.toSelected(selected),
     rangeMode = props.mode === 'range',
@@ -66,7 +69,7 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
         ),
       ]
     : labelParts(sampleDate, props.locale, formatOptions);
-  const sizer = widestLabelParts(sample, props.locale, formatOptions),
+  const sizer = props.fitLabel ? [] : widestLabelParts(sample, props.locale, formatOptions),
     stacked = orientation(model, props) === 'vertical',
     showPresets = rangeMode && !!props.presets?.length;
   const presetList = () =>
@@ -129,6 +132,8 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
       toParentMessage: (message) => Message.TimeField({ field, message }),
       viewInputs: {
         ...timeOptions(model, props, field),
+        liveAnchorId: model.id,
+        radius: props.radius,
         label: field === 'time' ? 'Time' : field === 'start' ? 'Start time' : 'End time',
         placeholder: field === 'time' ? 'Time' : field === 'start' ? 'Start' : 'End',
         size: props.size,
@@ -186,53 +191,150 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
         viewInputs: {
           anchor: { placement: 'bottom-start', gap: 6, padding: 8, portal: true },
           isDisabled: props.disabled,
-          focusSelector: '.ff-calendar-day[tabindex="0"]',
+          focusSelector: props.typeable
+            ? `#${CSS.escape(triggerId)}`
+            : '.ff-calendar-day[tabindex="0"]',
           toView: (info) =>
             h.div(
               [h.Class('ff-date-picker-date')],
               [
                 // Keep the focused trigger in place when the backdrop enters or leaves.
-                h.button(
-                  [
-                    ...info.button,
-                    h.Class('ff-date-picker-trigger'),
-                    h.Disabled(!!props.disabled),
-                    h.AriaHasPopup('dialog'),
-                    h.DataAttribute('open', String(model.popover.isOpen)),
-                    h.DataAttribute('slot', 'date-picker-trigger'),
-                    h.DataAttribute('datepicker-segment', ''),
-                    h.DataAttribute('placeholder', String(!hasValue)),
-                    ...(props.label ? [h.AriaLabel(`${props.label}: ${label}`)] : []),
-                  ],
-                  [
-                    props.variant !== 'ghost'
-                      ? h.span(
-                          [h.Class('ff-date-picker-icon'), h.AriaHidden(true)],
-                          [icon('calendar', props.icons, h)],
-                        )
-                      : null,
-                    h.span(
-                      [h.Class('ff-date-picker-label')],
+                props.typeable
+                  ? h.label(
                       [
-                        h.span([], [label]),
+                        h.For(triggerId),
+                        h.Class('ff-date-picker-trigger ff-date-picker-typed-trigger'),
+                        h.DataAttribute('slot', 'date-picker-trigger'),
+                        h.DataAttribute('datepicker-segment', ''),
+                        h.DataAttribute('open', String(model.popover.isOpen)),
+                        h.DataAttribute('placeholder', String(!hasValue && !model.typedDate)),
+                      ],
+                      [
+                        props.variant !== 'ghost'
+                          ? h.span(
+                              [h.Class('ff-date-picker-icon'), h.AriaHidden(true)],
+                              [icon('calendar', props.icons, h)],
+                            )
+                          : null,
                         h.span(
-                          [h.Class('ff-date-picker-label-sizer'), h.AriaHidden(true)],
-                          sizer.map((parts) =>
+                          [h.Class('ff-date-picker-label')],
+                          [
                             h.span(
-                              [],
-                              parts.map((part) => h.span([], [part])),
+                              [h.AriaHidden(true), h.Class('ff-date-picker-placeholder-sizer')],
+                              [(model.typedDate ?? (hasValue ? label : '')) || placeholder],
                             ),
-                          ),
+                            ...(!props.fitLabel
+                              ? [
+                                  h.span(
+                                    [h.Class('ff-date-picker-label-sizer'), h.AriaHidden(true)],
+                                    sizer.map((parts) =>
+                                      h.span(
+                                        [],
+                                        parts.map((part) => h.span([], [part])),
+                                      ),
+                                    ),
+                                  ),
+                                ]
+                              : []),
+                            h.input([
+                              h.Id(triggerId),
+                              h.Class('ff-date-picker-text'),
+                              h.Type('text'),
+                              h.Attribute('size', '1'),
+                              h.Autocomplete('off'),
+                              h.Spellcheck(false),
+                              h.Disabled(!!props.disabled),
+                              h.Role('combobox'),
+                              h.AriaLabel(props.label ?? placeholder),
+                              h.AriaExpanded(info.isVisible),
+                              h.AriaHasPopup('dialog'),
+                              ...(info.isVisible
+                                ? [h.AriaControls(`${model.popover.id}-panel`)]
+                                : []),
+                              h.Placeholder(placeholder),
+                              h.Value(model.typedDate ?? (hasValue ? label : '')),
+                              h.OnClick(
+                                Message.Popover({ message: Popover.Message.RequestedOpen() }),
+                              ),
+                              h.OnInput((text) => Message.DateTextChanged({ text })),
+                              h.OnKeyDownPreventDefault((key) =>
+                                key === 'Enter'
+                                  ? Option.some(Message.DateTextCommitted())
+                                  : key === 'Escape' && (info.isVisible || model.typedDate !== null)
+                                    ? Option.some(Message.DateTextReverted())
+                                    : key === 'ArrowDown'
+                                      ? Option.some(
+                                          Message.Popover({
+                                            message: Popover.Message.RequestedOpen(),
+                                          }),
+                                        )
+                                      : Option.none(),
+                              ),
+                            ]),
+                          ],
                         ),
+                      ],
+                    )
+                  : h.button(
+                      [
+                        ...info.button,
+                        h.Class('ff-date-picker-trigger'),
+                        h.Disabled(!!props.disabled),
+                        h.AriaHasPopup('dialog'),
+                        h.DataAttribute('open', String(model.popover.isOpen)),
+                        h.DataAttribute('slot', 'date-picker-trigger'),
+                        h.DataAttribute('datepicker-segment', ''),
+                        h.DataAttribute('placeholder', String(!hasValue)),
+                        ...(props.label ? [h.AriaLabel(`${props.label}: ${label}`)] : []),
+                      ],
+                      [
+                        props.variant !== 'ghost'
+                          ? h.span(
+                              [h.Class('ff-date-picker-icon'), h.AriaHidden(true)],
+                              [icon('calendar', props.icons, h)],
+                            )
+                          : null,
                         h.span(
-                          [h.Class('ff-date-picker-placeholder-sizer'), h.AriaHidden(true)],
-                          [placeholder],
+                          [h.Class('ff-date-picker-label')],
+                          [
+                            h.span([], [label]),
+                            ...(props.fitLabel
+                              ? []
+                              : [
+                                  h.span(
+                                    [h.Class('ff-date-picker-label-sizer'), h.AriaHidden(true)],
+                                    sizer.map((parts) =>
+                                      h.span(
+                                        [],
+                                        parts.map((part) => h.span([], [part])),
+                                      ),
+                                    ),
+                                  ),
+                                  h.span(
+                                    [
+                                      h.Class('ff-date-picker-placeholder-sizer'),
+                                      h.AriaHidden(true),
+                                    ],
+                                    [placeholder],
+                                  ),
+                                ]),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-                info.isVisible ? h.div([...info.backdrop, h.Class('ff-popup-backdrop')], []) : null,
+                info.isVisible
+                  ? h.div(
+                      [
+                        ...info.backdrop,
+                        h.Class('ff-popup-backdrop'),
+                        h.AriaHidden(true),
+                        h.DataAttribute('slot', 'popup-shield'),
+                        h.DataAttribute('shield-for', `${model.popover.id}-panel`),
+                        h.DataAttribute('shield-anchor', model.id),
+                      ],
+                      [],
+                    )
+                  : null,
                 info.isVisible && !(model.needsEntrance && props.open === false)
                   ? h.div(
                       [
@@ -241,6 +343,7 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
                         h.Role('dialog'),
                         h.AriaLabel(props.label ?? (rangeMode ? 'Choose dates' : 'Choose a date')),
                         h.DataAttribute('slot', 'date-picker-popup'),
+                        h.DataAttribute('radius', props.radius === 'sharp' ? 'sharp' : 'rounded'),
                         h.DataAttribute('initial-open', String(model.needsEntrance)),
                         h.DataAttribute('open', String(model.popover.isOpen)),
                         h.DataAttribute('size', props.size ?? 'default'),

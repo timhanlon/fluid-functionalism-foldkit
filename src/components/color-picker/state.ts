@@ -53,6 +53,7 @@ export const Model = Schema.Struct({
   /** An initially open menu leaves focus with the page until reached. */
   tooltips: Schema.Record(Schema.String, Tooltip.Model),
   swatchTooltips: Tooltip.Group.Model,
+  channelTooltips: Tooltip.Group.Model,
   /** window.EyeDropper exists (Chromium); detected after mount. */
   eyedropper: Schema.Boolean,
 });
@@ -100,6 +101,7 @@ export const Message = defineMessageUnion({
   EyedropperDetected: {},
   Tip: { key: Schema.String, message: Tooltip.Message },
   SwatchTip: { message: Tooltip.Group.Message },
+  ChannelTip: { message: Tooltip.Group.Message },
 });
 export type Message = typeof Message.Type;
 
@@ -157,6 +159,7 @@ export const init = (config: InitConfig): Model => ({
   formatMenuControl: null,
   formatMenuInitialized: false,
   tooltips: {},
+  channelTooltips: Tooltip.Group.init({ id: `${config.id}-channels`, delayDuration: 300 }),
   swatchTooltips: Tooltip.Group.init({
     id: `${config.id}-swatches`,
     delayDuration: 300,
@@ -494,6 +497,13 @@ function updateInternal(model: Model, message: Message, options: Options): Retur
       return { model, commands: [EyeDrop({ hue: model.h, format: model.format })] };
     case 'EyedropperDetected':
       return { model: model.eyedropper ? model : { ...model, eyedropper: true } };
+    case 'ChannelTip': {
+      const result = Tooltip.Group.update(model.channelTooltips, message.message);
+      return {
+        model: { ...model, channelTooltips: result.model },
+        commands: mapCommands(result.commands, (message) => Message.ChannelTip({ message })),
+      };
+    }
     case 'SwatchTip': {
       const result = Tooltip.Group.update(model.swatchTooltips, message.message);
       return {

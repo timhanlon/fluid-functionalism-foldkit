@@ -3,6 +3,7 @@ import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import { cn } from '../../lib/utils';
 import { Mount } from 'foldkit';
 import * as Tooltip from '../tooltip';
+import * as KeyCap from '../key-cap';
 import { icon } from '../icons';
 import {
   Message,
@@ -107,15 +108,6 @@ export function provider<P>(
   );
 }
 
-const shortcutKbd = <P>(h: HtmlBuilder<P>, key: string) =>
-  h.kbd(
-    [
-      h.Class(
-        '-my-1 flex h-4 min-w-4 items-center justify-center rounded border border-background/30 px-1 font-sans text-[length:var(--fs-micro-compact,10px)] leading-[var(--lh-micro-compact,12px)] text-background',
-      ),
-    ],
-    [key],
-  );
 const shortcutKey = (side: Side) =>
   side === 'right' ? SIDEBAR_KEYBOARD_SHORTCUT_RIGHT : SIDEBAR_KEYBOARD_SHORTCUT;
 /** A Sidebar-owned tooltip around any trigger (group actions, row actions). */
@@ -151,20 +143,13 @@ export const tooltip = <P>(
   });
 /** The keystroke chip on the tooltips' inverted surface. */
 export const shortcutChip = <P>(h: HtmlBuilder<P>, key: string) =>
-  h.kbd(
-    [
-      h.Class(
-        '-my-1 flex h-4 min-w-4 items-center justify-center rounded border border-background/30 px-1 font-sans text-[length:var(--fs-micro-compact,10px)] leading-[var(--lh-micro-compact,12px)] text-background',
-      ),
-    ],
-    [key],
-  );
+  KeyCap.keys({ keys: key, tone: 'inverted', className: 'ff-tooltip-shortcut' }, h);
 /** A tooltip line with a trailing keystroke chip (trigger, header actions). */
 export const withShortcut =
   <P>(h: HtmlBuilder<P>, label: string, key: string) =>
   () => [
     h.span(
-      [h.Class('flex items-center gap-1.5')],
+      [h.Class('ff-tooltip-shortcut-row')],
       [h.span([h.Class('[text-box:trim-both_cap_alphabetic]')], [label]), shortcutChip(h, key)],
     ),
   ];

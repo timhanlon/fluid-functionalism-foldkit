@@ -15,6 +15,8 @@ export interface Item {
   readonly keywords?: readonly string[];
   /** Heading the row is listed under; groups keep first-appearance order. */
   readonly group?: string;
+  /** The action destroys something; the row uses the destructive color. */
+  readonly destructive?: boolean;
   readonly disabled?: boolean;
 }
 export type Filter = (item: Item, query: string) => boolean;

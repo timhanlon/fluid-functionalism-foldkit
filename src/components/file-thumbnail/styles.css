@@ -10,6 +10,9 @@
 .ff-file-thumbnail[data-shape='pill'] {
   border-radius: 20px;
 }
+.ff-file-thumbnail[data-shape='sharp'] {
+  border-radius: 1px;
+}
 .ff-thumbnail-preview,
 .ff-thumbnail-preview img,
 .ff-thumbnail-loading,

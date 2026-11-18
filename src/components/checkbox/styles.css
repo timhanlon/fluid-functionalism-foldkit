@@ -54,7 +54,7 @@
 .ff-checkbox:is([data-fluid-hover-active], :hover, :focus-visible) .ff-checkbox-border {
   border-color: light-dark(#a3a3a3, #737373);
 }
-.ff-checkbox[data-checked] .ff-checkbox-border {
+.ff-checkbox:is([data-checked], [data-indeterminate]) .ff-checkbox-border {
   border-color: transparent;
 }
 .ff-checkbox-check {
@@ -71,7 +71,7 @@
   stroke-dashoffset: 1;
   transition: stroke-dashoffset 40ms ease-in;
 }
-.ff-checkbox[data-checked] .ff-checkbox-check path {
+.ff-checkbox:is([data-checked], [data-indeterminate]) .ff-checkbox-check path {
   stroke-dashoffset: 0;
   transition: stroke-dashoffset 80ms ease-out;
 }
@@ -96,7 +96,7 @@
     color 80ms,
     font-variation-settings 80ms;
 }
-.ff-checkbox[data-checked] .ff-checkbox-text {
+.ff-checkbox:is([data-checked], [data-indeterminate]) .ff-checkbox-text {
   font-variation-settings:
     'wght' 550,
     'opsz' 18;

@@ -3,6 +3,7 @@ import type { ChildAttribute } from 'foldkit/html';
 import { cn } from '../../lib/utils';
 import { icon } from '../icons';
 import * as Button from '../button';
+import * as KeyCap from '../key-cap';
 import { Runtime } from './runtime';
 import {
   answerAt,
@@ -105,9 +106,19 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
                 [h.Class('auq-submit-label')],
                 [
                   label,
-                  h.kbd(
-                    [h.Class('auq-submit-shortcut'), h.AriaHidden(true)],
-                    [h.span([h.DataAttribute('auq-modifier', '')], ['⌃']), '↵'],
+                  h.span(
+                    [h.Class('auq-submit-shortcut ff-key-caps'), h.AriaHidden(true)],
+                    [
+                      KeyCap.view(
+                        {
+                          children: ['⌃'],
+                          tone: 'inverted',
+                          attributes: [h.DataAttribute('auq-modifier', '')],
+                        },
+                        h,
+                      ),
+                      KeyCap.view({ children: ['↵'], tone: 'inverted' }, h),
+                    ],
                   ),
                 ],
               ),

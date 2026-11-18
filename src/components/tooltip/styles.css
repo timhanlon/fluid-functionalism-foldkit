@@ -1,6 +1,34 @@
 .ff-tooltip-anchor {
   display: contents;
 }
+.ff-tooltip-group {
+  display: contents;
+}
+.ff-tooltip-group-box {
+  position: relative;
+}
+.ff-tooltip-shape {
+  position: absolute;
+  background: var(--foreground, #171717);
+  border-radius: 8px;
+}
+.ff-tooltip-group-box > .ff-tooltip-label {
+  position: relative;
+  background: transparent;
+}
+.ff-tooltip-previous {
+  pointer-events: none;
+  position: absolute !important;
+  left: 50%;
+  top: 50%;
+  width: max-content;
+}
+.ff-tooltip[data-radius='pill'] .ff-tooltip-shape {
+  border-radius: 20px;
+}
+.ff-tooltip[data-radius='sharp'] .ff-tooltip-shape {
+  border-radius: 1px;
+}
 .ff-tooltip {
   z-index: var(--z-tooltip, 70);
   pointer-events: none;
@@ -17,6 +45,17 @@
     'wght' 400,
     'opsz' 14;
   text-box: trim-both cap alphabetic;
+}
+.ff-tooltip-shortcut-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ff-tooltip-shortcut-text {
+  text-box: trim-both cap alphabetic;
+}
+.ff-tooltip-shortcut {
+  margin-block: -5px;
 }
 .ff-tooltip[data-radius='pill'] .ff-tooltip-label {
   border-radius: 20px;

@@ -10,8 +10,12 @@ export { defaultMotion, type MotionConfig } from './runtime';
 export type Status = 'default' | 'info' | 'success' | 'warning' | 'error';
 export type ActionVariant = 'primary' | 'secondary' | 'ghost';
 export interface Props {
-  readonly title: string;
-  readonly description?: string;
+  readonly title: Html | string;
+  readonly description?: Html | string;
+  readonly role?: 'group' | 'status' | 'alert';
+  readonly titleId?: string;
+  readonly descriptionId?: string;
+  readonly className?: string;
   readonly status?: Status;
   readonly contrast?: 'low' | 'high';
   readonly variant?: 'inline' | 'fixed';
@@ -91,6 +95,7 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
   if (!model.isShowing && model.transitionState === 'Idle')
     return h.div([h.Id(model.id), h.Style({ display: 'none' })], []);
   const status = props.status ?? 'default',
+    described = props.description !== undefined && props.description !== null,
     fixed = props.variant === 'fixed';
   return h.div(
     [
@@ -110,8 +115,15 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
             [
               h.div(
                 [
-                  h.Class('ff-banner'),
-                  h.Role(status === 'error' || status === 'warning' ? 'alert' : 'status'),
+                  h.Class(`ff-banner ${props.className ?? ''}`),
+                  h.Role(
+                    props.role ?? (status === 'error' || status === 'warning' ? 'alert' : 'status'),
+                  ),
+                  ...(props.titleId ? [h.Attribute('aria-labelledby', props.titleId)] : []),
+                  ...(described && props.descriptionId
+                    ? [h.Attribute('aria-describedby', props.descriptionId)]
+                    : []),
+                  ...(described ? [h.DataAttribute('described', '')] : []),
                   h.DataAttribute('slot', 'banner'),
                   h.DataAttribute('status', status),
                   h.DataAttribute('contrast', props.contrast ?? 'low'),
@@ -126,14 +138,19 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
                     [props.icon ?? glyph(status, props.icons, h)],
                   ),
                   h.p(
-                    [h.Class('ff-banner-title'), h.DataAttribute('slot', 'banner-title')],
+                    [
+                      h.Class('ff-banner-title'),
+                      h.DataAttribute('slot', 'banner-title'),
+                      ...(props.titleId ? [h.Id(props.titleId)] : []),
+                    ],
                     [props.title],
                   ),
-                  props.description
+                  described
                     ? h.p(
                         [
                           h.Class('ff-banner-description'),
                           h.DataAttribute('slot', 'banner-description'),
+                          ...(props.descriptionId ? [h.Id(props.descriptionId)] : []),
                         ],
                         [props.description],
                       )

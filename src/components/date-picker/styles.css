@@ -80,6 +80,7 @@
   color: var(--foreground);
 }
 .ff-date-picker-trigger:focus-visible,
+.ff-date-picker-typed-trigger:has(.ff-date-picker-text:focus-visible),
 .ff-date-picker-clear:focus-visible {
   box-shadow: 0 0 0 1px var(--focus-ring, #6b97ff);
 }
@@ -473,5 +474,29 @@
   --date-picker-segment-radius: 1px;
 }
 .ff-date-picker[data-radius='sharp'][data-variant='outline'] {
-  --date-picker-segment-radius: 1px;
+  --date-picker-segment-radius: 0px;
+}
+
+.ff-date-picker-popup[data-radius='sharp'] :is(.ff-date-picker-calendar, .ff-date-picker-preset),
+.ff-time-popup[data-radius='sharp'] :is(.ff-time-option, .ff-time-hover) {
+  border-radius: 1px;
+}
+
+.ff-date-picker-typed-trigger {
+  cursor: text;
+}
+.ff-date-picker-text {
+  grid-area: 1/1;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+}
+.ff-date-picker-text:focus-visible {
+  outline: none;
+}
+.ff-date-picker-text::placeholder {
+  color: var(--muted-foreground);
 }

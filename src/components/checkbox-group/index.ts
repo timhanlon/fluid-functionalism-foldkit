@@ -1,5 +1,6 @@
+import { defineSilentMount } from '../silent-mount';
 import { shapeRadius } from '../shape';
-import { Effect, Schema } from 'effect';
+import { Effect } from 'effect';
 import { Mount } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { mountListFocus } from '../list-focus';
@@ -7,8 +8,7 @@ import { mountHover } from '../../fluid-hover/engine';
 import { mountSelections } from '../selection-backgrounds/runtime';
 import '../checkbox/styles.css';
 
-const Mounted = Mount.define('CheckboxGroup.Mount', {
-  messages: [Schema.Never],
+const Mounted = defineSilentMount('CheckboxGroup.Mount', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

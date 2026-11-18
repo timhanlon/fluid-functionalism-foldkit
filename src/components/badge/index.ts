@@ -27,7 +27,7 @@ export type Size = 'default' | 'compact' | 'sm' | 'md' | 'lg';
 export interface Props<Message> {
   readonly children: readonly (Html | string)[];
   readonly color?: Color;
-  readonly variant?: 'solid' | 'dot';
+  readonly variant?: 'solid' | 'dot' | 'ghost';
   readonly size?: Size;
   readonly radius?: 'rounded' | 'pill' | 'sharp';
   readonly className?: string;
@@ -48,7 +48,9 @@ export function view<Message>(props: Props<Message>, h: HtmlBuilder<Message>): H
       ...(props.attributes ?? []),
     ],
     [
-      variant === 'dot' ? h.span([h.Class('ff-badge-dot'), h.AriaHidden(true)], []) : null,
+      variant === 'dot' || variant === 'ghost'
+        ? h.span([h.Class('ff-badge-dot'), h.AriaHidden(true)], [])
+        : null,
       h.span([h.Class('ff-badge-label')], props.children),
     ],
   );

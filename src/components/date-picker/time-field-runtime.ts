@@ -1,3 +1,4 @@
+import { mountPopupShieldFor } from '../popup/shield';
 import { Effect, Option, Queue, Schema, Stream } from 'effect';
 import { Mount } from 'foldkit';
 import { anchorSetup } from '@foldkit/ui/anchor';
@@ -94,6 +95,7 @@ export function mountTimeList(
   const popup = list.closest<HTMLElement>('.ff-time-popup'),
     viewport = list.closest<HTMLElement>('[data-slot="scroll-area-viewport"]');
   if (!popup || !viewport) return () => {};
+  const disposeShield = mountPopupShieldFor(popup);
   const reduce = matchMedia('(prefers-reduced-motion:reduce)'),
     layer = document.createElement('div');
   layer.className = 'ff-time-hover';
@@ -247,6 +249,7 @@ export function mountTimeList(
   sync();
   return () => {
     observer.disconnect();
+    disposeShield();
     popupObserver.disconnect();
     resize.disconnect();
     hover.dispose();

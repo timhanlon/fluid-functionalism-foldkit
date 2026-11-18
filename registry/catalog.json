@@ -2,6 +2,37 @@
   "origin": "https://fff.timhanlon.com",
   "components": [
     {
+      "name": "key-cap",
+      "title": "KeyCap",
+      "docsPath": "/docs/tooltip",
+      "description": "Shared filled keyboard caps with semantic kbd elements, combo splitting and inverted tone."
+    },
+    {
+      "name": "message-scroller",
+      "title": "MessageScroller",
+      "docsPath": "/docs/input-message",
+      "description": "A native conversation viewport with following, anchored turns and an animated return-to-latest control.",
+      "exampleDependencies": ["button"]
+    },
+    {
+      "name": "context-menu",
+      "title": "ContextMenu",
+      "description": "The shared Dropdown tree opened at a pointer or focused trigger, with native text-field menus and return focus.",
+      "compatibility": "pnpm",
+      "exampleDependencies": ["input"]
+    },
+    {
+      "name": "code-block",
+      "title": "CodeBlock",
+      "description": "Code and command output with copy feedback, optional line numbers, caller-owned highlighting and shared scrollbars."
+    },
+    {
+      "name": "confirmation",
+      "title": "Confirmation",
+      "docsPath": "/docs/banner",
+      "description": "Inline approval questions composed from Banner with parent-owned requested, approved and denied states."
+    },
+    {
       "name": "breadcrumb",
       "title": "Breadcrumb",
       "description": "Navigation trails with shared hover, sibling menus, truncation tooltips and responsive collapse.",
@@ -163,6 +194,12 @@
       "name": "table",
       "title": "Table",
       "description": "Semantic tables with controlled sorting, empty states and scoped row hover."
+    },
+    {
+      "name": "data-table",
+      "title": "DataTable",
+      "description": "TanStack row models with Foldkit sorting, filters, selection, inline editors, column layout and pagination.",
+      "compatibility": "pnpm"
     },
     {
       "name": "chat-message",

@@ -1,4 +1,5 @@
-import { Effect, Queue, Schema, Stream } from 'effect';
+import { defineSilentMount } from '../silent-mount';
+import { Effect, Queue, Stream } from 'effect';
 import { Mount } from 'foldkit';
 import { animate, type AnimationPlaybackControls } from 'motion';
 import { Message, SIDEBAR_COLLAPSE_SLOP, SIDEBAR_MAX_WIDTH, SIDEBAR_MIN_WIDTH } from './state';
@@ -323,8 +324,7 @@ export const RailMounted = Mount.defineStream('Sidebar.Rail', {
 /** A collapsible group's body: springs between 0 and its measured height
  * when the group toggles, and snaps when the content resizes underneath
  * (a nested sub-menu), clipping only while it moves. */
-export const CollapseMounted = Mount.define('Sidebar.Collapse', {
-  messages: [Schema.Never],
+export const CollapseMounted = defineSilentMount('Sidebar.Collapse', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {
@@ -440,8 +440,7 @@ export const SheetMounted = Mount.defineStream('Sidebar.Sheet', {
  * pile (a banner's height follows the rail's width). Collapsed, cards peek
  * 12px apiece with a 5% scale step, two peeks at most; the inline pile fans
  * out under the pointer, 4px apart. */
-export const CalloutStackMounted = Mount.define('Sidebar.CalloutStack', {
-  messages: [Schema.Never],
+export const CalloutStackMounted = defineSilentMount('Sidebar.CalloutStack', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

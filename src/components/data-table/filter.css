@@ -1,0 +1,183 @@
+.ff-data-table-filter {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: 36px;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 2px;
+  color: var(--muted-foreground);
+  font: inherit;
+  transition: border-color 80ms;
+  --filter-segment-radius: 5px;
+}
+.ff-data-table[data-size='compact'] .ff-data-table-filter {
+  height: 28px;
+}
+.ff-data-table[data-radius='sharp'] .ff-data-table-filter {
+  border-radius: 1px;
+  --filter-segment-radius: 0px;
+}
+.ff-data-table[data-radius='pill'] .ff-data-table-filter {
+  border-radius: 20px;
+  --filter-segment-radius: 17px;
+}
+.ff-data-table-filter[data-typing] {
+  border-color: color-mix(in oklab, var(--foreground) 40%, transparent);
+}
+.ff-data-table-filter-content {
+  display: inline-flex;
+  width: max-content;
+  flex: none;
+  height: 100%;
+  align-items: center;
+}
+.ff-data-table-filter-label {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  white-space: nowrap;
+  color: var(--foreground);
+  padding-left: 8px;
+}
+.ff-data-table[data-size='compact'] .ff-data-table-filter-label {
+  padding-left: 6px;
+}
+.ff-data-table-filter-segment {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  height: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  border-radius: var(--filter-segment-radius);
+  padding: 0 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  white-space: nowrap;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 80ms;
+}
+.ff-data-table-filter-segment[hidden] {
+  display: none;
+}
+label.ff-data-table-filter-segment {
+  cursor: text;
+}
+.ff-data-table-filter-segment:focus-visible {
+  box-shadow: 0 0 0 1px var(--focus-ring, #6b97ff);
+}
+.ff-data-table-filter-segment[aria-expanded='true'] {
+  background: var(--active);
+}
+.ff-data-table-filter-segment:hover {
+  color: var(--foreground);
+}
+.ff-data-table-filter .ff-dropdown {
+  display: contents;
+}
+.ff-data-table-filter .ff-input,
+.ff-data-table-filter .ff-input[data-size] {
+  width: auto;
+  min-width: 24px;
+  max-width: 192px;
+  height: 100%;
+  field-sizing: content;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--foreground);
+  box-shadow: none;
+  font: inherit;
+}
+.ff-data-table-filter .ff-input-wrapper {
+  display: contents;
+}
+.ff-data-table-filter .ff-input-steps {
+  display: none;
+}
+.ff-data-table-filter .ff-input[type='number'] {
+  min-width: 16px;
+  max-width: 96px;
+}
+.ff-data-table[data-size='compact'] .ff-data-table-filter .ff-input[type='number'] {
+  height: 18px;
+}
+.ff-data-table-filter-range-connector {
+  white-space: nowrap;
+}
+.ff-data-table-filter-word {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  white-space: nowrap;
+  padding-left: 4px;
+}
+.ff-data-table-filter-values {
+  max-width: 224px;
+  gap: 6px;
+  color: var(--foreground);
+}
+.ff-data-table-filter-values[data-empty='true'] {
+  color: var(--muted-foreground);
+}
+.ff-data-table-filter-value-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ff-data-table-filter-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+}
+.ff-data-table-filter-dots {
+  display: inline-flex;
+  flex: none;
+}
+.ff-data-table-filter-dots:empty {
+  display: none;
+}
+.ff-data-table-filter-dots .ff-data-table-filter-dot + .ff-data-table-filter-dot {
+  margin-left: -2px;
+}
+.ff-data-table-filter .ff-data-table-filter-remove[data-size] {
+  flex: none;
+  width: 28px;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--filter-segment-radius);
+}
+.ff-data-table[data-size='compact'] .ff-data-table-filter .ff-data-table-filter-remove[data-size] {
+  width: 24px;
+}
+.ff-data-table-filter .ff-data-table-filter-remove svg {
+  width: 16px;
+  height: 16px;
+}
+.ff-data-table-filter .ff-data-table-filter-remove .ff-button-fill {
+  display: none;
+}
+.ff-data-table[data-size='compact'] .ff-data-table-filter .ff-data-table-filter-remove svg {
+  width: 14px;
+  height: 14px;
+}
+.ff-popup[data-table-filter-menu='operator'] {
+  width: 144px;
+}
+.ff-popup[data-table-filter-menu='options'] {
+  width: 192px;
+}

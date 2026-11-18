@@ -1,5 +1,9 @@
+@layer components {
+  .ff-accordion {
+    width: 288px;
+  }
+}
 .ff-accordion {
-  width: 288px;
   max-width: 100%;
   position: relative;
   color: var(--foreground, #171717);
@@ -152,4 +156,8 @@
 /* Sharp uses the source shape-context radii. */
 .ff-accordion[data-radius='sharp'] .ff-accordion-item {
   border-radius: 1px;
+}
+
+.ff-accordion[data-grouped='true'] .ff-accordion-item::after {
+  background: transparent;
 }

@@ -1,8 +1,7 @@
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
 
-export const SelectDraft = Mount.define('Slider.SelectDraft', {
-  messages: [Schema.Never],
+export const SelectDraft = defineSilentMount('Slider.SelectDraft', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() =>

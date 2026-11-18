@@ -237,24 +237,7 @@
   white-space: nowrap;
 }
 .ff-im-ghost-kbd {
-  display: inline-flex;
-  flex-shrink: 0;
-  height: 18px;
-  align-items: center;
-  padding: 0 4px;
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  background: var(--background);
-  color: var(--muted-foreground);
-  font-family: var(--font-sans, Inter, system-ui, sans-serif);
-  font-size: var(--fs-micro, 11px);
-  line-height: var(--lh-micro, 14px);
   transform: translateY(-1px);
-}
-.ff-input-message[data-size='compact'] .ff-im-ghost-kbd {
-  height: 16px;
-  font-size: var(--fs-micro-compact, 10px);
-  line-height: var(--lh-micro-compact, 12px);
 }
 
 .ff-im-footer {

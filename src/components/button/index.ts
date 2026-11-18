@@ -23,6 +23,7 @@ export interface Props<Message> {
  * Foldkit UI primitive, such as Menu. The caller supplies the native element. */
 export function decoration<Message>(props: Props<Message>, h: HtmlBuilder<Message>) {
   const iconOnly = props.size === 'icon' || props.size === 'icon-compact';
+  const iconSize = props.size === 'compact' || props.size === 'icon-compact' ? '14' : '16';
   const content = iconOnly
     ? props.children
     : [
@@ -56,20 +57,26 @@ export function decoration<Message>(props: Props<Message>, h: HtmlBuilder<Messag
                 [h.Class('ff-button-spinner'), h.AriaHidden(true)],
                 [
                   h.svg(
-                    [h.Attribute('viewBox', '0 0 24 24'), h.Attribute('fill', 'none')],
+                    [h.Width(iconSize), h.Height(iconSize), h.ViewBox('0 0 16 16'), h.Fill('none')],
                     [
-                      h.path(
+                      h.g(
+                        [h.Class('ff-spinner-turn')],
                         [
-                          h.Attribute(
-                            'd',
-                            'M12 12C14 8.5 19 8.5 19 12C19 15.5 14 15.5 12 12C10 8.5 5 8.5 5 12C5 15.5 10 15.5 12 12Z',
+                          h.circle(
+                            [
+                              h.Cx('8'),
+                              h.Cy('8'),
+                              h.R('6.25'),
+                              h.Stroke('currentColor'),
+                              h.StrokeWidth('1.5'),
+                              h.StrokeLinecap('round'),
+                              h.Attribute('pathLength', '100'),
+                              h.Attribute('transform', 'rotate(-90 8 8)'),
+                              h.Class('ff-spinner-breathe'),
+                            ],
+                            [],
                           ),
-                          h.Attribute('stroke', 'currentColor'),
-                          h.Attribute('stroke-width', '1.125'),
-                          h.Attribute('stroke-linecap', 'round'),
-                          h.Attribute('pathLength', '100'),
                         ],
-                        [],
                       ),
                     ],
                   ),

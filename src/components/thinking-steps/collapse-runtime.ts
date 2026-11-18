@@ -1,10 +1,9 @@
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
 import { animate, type AnimationPlaybackControls } from 'motion';
 /** The panel persists to keep aria-controls valid, and hides only after its
  * closing spring settles. offsetHeight stays correct under scaled ancestors. */
-export const PanelMounted = Mount.define('ThinkingSteps.Collapse', {
-  messages: [Schema.Never],
+export const PanelMounted = defineSilentMount('ThinkingSteps.Collapse', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

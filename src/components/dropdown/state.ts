@@ -1,5 +1,5 @@
 import { Menu as Primitive } from '@foldkit/ui';
-import { Schema } from 'effect';
+import { Option, Schema } from 'effect';
 import { Command, type Update } from 'foldkit';
 import { defineMessageUnion } from 'foldkit/message';
 import type { Selection } from './panel';
@@ -57,12 +57,17 @@ export function update(
       outMessage: Primitive.OutMessage.Selected({ value: input.item, index: input.index }),
     };
   const result = behavior.update(model, input);
+  // A multi-select stays open after selection. Consume the opening mouse gesture
+  // so a later row click cannot also replay the primitive's press-drag select.
+  const next =
+    options.selection === 'multiple' &&
+    (input._tag === 'ClickedButton' || input._tag === 'ReleasedPointerOnItems') &&
+    Option.isSome(result.model.maybePointerOrigin)
+      ? { ...result.model, maybePointerOrigin: Option.none() }
+      : result.model;
   return {
     ...result,
-    model:
-      result.model === model
-        ? model
-        : { ...result.model, ownerId: model.ownerId, lifetime: model.lifetime },
+    model: next === model ? model : { ...next, ownerId: model.ownerId, lifetime: model.lifetime },
     commands: result.commands?.map((command) =>
       Command.mapMessage(command, (message) =>
         Message.Scoped({ message, lifetime: model.lifetime }),

@@ -68,6 +68,12 @@
           "description": ""
         },
         {
+          "name": "grouped",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
           "name": "highlight",
           "optional": true,
           "type": "'trigger' | 'item'",
@@ -374,7 +380,7 @@
         {
           "name": "variant",
           "optional": true,
-          "type": "'solid' | 'dot'",
+          "type": "'solid' | 'dot' | 'ghost'",
           "description": ""
         },
         {
@@ -411,11 +417,35 @@
         {
           "name": "title",
           "optional": false,
-          "type": "string",
+          "type": "Html | string",
           "description": ""
         },
         {
           "name": "description",
+          "optional": true,
+          "type": "Html | string",
+          "description": ""
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": "'group' | 'status' | 'alert'",
+          "description": ""
+        },
+        {
+          "name": "titleId",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "descriptionId",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
           "optional": true,
           "type": "string",
           "description": ""
@@ -502,6 +532,12 @@
         {
           "name": "label",
           "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "selected",
+          "optional": true,
           "type": "string",
           "description": ""
         },
@@ -1658,8 +1694,8 @@
         {
           "name": "files",
           "optional": true,
-          "type": "readonly File[]",
-          "description": ""
+          "type": "readonly FileThumbnail.Attachment[]",
+          "description": "Local File objects or remote { url, mediaType, filename? } parts from a saved conversation or the AI SDK. Remote images render from their URL; failed images and other remote types use a document glyph. Only local PDFs render their first page."
         },
         {
           "name": "thumbnailSize",
@@ -1731,6 +1767,12 @@
         {
           "name": "checked",
           "optional": false,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "indeterminate",
+          "optional": true,
           "type": "boolean",
           "description": ""
         },
@@ -1899,6 +1941,91 @@
       ]
     }
   ],
+  "code-block": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "code",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "language",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "Html | string",
+          "description": ""
+        },
+        {
+          "name": "children",
+          "optional": true,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "renderContent",
+          "optional": true,
+          "type": "() => readonly (Html | string)[]",
+          "description": "Use this top-level slot when content carries parent Messages or Mounts."
+        },
+        {
+          "name": "lineNumbers",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "wrap",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "maxHeight",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "hideHeader",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    }
+  ],
   "color-picker": [
     {
       "name": "Props",
@@ -1962,6 +2089,12 @@
           "optional": true,
           "type": "boolean",
           "description": "false: the format menu renders inside the panel (in a popover)."
+        },
+        {
+          "name": "formatBackdrop",
+          "optional": true,
+          "type": "Dropdown.Props['backdrop']",
+          "description": "Outside-click policy for the format menu; defaults to dismiss."
         },
         {
           "name": "formatOpen",
@@ -2192,6 +2325,12 @@
           "optional": true,
           "type": "string",
           "description": ""
+        },
+        {
+          "name": "formatBackdrop",
+          "optional": true,
+          "type": "Dropdown.Props['backdrop']",
+          "description": "Outside-click policy for the format menu; defaults to dismiss."
         },
         {
           "name": "formatOpen",
@@ -2536,6 +2675,12 @@
           "description": "Heading the row is listed under; groups keep first-appearance order."
         },
         {
+          "name": "destructive",
+          "optional": true,
+          "type": "boolean",
+          "description": "The action destroys something; the row uses the destructive color."
+        },
+        {
           "name": "disabled",
           "optional": true,
           "type": "boolean",
@@ -2808,6 +2953,816 @@
       ]
     }
   ],
+  "context-menu": [
+    {
+      "name": "UpdateOptions",
+      "fields": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Tree.Item[]",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "search",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "clearOnClose",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "selection",
+          "optional": true,
+          "type": "Selection",
+          "description": ""
+        },
+        {
+          "name": "selectionForPath",
+          "optional": true,
+          "type": "(path: readonly number[]) => Selection | undefined",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Trigger",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "triggers",
+          "optional": true,
+          "type": "readonly Trigger[]",
+          "description": "Each native trigger receives its own open marker. Defaults to one area."
+        },
+        {
+          "name": "renderTrigger",
+          "optional": true,
+          "type": "( id: string, attributes: readonly ChildAttribute[], isOpen: boolean, ) => Html",
+          "description": ""
+        },
+        {
+          "name": "filter",
+          "optional": true,
+          "type": "(target: Element, triggerId: string) => boolean",
+          "description": "Text fields always retain their native menu, independently of this filter."
+        },
+        {
+          "name": "sideOffset",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "menuWidth",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "buttonClassName",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "submenu",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "surfaceLevel",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "anchorOffset",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "heldIndex",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "renderItemsHeader",
+          "optional": true,
+          "type": "() => Html",
+          "description": ""
+        },
+        {
+          "name": "renderItemsFooter",
+          "optional": true,
+          "type": "() => Html",
+          "description": ""
+        },
+        {
+          "name": "scrollFade",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "selection",
+          "optional": true,
+          "type": "Selection",
+          "description": ""
+        },
+        {
+          "name": "chevron",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "renderLeading",
+          "optional": true,
+          "type": "(item: Item, index: number) => Html | null",
+          "description": "Parent-owned leading content. Its clicks do not activate the row."
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "Button.Variant",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "checkmarks",
+          "optional": true,
+          "type": "boolean",
+          "description": "false: checked rows mark themselves by background and weight only."
+        },
+        {
+          "name": "portal",
+          "optional": true,
+          "type": "boolean",
+          "description": "Render the popup in place instead of portalling it to the body (inside\nanother popup, so presses in it stay inside that popup)."
+        },
+        {
+          "name": "backdrop",
+          "optional": true,
+          "type": "'dismiss' | 'passthrough'",
+          "description": "Pass outside clicks through for a persistently open illustrative menu."
+        },
+        {
+          "name": "rootClassName",
+          "optional": true,
+          "type": "string",
+          "description": "The wrapper's class (\"contents\" lets a custom trigger sit in its\nparent's layout, as a sidebar row's own button)."
+        },
+        {
+          "name": "direction",
+          "optional": true,
+          "type": "'ltr' | 'rtl'",
+          "description": ""
+        },
+        {
+          "name": "selectionForPath",
+          "optional": true,
+          "type": "(path: readonly number[]) => Dropdown.Panel.Selection",
+          "description": ""
+        },
+        {
+          "name": "search",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "clearOnClose",
+          "optional": true,
+          "type": "boolean",
+          "description": "Clear the query on opening and field removal. Defaults to true. Pass the same value to update."
+        },
+        {
+          "name": "inputAttributes",
+          "optional": true,
+          "type": "Searchable.Props['inputAttributes']",
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "emptyLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "searchIcon",
+          "optional": true,
+          "type": "Searchable.Props['searchIcon']",
+          "description": ""
+        },
+        {
+          "name": "creatable",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "createIcon",
+          "optional": true,
+          "type": "Searchable.Props['createIcon']",
+          "description": ""
+        },
+        {
+          "name": "createLabel",
+          "optional": true,
+          "type": "Searchable.Props['createLabel']",
+          "description": ""
+        },
+        {
+          "name": "popupAttributesForPath",
+          "optional": true,
+          "type": "( path: readonly number[], ) => readonly import('foldkit/html').ChildAttribute[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "data-table": [
+    {
+      "name": "History.Step",
+      "fields": [
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "before",
+          "optional": false,
+          "type": "readonly T[]",
+          "description": ""
+        },
+        {
+          "name": "after",
+          "optional": false,
+          "type": "readonly T[]",
+          "description": ""
+        },
+        {
+          "name": "at",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "mergeKey",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "History.History",
+      "fields": [
+        {
+          "name": "rows",
+          "optional": false,
+          "type": "readonly T[]",
+          "description": ""
+        },
+        {
+          "name": "past",
+          "optional": false,
+          "type": "readonly Step<T>[]",
+          "description": ""
+        },
+        {
+          "name": "future",
+          "optional": false,
+          "type": "readonly Step<T>[]",
+          "description": ""
+        },
+        {
+          "name": "dropped",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Action",
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "Html",
+          "description": ""
+        },
+        {
+          "name": "shortcut",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "destructive",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ColumnMeta",
+      "fields": [
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "lines",
+          "optional": true,
+          "type": "ColumnLines",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "IconName",
+          "description": ""
+        },
+        {
+          "name": "filter",
+          "optional": true,
+          "type": "FilterKind | false",
+          "description": ""
+        },
+        {
+          "name": "editor",
+          "optional": true,
+          "type": "Editor",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Options",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": "readonly T[]",
+          "description": ""
+        },
+        {
+          "name": "columns",
+          "optional": false,
+          "type": "readonly ColumnDef<T>[]",
+          "description": ""
+        },
+        {
+          "name": "getRowId",
+          "optional": true,
+          "type": "TableOptions<T>['getRowId']",
+          "description": ""
+        },
+        {
+          "name": "getCellValue",
+          "optional": true,
+          "type": "(row: T, columnId: string) => unknown",
+          "description": "Override data-column values for sorting, filtering and display. Return the\nrow's own value for unchanged columns. A top-level callback keeps derived\naccessors compatible with Foldkit view-input scoping; display columns stay inert."
+        },
+        {
+          "name": "getSubRows",
+          "optional": true,
+          "type": "TableOptions<T>['getSubRows']",
+          "description": ""
+        },
+        {
+          "name": "enableRowSelection",
+          "optional": true,
+          "type": "TableOptions<T>['enableRowSelection']",
+          "description": ""
+        },
+        {
+          "name": "enableColumnPinning",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "pageSize",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "initialState",
+          "optional": true,
+          "type": "InitialTableState",
+          "description": ""
+        },
+        {
+          "name": "filtersHidden",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "RowMove",
+      "fields": [
+        {
+          "name": "rowIds",
+          "optional": false,
+          "type": "readonly string[]",
+          "description": ""
+        },
+        {
+          "name": "targetId",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "place",
+          "optional": false,
+          "type": "'before' | 'after'",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "renderCell",
+          "optional": true,
+          "type": "(row: T, columnId: string) => Html | string",
+          "description": ""
+        },
+        {
+          "name": "linkHref",
+          "optional": true,
+          "type": "(row: T, columnId: string, value: string) => string",
+          "description": ""
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "titleAs",
+          "optional": true,
+          "type": "'h1' | 'h2' | 'h3'",
+          "description": ""
+        },
+        {
+          "name": "renderToolbar",
+          "optional": true,
+          "type": "() => Html | null",
+          "description": "Compose public toolbar parts in a consumer-owned order inside the table scope."
+        },
+        {
+          "name": "renderViews",
+          "optional": true,
+          "type": "() => Html | null",
+          "description": "Parent-owned saved-view controls, between the title/toolbar and filter chips.\nKeep their Model and Messages in the parent; this slot supplies only placement."
+        },
+        {
+          "name": "renderFilterActions",
+          "optional": true,
+          "type": "() => Html | null",
+          "description": "Parent-owned actions after Add filter. The row remains hidden when no\nfilters are set or the reader has tucked it away."
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "rowHover",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "resizeColumns",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "reorderColumns",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "cellAlign",
+          "optional": true,
+          "type": "'auto' | 'center' | 'top'",
+          "description": ""
+        },
+        {
+          "name": "loading",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "loadingRows",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "fill",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "editable",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "rowClickable",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "reorderRows",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "empty",
+          "optional": true,
+          "type": "{ readonly title?: string; readonly description?: string; readonly action?: Html; }",
+          "description": ""
+        },
+        {
+          "name": "search",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "searchCollapsible",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "searchColumn",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "searchPlaceholder",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "filters",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "viewOptions",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "pagination",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "pageSizes",
+          "optional": true,
+          "type": "readonly number[]",
+          "description": ""
+        },
+        {
+          "name": "selectionBar",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "rowActions",
+          "optional": true,
+          "type": "readonly Action[]",
+          "description": "Row menu actions; appearance and disabled state use the shared Menu contract."
+        },
+        {
+          "name": "selectionActions",
+          "optional": true,
+          "type": "readonly Action[]",
+          "description": "Selection palette actions; the parent handles SelectionAction OutMessages."
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": "readonly T[]",
+          "description": ""
+        },
+        {
+          "name": "columns",
+          "optional": false,
+          "type": "readonly ColumnDef<T>[]",
+          "description": ""
+        },
+        {
+          "name": "getRowId",
+          "optional": true,
+          "type": "TableOptions<T>['getRowId']",
+          "description": ""
+        },
+        {
+          "name": "getCellValue",
+          "optional": true,
+          "type": "(row: T, columnId: string) => unknown",
+          "description": "Override data-column values for sorting, filtering and display. Return the\nrow's own value for unchanged columns. A top-level callback keeps derived\naccessors compatible with Foldkit view-input scoping; display columns stay inert."
+        },
+        {
+          "name": "getSubRows",
+          "optional": true,
+          "type": "TableOptions<T>['getSubRows']",
+          "description": ""
+        },
+        {
+          "name": "enableRowSelection",
+          "optional": true,
+          "type": "TableOptions<T>['enableRowSelection']",
+          "description": ""
+        },
+        {
+          "name": "enableColumnPinning",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "pageSize",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "initialState",
+          "optional": true,
+          "type": "InitialTableState",
+          "description": ""
+        },
+        {
+          "name": "filtersHidden",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        }
+      ]
+    }
+  ],
   "date-picker": [
     {
       "name": "Options",
@@ -2891,6 +3846,12 @@
           "description": ""
         },
         {
+          "name": "typeable",
+          "optional": true,
+          "type": "boolean",
+          "description": "Allow entering dates from the keyboard."
+        },
+        {
           "name": "size",
           "optional": true,
           "type": "'default' | 'compact'",
@@ -2966,6 +3927,12 @@
           "optional": true,
           "type": "string",
           "description": ""
+        },
+        {
+          "name": "fitLabel",
+          "optional": true,
+          "type": "boolean",
+          "description": "Size the date trigger to its current label instead of reserving the widest date."
         },
         {
           "name": "name",
@@ -3050,6 +4017,12 @@
           "optional": true,
           "type": "boolean",
           "description": ""
+        },
+        {
+          "name": "typeable",
+          "optional": true,
+          "type": "boolean",
+          "description": "Allow entering dates from the keyboard."
         },
         {
           "name": "size",
@@ -3175,6 +4148,12 @@
           "description": ""
         },
         {
+          "name": "triggerSize",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
           "name": "triggerVariant",
           "optional": true,
           "type": "Button.Variant",
@@ -3284,6 +4263,12 @@
           "description": ""
         },
         {
+          "name": "renderLeading",
+          "optional": true,
+          "type": "(item: Item, index: number) => Html | null",
+          "description": ""
+        },
+        {
           "name": "selection",
           "optional": false,
           "type": "Selection",
@@ -3385,6 +4370,12 @@
           "description": ""
         },
         {
+          "name": "trigger",
+          "optional": true,
+          "type": "{ readonly attributes: readonly (Attribute<Message> | ChildAttribute)[]; readonly children: readonly Html[]; }",
+          "description": "Replaces the Button-styled trigger (ColorPicker's format menu)."
+        },
+        {
           "name": "anchorTriggerId",
           "optional": true,
           "type": "string",
@@ -3394,6 +4385,42 @@
           "name": "hideTrigger",
           "optional": true,
           "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "placement",
+          "optional": true,
+          "type": "Primitive.AnchorConfig['placement']",
+          "description": ""
+        },
+        {
+          "name": "anchorGap",
+          "optional": true,
+          "type": "number",
+          "description": "Gap between trigger and popup (default 6)."
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly Item[]",
+          "description": ""
+        },
+        {
+          "name": "itemToAttributes",
+          "optional": true,
+          "type": "(value: string, index: number) => readonly ChildAttribute[]",
+          "description": ""
+        },
+        {
+          "name": "popupAttributes",
+          "optional": true,
+          "type": "readonly ChildAttribute[]",
+          "description": ""
+        },
+        {
+          "name": "buttonClassName",
+          "optional": true,
+          "type": "string",
           "description": ""
         },
         {
@@ -3415,21 +4442,9 @@
           "description": ""
         },
         {
-          "name": "popupAttributes",
-          "optional": true,
-          "type": "readonly ChildAttribute[]",
-          "description": ""
-        },
-        {
           "name": "heldIndex",
           "optional": true,
           "type": "number",
-          "description": ""
-        },
-        {
-          "name": "itemToAttributes",
-          "optional": true,
-          "type": "(value: string, index: number) => readonly ChildAttribute[]",
           "description": ""
         },
         {
@@ -3445,10 +4460,10 @@
           "description": ""
         },
         {
-          "name": "items",
-          "optional": false,
-          "type": "readonly Item[]",
-          "description": ""
+          "name": "renderLeading",
+          "optional": true,
+          "type": "(item: Item, index: number) => Html | null",
+          "description": "Parent-owned leading content. Its clicks do not activate the row."
         },
         {
           "name": "label",
@@ -3475,18 +4490,6 @@
           "description": ""
         },
         {
-          "name": "placement",
-          "optional": true,
-          "type": "Primitive.AnchorConfig['placement']",
-          "description": ""
-        },
-        {
-          "name": "trigger",
-          "optional": true,
-          "type": "{ readonly attributes: readonly (Attribute<Message> | ChildAttribute)[]; readonly children: readonly Html[]; }",
-          "description": "Replaces the Button-styled trigger (ColorPicker's format menu)."
-        },
-        {
           "name": "checkmarks",
           "optional": true,
           "type": "boolean",
@@ -3499,16 +4502,16 @@
           "description": "Render the popup in place instead of portalling it to the body (inside\nanother popup, so presses in it stay inside that popup)."
         },
         {
+          "name": "backdrop",
+          "optional": true,
+          "type": "'dismiss' | 'passthrough'",
+          "description": "Pass outside clicks through for a persistently open illustrative menu."
+        },
+        {
           "name": "rootClassName",
           "optional": true,
           "type": "string",
           "description": "The wrapper's class (\"contents\" lets a custom trigger sit in its\nparent's layout, as a sidebar row's own button)."
-        },
-        {
-          "name": "anchorGap",
-          "optional": true,
-          "type": "number",
-          "description": "Gap between trigger and popup (default 6)."
         }
       ]
     },
@@ -3546,10 +4549,28 @@
           "description": ""
         },
         {
+          "name": "leading",
+          "optional": true,
+          "type": "Html",
+          "description": "Static content before the icon. Use renderLeading for parent handlers or Mounts."
+        },
+        {
           "name": "trailing",
           "optional": true,
           "type": "Html",
           "description": ""
+        },
+        {
+          "name": "shortcut",
+          "optional": true,
+          "type": "string | readonly string[]",
+          "description": ""
+        },
+        {
+          "name": "destructive",
+          "optional": true,
+          "type": "boolean",
+          "description": "A destructive action: label and primary icon use the destructive color."
         },
         {
           "name": "disabled",
@@ -3562,6 +4583,12 @@
           "optional": true,
           "type": "string",
           "description": ""
+        },
+        {
+          "name": "groupLabel",
+          "optional": true,
+          "type": "string",
+          "description": "Empty text keeps the group separator without adding a heading."
         }
       ]
     },
@@ -3664,6 +4691,12 @@
           "description": ""
         },
         {
+          "name": "popupAttributesForPath",
+          "optional": true,
+          "type": "( path: readonly number[], ) => readonly import('foldkit/html').ChildAttribute[]",
+          "description": ""
+        },
+        {
           "name": "size",
           "optional": true,
           "type": "'default' | 'compact'",
@@ -3682,22 +4715,10 @@
           "description": ""
         },
         {
-          "name": "renderItemsHeader",
+          "name": "trigger",
           "optional": true,
-          "type": "() => Html",
-          "description": ""
-        },
-        {
-          "name": "renderItemsFooter",
-          "optional": true,
-          "type": "() => Html",
-          "description": ""
-        },
-        {
-          "name": "scrollFade",
-          "optional": true,
-          "type": "boolean",
-          "description": ""
+          "type": "{ readonly attributes: readonly (Attribute<Message> | ChildAttribute)[]; readonly children: readonly Html[]; }",
+          "description": "Replaces the Button-styled trigger (ColorPicker's format menu)."
         },
         {
           "name": "anchorTriggerId",
@@ -3709,6 +4730,24 @@
           "name": "hideTrigger",
           "optional": true,
           "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "placement",
+          "optional": true,
+          "type": "Primitive.AnchorConfig['placement']",
+          "description": ""
+        },
+        {
+          "name": "anchorGap",
+          "optional": true,
+          "type": "number",
+          "description": "Gap between trigger and popup (default 6)."
+        },
+        {
+          "name": "buttonClassName",
+          "optional": true,
+          "type": "string",
           "description": ""
         },
         {
@@ -3736,6 +4775,24 @@
           "description": ""
         },
         {
+          "name": "renderItemsHeader",
+          "optional": true,
+          "type": "() => Html",
+          "description": ""
+        },
+        {
+          "name": "renderItemsFooter",
+          "optional": true,
+          "type": "() => Html",
+          "description": ""
+        },
+        {
+          "name": "scrollFade",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
           "name": "selection",
           "optional": true,
           "type": "Selection",
@@ -3746,6 +4803,12 @@
           "optional": true,
           "type": "boolean",
           "description": ""
+        },
+        {
+          "name": "renderLeading",
+          "optional": true,
+          "type": "(item: Item, index: number) => Html | null",
+          "description": "Parent-owned leading content. Its clicks do not activate the row."
         },
         {
           "name": "label",
@@ -3772,18 +4835,6 @@
           "description": ""
         },
         {
-          "name": "placement",
-          "optional": true,
-          "type": "Primitive.AnchorConfig['placement']",
-          "description": ""
-        },
-        {
-          "name": "trigger",
-          "optional": true,
-          "type": "{ readonly attributes: readonly (Attribute<Message> | ChildAttribute)[]; readonly children: readonly Html[]; }",
-          "description": "Replaces the Button-styled trigger (ColorPicker's format menu)."
-        },
-        {
           "name": "checkmarks",
           "optional": true,
           "type": "boolean",
@@ -3796,16 +4847,16 @@
           "description": "Render the popup in place instead of portalling it to the body (inside\nanother popup, so presses in it stay inside that popup)."
         },
         {
+          "name": "backdrop",
+          "optional": true,
+          "type": "'dismiss' | 'passthrough'",
+          "description": "Pass outside clicks through for a persistently open illustrative menu."
+        },
+        {
           "name": "rootClassName",
           "optional": true,
           "type": "string",
           "description": "The wrapper's class (\"contents\" lets a custom trigger sit in its\nparent's layout, as a sidebar row's own button)."
-        },
-        {
-          "name": "anchorGap",
-          "optional": true,
-          "type": "number",
-          "description": "Gap between trigger and popup (default 6)."
         }
       ]
     },
@@ -3837,10 +4888,28 @@
           "description": ""
         },
         {
+          "name": "leading",
+          "optional": true,
+          "type": "Html",
+          "description": "Static content before the icon. Use renderLeading for parent handlers or Mounts."
+        },
+        {
           "name": "trailing",
           "optional": true,
           "type": "Html",
           "description": ""
+        },
+        {
+          "name": "shortcut",
+          "optional": true,
+          "type": "string | readonly string[]",
+          "description": ""
+        },
+        {
+          "name": "destructive",
+          "optional": true,
+          "type": "boolean",
+          "description": "A destructive action: label and primary icon use the destructive color."
         },
         {
           "name": "disabled",
@@ -3853,12 +4922,24 @@
           "optional": true,
           "type": "string",
           "description": ""
+        },
+        {
+          "name": "groupLabel",
+          "optional": true,
+          "type": "string",
+          "description": "Empty text keeps the group separator without adding a heading."
         }
       ]
     },
     {
       "name": "Props",
       "fields": [
+        {
+          "name": "buttonClassName",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
         {
           "name": "anchorTriggerId",
           "optional": true,
@@ -3944,6 +5025,12 @@
           "description": ""
         },
         {
+          "name": "renderLeading",
+          "optional": true,
+          "type": "(item: Item, index: number) => Html | null",
+          "description": "Parent-owned leading content. Its clicks do not activate the row."
+        },
+        {
           "name": "label",
           "optional": false,
           "type": "string",
@@ -4008,6 +5095,12 @@
           "optional": true,
           "type": "boolean",
           "description": "Render the popup in place instead of portalling it to the body (inside\nanother popup, so presses in it stay inside that popup)."
+        },
+        {
+          "name": "backdrop",
+          "optional": true,
+          "type": "'dismiss' | 'passthrough'",
+          "description": "Pass outside clicks through for a persistently open illustrative menu."
         },
         {
           "name": "rootClassName",
@@ -4399,8 +5492,8 @@
         {
           "name": "status",
           "optional": true,
-          "type": "'idle' | 'streaming'",
-          "description": "Present with `queue` enables the queue: a submit while streaming enqueues."
+          "type": "Status",
+          "description": "Submitted/streaming are busy. Error holds the queue; idle/ready can release it."
         },
         {
           "name": "queue",
@@ -4507,7 +5600,7 @@
           "name": "stoppable",
           "optional": true,
           "type": "boolean",
-          "description": "The send button becomes Stop while streaming with an empty draft."
+          "description": "The send button becomes Stop while submitted or streaming with an empty draft."
         },
         {
           "name": "showQueue",
@@ -4554,8 +5647,8 @@
         {
           "name": "status",
           "optional": true,
-          "type": "'idle' | 'streaming'",
-          "description": "Present with `queue` enables the queue: a submit while streaming enqueues."
+          "type": "Status",
+          "description": "Submitted/streaming are busy. Error holds the queue; idle/ready can release it."
         },
         {
           "name": "queue",
@@ -4723,6 +5816,12 @@
           "name": "placeholder",
           "optional": true,
           "type": "string",
+          "description": ""
+        },
+        {
+          "name": "valueContent",
+          "optional": true,
+          "type": "Html | string",
           "description": ""
         },
         {
@@ -5634,6 +6733,46 @@
   ],
   "table": [
     {
+      "name": "HighlightFrame",
+      "fields": [
+        {
+          "name": "y",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "height",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "opacity",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "HoverMarker",
+      "fields": [
+        {
+          "name": "index",
+          "optional": false,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "content",
+          "optional": false,
+          "type": "Html",
+          "description": ""
+        }
+      ]
+    },
+    {
       "name": "Children",
       "fields": [
         {
@@ -5659,6 +6798,54 @@
     {
       "name": "Props",
       "fields": [
+        {
+          "name": "hoverMarkers",
+          "optional": true,
+          "type": "readonly HoverMarker[]",
+          "description": "Declarative decorative slots corresponding to upstream hoverMarker(index).\nKeep interactive controls in their rows."
+        },
+        {
+          "name": "onHighlightFrame",
+          "optional": true,
+          "type": "(box: HighlightFrame, element: HTMLElement) => void",
+          "description": "Current animated fill and native table surface. Write to the DOM; do not update Model per frame."
+        },
+        {
+          "name": "selectedIndices",
+          "optional": true,
+          "type": "readonly number[]",
+          "description": "Parent-owned selected body row indices. Adjacent rows share one fill."
+        },
+        {
+          "name": "selectionMirrors",
+          "optional": true,
+          "type": "readonly string[]",
+          "description": "IDs of mirror hosts in this containing root, positioned in table coordinates.\nIDs replace upstream DOM refs so native elements stay out of Model."
+        },
+        {
+          "name": "snapKey",
+          "optional": true,
+          "type": "string | number",
+          "description": "Change with rows opening/closing above a fill so it jumps with their layout."
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "hideHeadHighlight",
+          "optional": true,
+          "type": "boolean",
+          "description": "Suspend the independent header fill, for example during a column drag."
+        },
+        {
+          "name": "heldHeadIndex",
+          "optional": true,
+          "type": "number | null",
+          "description": "Header hoverIndex whose popup is open; it retains a pressed fill."
+        },
         {
           "name": "size",
           "optional": true,
@@ -5704,7 +6891,42 @@
           "name": "index",
           "optional": true,
           "type": "number",
-          "description": "Omit on header rows. Indexed rows participate in pointer hover."
+          "description": "Omit on header rows. Indexed rows join pointer and visible-focus highlights."
+        },
+        {
+          "name": "keepRule",
+          "optional": true,
+          "type": "boolean",
+          "description": "Keep a header's divider when the first body row is selected."
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly Attribute<Message>[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "HeadProps",
+      "fields": [
+        {
+          "name": "hoverIndex",
+          "optional": true,
+          "type": "number",
+          "description": "Only actionable header cells join this horizontal visual scope."
         },
         {
           "name": "children",
@@ -5813,6 +7035,12 @@
           "optional": true,
           "type": "boolean",
           "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
         }
       ]
     },
@@ -5860,6 +7088,12 @@
           "optional": true,
           "type": "string",
           "description": ""
+        },
+        {
+          "name": "itemToAttributes",
+          "optional": true,
+          "type": "(value: string, index: number) => readonly ChildAttribute[]",
+          "description": "Parent-owned attributes composed onto each tab, such as sortable pointer handlers."
         },
         {
           "name": "panel",
@@ -6004,9 +7238,27 @@
         },
         {
           "name": "open",
-          "optional": false,
+          "optional": true,
           "type": "boolean",
-          "description": "Parents own open state; initialize to true for the reference default."
+          "description": "A parent-owned reader choice. Omit to follow running, then defaultOpen.\nPersist onOpenChange here so the reader's choice survives status changes."
+        },
+        {
+          "name": "defaultOpen",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "running",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "meta",
+          "optional": true,
+          "type": "readonly (Html | string)[]",
+          "description": "Muted header content, such as a duration or step count."
         },
         {
           "name": "onOpenChange",
@@ -6074,6 +7326,18 @@
           "description": ""
         },
         {
+          "name": "running",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "meta",
+          "optional": true,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
           "name": "children",
           "optional": true,
           "type": "readonly (Html | string)[]",
@@ -6131,6 +7395,18 @@
           "optional": true,
           "type": "string",
           "description": ""
+        },
+        {
+          "name": "meta",
+          "optional": true,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "href",
+          "optional": true,
+          "type": "string",
+          "description": "Only http(s) addresses and single-slash site paths become links."
         },
         {
           "name": "status",
@@ -6220,6 +7496,52 @@
   ],
   "tooltip": [
     {
+      "name": "Group.Props",
+      "fields": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "toMessage",
+          "optional": false,
+          "type": "(message: Message) => M",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "Group.InitConfig",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "delayDuration",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "skipDelayDuration",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        }
+      ]
+    },
+    {
       "name": "Props",
       "fields": [
         {
@@ -6227,6 +7549,12 @@
           "optional": false,
           "type": "string",
           "description": ""
+        },
+        {
+          "name": "shortcut",
+          "optional": true,
+          "type": "string | readonly string[]",
+          "description": "A combo or explicit key names; caps do not increase the bubble's height."
         },
         {
           "name": "side",
@@ -6239,6 +7567,18 @@
           "optional": true,
           "type": "number",
           "description": ""
+        },
+        {
+          "name": "portal",
+          "optional": true,
+          "type": "boolean",
+          "description": "Keep the panel in the trigger’s overlay when it already escapes clipping."
+        },
+        {
+          "name": "dismissOnHoverEscape",
+          "optional": true,
+          "type": "boolean",
+          "description": "Also dismiss a pointer-opened, ungrouped tooltip on document Escape."
         },
         {
           "name": "radius",
@@ -6281,6 +7621,606 @@
           "optional": true,
           "type": "'x' | 'y'",
           "description": "Tracks the pointer along one axis while the other stays anchored by\n`side` — upstream's followCursor, for tall or wide triggers."
+        },
+        {
+          "name": "group",
+          "optional": true,
+          "type": "{ readonly id: string; readonly key: string; readonly lifetime: number; readonly side: 'top' | 'right' | 'bottom' | 'left' | null; readonly sideVersion: number; }",
+          "description": "Supplied by Group.tip; group state contains no browser resources."
+        }
+      ]
+    }
+  ],
+  "key-cap": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "tone",
+          "optional": true,
+          "type": "Tone",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<M> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "KeysProps",
+      "fields": [
+        {
+          "name": "keys",
+          "optional": false,
+          "type": "string | readonly string[]",
+          "description": "Split a combo, or preserve a name with spaces by passing an array."
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "tone",
+          "optional": true,
+          "type": "Tone",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<M> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "message-scroller": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "autoScroll",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "peek",
+          "optional": true,
+          "type": "number",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "viewportClassName",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "children",
+          "optional": true,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "renderContent",
+          "optional": true,
+          "type": "() => readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "showButton",
+          "optional": true,
+          "type": "boolean",
+          "description": "Compose the exported button yourself to control its placement or intercept its Message."
+        },
+        {
+          "name": "buttonLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ContentProps",
+      "fields": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "busy",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<M> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ItemProps",
+      "fields": [
+        {
+          "name": "anchor",
+          "optional": true,
+          "type": "boolean",
+          "description": "An arriving user turn glides under the top edge; rows present at mount are history."
+        },
+        {
+          "name": "key",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly (Attribute<M> | ChildAttribute)[]",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ButtonProps",
+      "fields": [
+        {
+          "name": "onClick",
+          "optional": false,
+          "type": "M",
+          "description": ""
+        },
+        {
+          "name": "toMessage",
+          "optional": false,
+          "type": "(message: Message) => M",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "confirmation": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "state",
+          "optional": true,
+          "type": "State",
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "IconName",
+          "description": ""
+        },
+        {
+          "name": "approveLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "denyLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "approvedLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "deniedLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "'default' | 'compact'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "'inline' | 'fixed'",
+          "description": ""
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": "Html | string",
+          "description": ""
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "Html | string",
+          "description": ""
+        },
+        {
+          "name": "status",
+          "optional": true,
+          "type": "Status",
+          "description": ""
+        },
+        {
+          "name": "contrast",
+          "optional": true,
+          "type": "'low' | 'high'",
+          "description": ""
+        },
+        {
+          "name": "dismissible",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "dismissLabel",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "motion",
+          "optional": true,
+          "type": "MotionConfig",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "fluid-hover": [
+    {
+      "name": "HoverOptions",
+      "fields": [
+        {
+          "name": "renderHighlight",
+          "optional": true,
+          "type": "boolean",
+          "description": "Fields draw their own hover state while sharing the same geometry picker."
+        },
+        {
+          "name": "axis",
+          "optional": true,
+          "type": "'x' | 'y' | 'xy'",
+          "description": ""
+        },
+        {
+          "name": "nearest",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "itemSelector",
+          "optional": false,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "ownsItem",
+          "optional": true,
+          "type": "(item: HTMLElement) => boolean",
+          "description": ""
+        },
+        {
+          "name": "enabled",
+          "optional": true,
+          "type": "() => boolean",
+          "description": ""
+        },
+        {
+          "name": "onPick",
+          "optional": true,
+          "type": "(index: number | null, point: { x: number; y: number } | null) => void",
+          "description": ""
+        },
+        {
+          "name": "onWork",
+          "optional": true,
+          "type": "(milliseconds: number) => void",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "() => string",
+          "description": ""
+        },
+        {
+          "name": "tabs",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "selectedAttribute",
+          "optional": true,
+          "type": "'aria-selected' | 'aria-current'",
+          "description": "A selected sidebar destination uses aria-current instead of tab semantics."
+        },
+        {
+          "name": "keyboardNavigation",
+          "optional": true,
+          "type": "boolean",
+          "description": "Headless primitives can own keyboard navigation while this projects visuals."
+        },
+        {
+          "name": "focusHighlight",
+          "optional": true,
+          "type": "boolean",
+          "description": "An owner can project focus itself while reusing this geometry renderer."
+        },
+        {
+          "name": "menu",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "fromSelector",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "followLayout",
+          "optional": true,
+          "type": "boolean",
+          "description": ""
+        },
+        {
+          "name": "trackPointer",
+          "optional": true,
+          "type": "boolean",
+          "description": "A scoped visual controller can arbitrate pointer versus native focus."
+        },
+        {
+          "name": "isInstant",
+          "optional": true,
+          "type": "() => boolean",
+          "description": ""
+        },
+        {
+          "name": "ignoreLayoutMutation",
+          "optional": true,
+          "type": "(record: MutationRecord) => boolean",
+          "description": "Visual-only slot moves do not change registered item geometry."
+        },
+        {
+          "name": "onFrame",
+          "optional": true,
+          "type": "(box: { x: number; y: number; width: number; height: number; opacity: number }) => void",
+          "description": "Live animated geometry, without reading layout during motion frames."
+        }
+      ]
+    },
+    {
+      "name": "HoverEngine",
+      "fields": [
+        {
+          "name": "move",
+          "optional": false,
+          "type": "void",
+          "description": ""
+        },
+        {
+          "name": "leave",
+          "optional": false,
+          "type": "void",
+          "description": ""
+        },
+        {
+          "name": "measure",
+          "optional": false,
+          "type": "void",
+          "description": ""
+        },
+        {
+          "name": "highlight",
+          "optional": false,
+          "type": "void",
+          "description": "Project a row without moving focus or handling keyboard navigation."
+        },
+        {
+          "name": "dispose",
+          "optional": false,
+          "type": "void",
+          "description": ""
+        },
+        {
+          "name": "rects",
+          "optional": false,
+          "type": "readonly ItemRect[]",
+          "description": ""
+        },
+        {
+          "name": "active",
+          "optional": false,
+          "type": "number | null",
+          "description": ""
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": "readonly HTMLElement[]",
+          "description": ""
+        }
+      ]
+    }
+  ],
+  "scroll-area": [
+    {
+      "name": "Props",
+      "fields": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "readonly (Html | string)[]",
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "optional": true,
+          "type": "'vertical' | 'horizontal' | 'both'",
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "optional": true,
+          "type": "'rounded' | 'pill' | 'sharp'",
+          "description": ""
+        },
+        {
+          "name": "label",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "viewportClassName",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "viewportFocusable",
+          "optional": true,
+          "type": "boolean",
+          "description": "False keeps the viewport out of the Tab order, for lists whose focus\nstays in a field (a command menu's rows). Defaults to true."
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "readonly Attribute<Message>[]",
+          "description": ""
         }
       ]
     }

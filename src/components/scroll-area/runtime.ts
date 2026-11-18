@@ -1,4 +1,5 @@
-import { Effect, Schema } from 'effect';
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
 import { Mount } from 'foldkit';
 /** Native scrolling remains the source of truth. The Foldkit-rendered tracks
  * project that scroll position and handle pointer capture for thumb dragging. */
@@ -177,14 +178,14 @@ export function mountScrollArea(
     touch.removeEventListener('change', schedule);
     cancelAnimationFrame(frame);
     if (timer) clearTimeout(timer);
+    root.removeEventListener('pointerenter', move);
     root.removeEventListener('pointermove', move);
     root.removeEventListener('pointerout', leave);
     viewport.removeEventListener('scroll', scroll);
     cleanups.forEach((cleanup) => cleanup());
   };
 }
-export const ScrollArea = Mount.define('ScrollArea.Mount', {
-  messages: [Schema.Never],
+export const ScrollArea = defineSilentMount('ScrollArea.Mount', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => (element instanceof HTMLElement ? mountScrollArea(element) : () => {})),

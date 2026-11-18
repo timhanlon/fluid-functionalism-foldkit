@@ -1,5 +1,15 @@
 /** Behavioral constraints shared by public guides and the Foldkit skill. */
 export const craft = {
+  'key-cap':
+    'One fixed 18px filled cap per key, with 2px corners and gaps. Letters use the mono face; symbols use sans. A combo splits modifiers and separators, while an array preserves names with spaces. Tone controls the substrate; size and corner preferences do not resize the keys.',
+  'message-scroller':
+    'Give the viewport a bounded height. Existing rows open at the end; newly mounted anchor rows glide to the top with a sliver of the prior reply, then a shrinking spacer lets the reply grow in place. Reader scrolling releases following. Keep native scrolling and the scoped observers; do not move messages into the scrolling Model.',
+  'context-menu':
+    'It is the Dropdown at a pointer or keyboard target. Preserve native text-field menus, prior handlers and nested event claims. Keep the body anchor outside scaled containers, mark only the active trigger, and return focus after the primitive finishes without stealing it from another control.',
+  'code-block':
+    'Keep the exact plain code separate from rendered highlighting. Copy feedback announces success or failure beside the stably named button; the shared keyboard-focusable ScrollArea owns overflow. Highlighted content owns its own line numbers.',
+  confirmation:
+    'An inline Banner question keeps its answer in the transcript. The parent owns approval state and any actual action; requested buttons become a same-height live status. Keep the question group semantics and native Button behavior.',
   accordion:
     'Expansion retains its exit while the panel collapses. Avoid a second measured-height collapse around it; let one owner settle the geometry. Keyboard movement and hover are scoped to the group.',
   'ask-user-questions':
@@ -55,6 +65,8 @@ export const craft = {
     'Value and transient drag state differ. Lift subscriptions, including the Range pair, so document-level dragging and Escape cancellation work. Stop/reset dragging when the control is removed.',
   switch:
     'The parent owns checked state. Preserve the native control and accessible label; the moving thumb is feedback rather than a second state source.',
+  'data-table':
+    'Keep row IDs stable and parent-owned edits controlled. Do not replace the TanStack row pipeline with hand-coded sorting or filtering. Pass identical data and column definitions to update and view; preserve the editing order hold, all child Commands, scoped Mounts and lifted drag subscriptions. A hidden filter row still filters. Browser checks establish geometry and focus separately from Story and Scene.',
   table:
     'Use semantic table/header/body/cell structure and real controls for sorting. One Mount owns row hover. Empty content spans the actual column count. Consumer alignment classes override default cell alignment.',
   tabs: 'Focus movement is manual activation: moving to another tab does not select it until activation. Keep selected value separate from child navigation state and use stable panel callbacks when they carry parent Messages or Mounts.',
@@ -63,7 +75,7 @@ export const craft = {
   'thinking-indicator':
     'Status text and the glyph cycle form one status presentation. Reduced motion needs a meaningful stable state; do not add a second timer or animate the same glyph through another owner.',
   'thinking-steps':
-    'Completion and expanded details are distinct states. Retain step transitions and disclosure cleanup; avoid nesting competing measured-height collapse owners.',
+    'Completion and expanded details are distinct states. A parent-owned open choice overrides running; leave it absent to follow running and defaultOpen. Running shimmers the header; metadata remains quiet beside the label. Pending steps are absent, upcoming steps are visible and muted, and failed steps use destructive text/icons. Preserve safe step links and their new-tab announcement. Retain step transitions and Disclosure cleanup; avoid nesting competing measured-height collapse owners.',
   tooltip:
-    'Preserve delayed show, retained exit, trigger attributes and accessible description linkage. A portal inherits root tokens. Keep ids unique and release its Mount when the trigger disappears.',
+    'Preserve delayed show, retained exit, trigger attributes and accessible description linkage. A portal inherits root tokens. Keep ids unique and release its Mount when the trigger disappears. Keep primitive tooltip interactions and anchors. A group hands its shape and label between closed/open neighbors on the same resolved side; hold150ms bridges a gap, and a side flip enters separately. Reduce motion removes geometric travel while keeping the label crossfade. The shared side resets when the viewport or scroll room changes.',
 };

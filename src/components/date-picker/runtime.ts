@@ -1,4 +1,6 @@
-import { Effect, Queue, Schema, Stream } from 'effect';
+import { defineSilentMount } from '../silent-mount';
+import { mountPopupShieldFor } from '../popup/shield';
+import { Effect, Queue, Stream } from 'effect';
 import { Mount } from 'foldkit';
 import { mountHover } from '../../fluid-hover/engine';
 import { Message } from './state';
@@ -12,6 +14,8 @@ export const Mounted = Mount.defineStream('DatePicker.Field', {
     Message.Clock,
     Message.RowsChanged,
     Message.TimeModeChanged,
+    Message.DateTextBlurred,
+    Message.DateTextFocused,
   ],
   execute: ({ element }) =>
     Stream.callback<
@@ -26,7 +30,9 @@ export const Mounted = Mount.defineStream('DatePicker.Field', {
             | 'RowsChanged'
             | 'TimeModeChanged'
             | 'Ready'
-            | 'ClearObserved';
+            | 'ClearObserved'
+            | 'DateTextBlurred'
+            | 'DateTextFocused';
         }
       >
     >((queue) =>
@@ -51,7 +57,9 @@ type FieldMessage = Extract<
       | 'RowsChanged'
       | 'TimeModeChanged'
       | 'Ready'
-      | 'ClearObserved';
+      | 'ClearObserved'
+      | 'DateTextBlurred'
+      | 'DateTextFocused';
   }
 >;
 export function mountField(root: HTMLElement, send: (message: FieldMessage) => void): () => void {
@@ -143,6 +151,33 @@ export function mountField(root: HTMLElement, send: (message: FieldMessage) => v
     send(Message.Viewport({ width: window.innerWidth }));
     measureRows();
   };
+  const focusout = (event: FocusEvent) => {
+    if (
+      !(event.target instanceof HTMLInputElement) ||
+      !event.target.classList.contains('ff-date-picker-text')
+    )
+      return;
+    const panel = root.ownerDocument.getElementById(
+      event.target.getAttribute('aria-controls') ?? '',
+    );
+    if (event.relatedTarget instanceof Node && panel?.contains(event.relatedTarget)) return;
+    send(Message.DateTextBlurred());
+  };
+  const focusin = (event: FocusEvent) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || !input.classList.contains('ff-date-picker-text'))
+      return;
+    const panelId = input.id.replace(/-button$/, '-panel');
+    if (
+      event.relatedTarget instanceof Element &&
+      event.relatedTarget.closest('.ff-date-picker-popup')?.id === panelId
+    )
+      return;
+    input.select();
+    send(Message.DateTextFocused());
+  };
+  root.addEventListener('focusin', focusin);
+  root.addEventListener('focusout', focusout);
   const observer = new MutationObserver(sync);
   observer.observe(root, {
     attributes: true,
@@ -166,6 +201,8 @@ export function mountField(root: HTMLElement, send: (message: FieldMessage) => v
   root.addEventListener('focus', clock, true);
   window.addEventListener('resize', resized);
   return () => {
+    root.removeEventListener('focusin', focusin);
+    root.removeEventListener('focusout', focusout);
     clearTimeout(timer);
     observer.disconnect();
     sizing.disconnect();
@@ -174,14 +211,14 @@ export function mountField(root: HTMLElement, send: (message: FieldMessage) => v
     window.removeEventListener('resize', resized);
   };
 }
-export const PanelMounted = Mount.define('DatePicker.Panel', {
-  messages: [Schema.Never],
+export const PanelMounted = defineSilentMount('DatePicker.Panel', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => {
         if (!(element instanceof HTMLElement)) return () => {};
         const panel = element.closest<HTMLElement>('.ff-date-picker-popup');
         if (!panel) return () => {};
+        const disposeShield = mountPopupShieldFor(panel);
         const size = () => {
           const available = panel.style.maxHeight || '560px';
           if (panel.style.getPropertyValue('--date-picker-available-height') !== available)
@@ -197,10 +234,11 @@ export const PanelMounted = Mount.define('DatePicker.Panel', {
               axis: 'xy',
               nearest: false,
               keyboardNavigation: false,
-              radius: () => '8px',
+              radius: () => (panel.dataset.radius === 'sharp' ? '1px' : '8px'),
             })
           : undefined;
         return () => {
+          disposeShield();
           sizing.disconnect();
           hover?.dispose();
         };

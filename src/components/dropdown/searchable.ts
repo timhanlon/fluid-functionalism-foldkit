@@ -1,6 +1,6 @@
 import { Input } from '@foldkit/ui';
 import { Mount, Submodel } from 'foldkit';
-import type { Html, ChildAttribute } from 'foldkit/html';
+import { childAttributes, type Html, type ChildAttribute } from 'foldkit/html';
 import * as Dropdown from './index';
 import { Model, Message, matches, createCandidate } from './search-state';
 import { icon } from '../icons';
@@ -106,6 +106,10 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
     viewInputs: {
       ...props,
       items,
+      popupAttributes: [
+        ...(props.popupAttributes ?? []),
+        ...childAttributes([h.DataAttribute('search-space', '')]),
+      ],
       renderItemsHeader: () => header,
       scrollFade: false,
       renderItemsFooter: () =>

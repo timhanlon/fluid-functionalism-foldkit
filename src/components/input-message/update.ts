@@ -8,6 +8,7 @@ import {
   OutMessage,
   type Model,
   type QueuedMessage,
+  type Status,
 } from './state';
 
 export const defaultAccept = 'image/png,image/jpeg,application/pdf';
@@ -18,8 +19,8 @@ export interface Options {
   readonly files?: readonly File[];
   readonly accept?: string;
   readonly maxFiles?: number;
-  /** Present with `queue` enables the queue: a submit while streaming enqueues. */
-  readonly status?: 'idle' | 'streaming';
+  /** Submitted/streaming are busy. Error holds the queue; idle/ready can release it. */
+  readonly status?: Status;
   readonly queue?: readonly QueuedMessage[];
   readonly history?: readonly string[];
   readonly suggestions?: readonly string[];
@@ -36,8 +37,10 @@ export const supportsQueue = (options: Options) =>
 export const canSend = (options: Options) =>
   !options.disabled && (options.value.trim().length > 0 || (options.files?.length ?? 0) > 0);
 export type ButtonMode = 'send' | 'queue' | 'stop';
+export const isBusy = (status: Status | undefined): boolean =>
+  status === 'streaming' || status === 'submitted';
 export const buttonMode = (options: Options, hasStop: boolean): ButtonMode =>
-  options.status !== 'streaming'
+  !isBusy(options.status)
     ? 'send'
     : canSend(options) && supportsQueue(options)
       ? 'queue'
@@ -55,12 +58,15 @@ const matches = (accept: string) => {
     .map((token) => token.trim())
     .filter(Boolean);
   return (file: File) =>
-    tokens.some((token) =>
-      token.endsWith('/*')
-        ? file.type.startsWith(token.slice(0, -1))
-        : token.startsWith('.')
-          ? file.name.toLowerCase().endsWith(token.toLowerCase())
-          : file.type === token,
+    tokens.length === 0 ||
+    tokens.some(
+      (token) =>
+        token === '*/*' ||
+        (token.endsWith('/*')
+          ? file.type.startsWith(token.slice(0, -1))
+          : token.startsWith('.')
+            ? file.name.toLowerCase().endsWith(token.toLowerCase())
+            : file.type === token),
     );
 };
 const fingerprint = (file: File) => `${file.name}-${file.size}-${file.lastModified}`;
@@ -79,8 +85,7 @@ export function addFiles(options: Options, incoming: readonly File[]): readonly 
   return options.maxFiles === undefined ? next : next.slice(0, options.maxFiles);
 }
 
-/** Release the head of the queue on the consumer's streaming → idle edge,
- * as upstream auto-dispatches it: send it and drop it from the queue. */
+/** Explicitly release one queued item. Prefer releaseOnStatusChange for response transitions. */
 export function release(
   model: Model,
   queue: readonly QueuedMessage[],
@@ -101,6 +106,20 @@ export function release(
   };
 }
 
+/** Apply on every parent-owned status transition, before sending its returned
+ * item. Queue removal precedes sending, as in the source's callbacks. Error
+ * parks the queue; clearing it releases one item, never the whole backlog. */
+export function releaseOnStatusChange(
+  model: Model,
+  queue: readonly QueuedMessage[],
+  previous: Status | undefined,
+  status: Status | undefined,
+): ReturnType<typeof release> {
+  const released =
+    (isBusy(previous) || previous === 'error') && (status === 'idle' || status === 'ready');
+  return released ? release(model, queue) : { model, queue };
+}
+
 export function update(model: Model, message: Message, options: Options): Result {
   const fill = (text: string): Result => ({
     model: { ...model, activeSuggestion: null, historyIndex: null },
@@ -112,11 +131,15 @@ export function update(model: Model, message: Message, options: Options): Result
     const text = options.value.trim(),
       files = options.files ?? [];
     const reset = { ...model, historyIndex: null };
-    // While streaming, a submit enqueues the draft and clears the composer.
-    if (options.status === 'streaming' && supportsQueue(options)) {
-      const item = { id: `${model.id}-q${model.nextQueueId}`, text, files: [...files] };
+    // Busy submissions snapshot the draft; the parent clears draft/files on QueueChanged.
+    if (isBusy(options.status) && supportsQueue(options)) {
+      // Model-owned counters work on HTTP without crypto or module-global state.
+      // A parent can restore a queue independently of the child's Model.
+      let serial = model.nextQueueId;
+      while (options.queue?.some((item) => item.id === `${model.id}-q${serial}`)) serial++;
+      const item = { id: `${model.id}-q${serial}`, text, files: [...files] };
       return {
-        model: { ...reset, nextQueueId: model.nextQueueId + 1 },
+        model: { ...reset, nextQueueId: serial + 1 },
         commands: focus(model),
         outMessage: OutMessage.QueueChanged({ queue: [...(options.queue ?? []), item] }),
       };
@@ -271,6 +294,15 @@ export function update(model: Model, message: Message, options: Options): Result
           Command.mapMessage(command, (inner) => Message.Drop({ message: inner })),
         ),
         ...(files ? { outMessage: OutMessage.FilesChanged({ files: [...files] }) } : {}),
+      };
+    }
+    case 'AttachmentTip': {
+      const result = Tooltip.Group.update(model.attachmentTooltips, message.message);
+      return {
+        model: { ...model, attachmentTooltips: result.model },
+        commands: (result.commands ?? []).map((command) =>
+          Command.mapMessage(command, (message) => Message.AttachmentTip({ message })),
+        ),
       };
     }
     case 'Tip': {

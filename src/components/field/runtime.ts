@@ -1,5 +1,5 @@
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
 /** Link only this field's messages. Preserve caller-provided ids and skip
  * nested fields, whose controls are described by their own mounted owner. */
 export function linkDescriptions(root: HTMLElement): () => void {
@@ -66,8 +66,7 @@ export function linkDescriptions(root: HTMLElement): () => void {
     for (const [control, ids] of managed) remove(control, ids);
   };
 }
-export const Mounted = Mount.define('Field.Descriptions', {
-  messages: [Schema.Never],
+export const Mounted = defineSilentMount('Field.Descriptions', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => (element instanceof HTMLElement ? linkDescriptions(element) : () => {})),

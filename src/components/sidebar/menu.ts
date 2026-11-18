@@ -1,7 +1,7 @@
+import { defineSilentMountWithArgs } from '../silent-mount';
 import { shapeClass, shapeRadius } from '../shape';
 import { Effect, Schema } from 'effect';
 import { cn } from '../../lib/utils';
-import { Mount } from 'foldkit';
 import type { Attribute, ChildAttribute, Html } from 'foldkit/html';
 import { mountHover } from '../../fluid-hover/engine';
 import { mountListFocus } from '../list-focus';
@@ -104,9 +104,8 @@ const semibold = "'wght' 550, 'opsz' 18",
 
 /** One fluid hover over a menu and its sub-menus, plus the traveling focus
  * ring; rows mark themselves lit through data-fluid-hover-active. */
-const MenuMounted = Mount.define('Sidebar.Menu', {
+const MenuMounted = defineSilentMountWithArgs('Sidebar.Menu', {
   args: { focusRing: Schema.Boolean },
-  messages: [Schema.Never],
   execute: ({ element, focusRing }) =>
     Effect.acquireRelease(
       Effect.sync(() => {

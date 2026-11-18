@@ -23,6 +23,67 @@
   display: flex;
   flex-direction: column;
 }
+.ff-playground-search {
+  display: flex;
+  height: 32px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 2px 0 8px;
+  color: var(--muted-foreground);
+}
+.ff-playground-search:focus-within {
+  color: var(--foreground);
+}
+.ff-playground-controls:not([data-searchable='true']) .ff-playground-search,
+.ff-playground-no-matches {
+  display: none;
+}
+.ff-playground-controls[data-searchable='true'][data-search-empty='true']
+  .ff-playground-no-matches {
+  display: block;
+  padding: 8px;
+  color: var(--muted-foreground);
+}
+.ff-playground-search .ff-input[data-size] {
+  flex: 1;
+  min-width: 0;
+  width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font: inherit;
+}
+.ff-playground-search-clear {
+  display: flex;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+}
+.ff-playground-search-clear:hover {
+  background: var(--hover);
+  color: var(--foreground);
+}
+.ff-playground-search-clear:focus-visible {
+  box-shadow: 0 0 0 1px var(--focus-ring);
+}
+.ff-playground-controls[data-radius='pill'] .ff-playground-search-clear {
+  border-radius: 20px;
+}
+.ff-playground-controls[data-radius='sharp'] .ff-playground-search-clear {
+  border-radius: 1px;
+}
+@media (pointer: coarse) {
+  .ff-playground-search .ff-input[data-size] {
+    font-size: 16px;
+  }
+}
 .ff-playground-heading,
 .ff-playground-field {
   display: flex;
@@ -122,4 +183,11 @@
   .ff-playground-shuffle kbd {
     display: none;
   }
+}
+
+.ff-playground-field[data-disabled='true'] {
+  opacity: 0.4;
+}
+.ff-playground-field[data-disabled='true'] .ff-select-trigger {
+  opacity: 1;
 }

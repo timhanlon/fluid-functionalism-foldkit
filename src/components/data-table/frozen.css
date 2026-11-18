@@ -1,0 +1,235 @@
+/* Fluid Functionalism f801409, registry/default/data-table.tsx pin overlays. */
+.ff-data-table-frame {
+  isolation: isolate;
+  min-width: 0;
+  --pin-l: 0px;
+  --pin-r: 0px;
+  --ff-fade: 48px;
+  --ff-head: 0px;
+  --ff-pin-l: 0;
+  --ff-pin-r: 0;
+}
+.ff-data-table-frozen {
+  display: contents;
+}
+/* A natural-height table hands vertical wheel scrolling to the page. */
+.ff-data-table .ff-data-table-scroll {
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: auto;
+}
+.ff-data-table[data-fill='true'] .ff-data-table-scroll {
+  overscroll-behavior-y: none;
+}
+.ff-data-table-fade-plane,
+.ff-data-table-pin-plane {
+  position: absolute;
+  left: var(--ff-view-left, 0px);
+  top: var(--ff-view-top, 0px);
+  width: var(--ff-view-width, 100%);
+  height: var(--ff-view-height, 100%);
+  overflow: hidden;
+  clip-path: inset(var(--ff-head) 0 0 0);
+  pointer-events: none;
+}
+.ff-data-table-fade-plane {
+  z-index: -1;
+}
+.ff-data-table-pin-plane {
+  z-index: 11;
+}
+.ff-data-table-ride {
+  position: absolute;
+  inset: 0;
+}
+.ff-data-table-pin-clip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+.ff-data-table-pin-clip[data-side='left'] {
+  left: 0;
+  width: var(--pin-l);
+}
+.ff-data-table-pin-clip[data-side='right'] {
+  right: 0;
+  width: var(--pin-r);
+}
+.ff-data-table-pin-mirror {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+}
+.ff-data-table-hover-band {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  opacity: 0;
+}
+.ff-data-table-pin-hover {
+  position: absolute;
+  inset-block: 0;
+  background: var(--hover);
+}
+.ff-data-table-pin-hover[data-side='left'] {
+  left: 0;
+  width: var(--pin-l);
+  border-radius: var(--data-table-head-radius) 0 0 var(--data-table-head-radius);
+}
+.ff-data-table-pin-hover[data-side='right'] {
+  right: 0;
+  width: var(--pin-r);
+  border-radius: 0 var(--data-table-head-radius) var(--data-table-head-radius) 0;
+}
+.ff-data-table-fade-band {
+  position: absolute;
+  width: var(--ff-fade);
+  opacity: 0;
+}
+.ff-data-table-fade-band[data-side='left'] {
+  left: var(--pin-l);
+  background: linear-gradient(to right, var(--active), transparent);
+}
+.ff-data-table-fade-band[data-side='right'] {
+  right: var(--pin-r);
+  background: linear-gradient(to left, var(--active), transparent);
+}
+.ff-data-table-hover-band .ff-data-table-fade-band {
+  top: 0;
+  bottom: 0;
+}
+.ff-data-table-hover-band .ff-data-table-fade-band[data-side='left'] {
+  background: linear-gradient(to right, var(--hover), transparent);
+}
+.ff-data-table-hover-band .ff-data-table-fade-band[data-side='right'] {
+  background: linear-gradient(to left, var(--hover), transparent);
+}
+.ff-data-table-bottom-fade {
+  display: none;
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: var(--ff-fade);
+  background: linear-gradient(to top, var(--background), transparent);
+  border-bottom: 1px solid color-mix(in oklab, var(--foreground) 8%, transparent);
+  opacity: 0;
+  transition: opacity 80ms;
+}
+.ff-data-table[data-fill='true'] .ff-data-table-bottom-fade {
+  display: block;
+}
+.ff-data-table-frame[data-more-below='true'] .ff-data-table-bottom-fade {
+  opacity: 1;
+}
+.ff-data-table-frame[data-x-start='true'] {
+  --ff-pin-l: 1;
+}
+.ff-data-table-frame[data-x-end='true'] {
+  --ff-pin-r: 1;
+}
+.ff-data-table-cell[data-pin-edge]::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  width: 1px;
+  background: color-mix(in oklab, var(--foreground) 8%, transparent);
+  pointer-events: none;
+}
+.ff-data-table-cell[data-pin-edge='left']::after {
+  right: 0;
+  opacity: var(--ff-pin-l);
+}
+.ff-data-table-cell[data-pin-edge='right']::after {
+  left: 0;
+  opacity: var(--ff-pin-r);
+}
+.ff-data-table[data-fill='true'] .ff-data-table-frame[data-y-start='true'] .ff-table-head {
+  border-bottom-color: color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+@keyframes ff-data-table-ride {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-1 * var(--ff-scroll-y, 0px)));
+  }
+}
+@keyframes ff-data-table-fade-on {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes ff-data-table-fade-off {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes ff-data-table-pin-on {
+  from {
+    --ff-pin-l: 0;
+  }
+  to {
+    --ff-pin-l: 1;
+  }
+}
+@keyframes ff-data-table-pin-off {
+  from {
+    --ff-pin-r: 1;
+  }
+  to {
+    --ff-pin-r: 0;
+  }
+}
+@supports (animation-timeline: scroll()) {
+  .ff-data-table-scroll.ff-scroll-fade-x {
+    mask-image: linear-gradient(
+      to right,
+      #000 var(--pin-l),
+      rgb(0 0 0 / var(--ff-scroll-fade-start)) var(--pin-l),
+      #000 calc(var(--pin-l) + var(--scroll-fade-size)),
+      #000 calc(100% - var(--pin-r) - var(--scroll-fade-size)),
+      rgb(0 0 0 / var(--ff-scroll-fade-end)) calc(100% - var(--pin-r)),
+      #000 calc(100% - var(--pin-r))
+    );
+  }
+  .ff-data-table-element {
+    animation:
+      ff-data-table-pin-on linear both,
+      ff-data-table-pin-off linear both;
+    animation-timeline: scroll(nearest inline), scroll(nearest inline);
+    animation-range:
+      0px 2px,
+      calc(100% - 2px) 100%;
+  }
+}
+@supports (timeline-scope: --ff-table-x) {
+  .ff-data-table-frame {
+    timeline-scope: --ff-table-x, --ff-table-y;
+  }
+  .ff-data-table-scroll {
+    scroll-timeline:
+      --ff-table-x inline,
+      --ff-table-y block;
+  }
+  .ff-data-table-ride {
+    animation: ff-data-table-ride linear both;
+    animation-timeline: --ff-table-y;
+  }
+  .ff-data-table-fade-band[data-side='left'] {
+    animation: ff-data-table-fade-on linear both;
+    animation-timeline: --ff-table-x;
+    animation-range: 0 var(--ff-fade);
+  }
+  .ff-data-table-fade-band[data-side='right'] {
+    animation: ff-data-table-fade-off linear both;
+    animation-timeline: --ff-table-x;
+    animation-range: calc(100% - var(--ff-fade)) 100%;
+  }
+}

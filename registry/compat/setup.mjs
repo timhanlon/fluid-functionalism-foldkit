@@ -20,7 +20,7 @@ import { prepareUpgrade, patchFile } from './migrate.mjs';
 const project = fileURLToPath(new URL('../../../', import.meta.url));
 const ui = path.join(project, 'node_modules/@foldkit/ui');
 const manifest = JSON.parse(readFileSync(path.join(ui, 'package.json'), 'utf8'));
-const version = '0.170.0';
+const version = '0.171.0';
 const pnpmVersion = execFileSync('pnpm', ['--version'], { encoding: 'utf8', cwd: project }).trim();
 if (!pnpmVersion.startsWith('10.'))
   throw new Error(`Use pnpm 10 for this compatibility setup; found ${pnpmVersion}.`);

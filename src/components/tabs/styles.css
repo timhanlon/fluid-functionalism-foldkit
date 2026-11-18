@@ -1,6 +1,10 @@
+@layer components {
+  .ff-tabs {
+    width: 100%;
+  }
+}
 .ff-tabs {
   min-width: 0;
-  width: 100%;
 }
 .ff-tabs-list {
   position: relative;

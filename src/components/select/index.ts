@@ -21,6 +21,7 @@ export interface Props {
   readonly value?: string;
   readonly label: string;
   readonly placeholder?: string;
+  readonly valueContent?: Html | string;
   readonly icon?: Html;
   readonly disabled?: boolean;
   readonly readOnly?: boolean;
@@ -84,7 +85,7 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
                 : null,
               h.span(
                 [h.Class('ff-select-value')],
-                [selected?.label ?? props.placeholder ?? 'Select…'],
+                [props.valueContent ?? selected?.label ?? props.placeholder ?? 'Select…'],
               ),
               ...(props.triggerTrailing ?? []),
               h.svg(
@@ -111,6 +112,11 @@ export const view = Submodel.defineView<Model, Message, Props>((model, props, h)
           itemsScrollClassName: 'ff-popup-viewport ff-scroll-fade',
           itemsScrollAttributes: childAttributes([h.OnMount(Mounted())]),
           backdropClassName: 'ff-popup-backdrop ff-select-backdrop',
+          backdropAttributes: childAttributes([
+            h.AriaHidden(true),
+            h.DataAttribute('slot', 'popup-shield'),
+            h.DataAttribute('shield-for', `${model.listbox.id}-items`),
+          ]),
           itemGroupKey: (item) => item.group ?? '',
           groupToHeading: (key) =>
             key ? { content: h.span([h.Class('ff-popup-heading')], [key]) } : undefined,

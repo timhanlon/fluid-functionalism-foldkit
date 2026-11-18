@@ -3,8 +3,9 @@ import { Command, type Update } from 'foldkit';
 import { defineMessageUnion } from 'foldkit/message';
 import { Popover, Animation } from '@foldkit/ui';
 import * as Calendar from '../calendar';
-import { Day, firstOfMonth, isEqual } from '../calendar/dates';
+import { Day, firstOfMonth, isEqual, toNative } from '../calendar/dates';
 import { TimeRange, type Preset } from './types';
+import { parseDateInput } from './parse-date';
 import * as TimeField from './time-field-model';
 import type * as TimeEdit from './time-field-state';
 import {
@@ -31,6 +32,8 @@ export interface Options {
   readonly value?: Calendar.Selection;
   readonly open?: boolean;
   readonly disabled?: boolean;
+  /** Allow entering dates from the keyboard. */
+  readonly typeable?: boolean;
   readonly size?: 'default' | 'compact';
   readonly numberOfMonths?: 1 | 2;
   readonly orientation?: Calendar.Orientation;
@@ -58,6 +61,7 @@ export const Model = Schema.Struct({
   today: Day,
   value: Calendar.Selection,
   draft: Schema.Option(Calendar.Selection),
+  typedDate: Schema.NullOr(Schema.String),
   calendar: Calendar.Model,
   popover: Popover.Model,
   viewportWidth: Schema.Number,
@@ -78,6 +82,11 @@ export const Message = defineMessageUnion({
   Calendar: { message: Calendar.Message },
   Preset: { index: Schema.Number },
   Clear: {},
+  DateTextChanged: { text: Schema.String },
+  DateTextCommitted: {},
+  DateTextBlurred: {},
+  DateTextFocused: {},
+  DateTextReverted: {},
   Acknowledged: { generation: Schema.Number },
   SyncOpen: { open: Schema.Boolean },
   Viewport: { width: Schema.Number },
@@ -136,6 +145,7 @@ export const init = (config: {
     nowMinutes: config.nowMinutes ?? now.getHours() * 60 + now.getMinutes(),
     twoRows: false,
     today: config.today,
+    typedDate: null,
     value,
     draft: Option.none(),
     calendar: Calendar.init({ id: `${config.id}-calendar`, today: config.today, month: anchor }),
@@ -211,16 +221,27 @@ export const orientation = (model: Model, options: Options): 'horizontal' | 'ver
     (options.mode === 'range' && options.presets?.length ? 152 : 0);
   return model.viewportWidth - 16 >= needed ? 'horizontal' : 'vertical';
 };
+function previewTypedDate(model: Model, options: Options): Calendar.Selection | undefined {
+  if (!options.typeable || !model.typedDate?.trim()) return;
+  const parsed = parseDateInput(
+    model.typedDate,
+    options.mode ?? 'single',
+    options.locale,
+    toNative(model.today),
+  );
+  return parsed ? Calendar.fromSelected(parsed) : undefined;
+}
 export const calendarOptions = (model: Model, options: Options): Calendar.Props => ({
   ...options.calendarProps,
   mode: options.mode ?? 'single',
   ...(options.mode !== 'range' ? { required: true } : {}),
   controlled: true,
-  selected: Option.getOrElse(model.draft, () => value(model, options)),
+  selected:
+    previewTypedDate(model, options) ?? Option.getOrElse(model.draft, () => value(model, options)),
   numberOfMonths: months(options),
   orientation: orientation(model, options),
   size: options.size,
-  autoFocus: true,
+  autoFocus: !options.typeable,
   month: model.calendar.month,
 });
 export const triggerId = (id: string): string => Popover.buttonId(`${id}-date`);
@@ -228,6 +249,28 @@ const setValue = (model: Model, next: Calendar.Selection, options: Options): Mod
   ...model,
   value: options.controlled ? model.value : next,
 });
+function commitTyped(
+  model: Model,
+  options: Options,
+  closed: Update.ReturnWithOutMessage<Model, Message, OutMessage>,
+): Update.ReturnWithOutMessage<Model, Message, OutMessage> {
+  if (!options.typeable || options.disabled || model.typedDate === null) return closed;
+  const text = model.typedDate.trim();
+  const parsed = parseDateInput(
+    text,
+    options.mode ?? 'single',
+    options.locale,
+    toNative(model.today),
+  );
+  const reset = { ...closed.model, typedDate: null };
+  if (text && !parsed) return { ...closed, model: reset };
+  const value = parsed ? Calendar.fromSelected(parsed) : Calendar.none();
+  return {
+    ...closed,
+    model: setValue({ ...reset, draft: Option.none() }, value, options),
+    outMessage: OutMessage.ValueChanged({ value }),
+  };
+}
 function transition(
   model: Model,
   message: Popover.Message,
@@ -487,14 +530,55 @@ export function update(
             options,
             true,
           );
-    case 'Popover':
-      return options.disabled && !model.popover.isOpen
-        ? { model }
-        : transition(model, message.message, options);
+    case 'Popover': {
+      if (options.disabled && !model.popover.isOpen) return { model };
+      const result = transition(model, message.message, options);
+      return model.popover.isOpen && !result.model.popover.isOpen
+        ? commitTyped(model, options, result)
+        : result;
+    }
     case 'Acknowledged':
       return message.generation !== model.ackGeneration || !model.ackPending
         ? { model }
         : transition({ ...model, ackPending: false }, Popover.Message.RequestedClose(), options);
+    case 'DateTextFocused':
+      return options.typeable && !options.disabled && !model.popover.isOpen
+        ? transition(model, Popover.Message.RequestedOpen(), options)
+        : { model };
+    case 'DateTextChanged': {
+      if (!options.typeable || options.disabled) return { model };
+      const parsed = parseDateInput(
+        message.text,
+        options.mode ?? 'single',
+        options.locale,
+        toNative(model.today),
+      );
+      const at = parsed instanceof Date ? parsed : parsed?.from;
+      const opened = model.popover.isOpen
+        ? { model }
+        : transition(model, Popover.Message.RequestedOpen(), options);
+      const base = opened.model;
+      return {
+        ...opened,
+        model: {
+          ...base,
+          typedDate: message.text,
+          calendar: at
+            ? { ...base.calendar, month: firstOfMonth(Calendar.fromNative(at)) }
+            : base.calendar,
+        },
+      };
+    }
+    case 'DateTextCommitted':
+      return options.typeable && !options.disabled
+        ? commitTyped(model, options, transition(model, Popover.Message.RequestedClose(), options))
+        : { model };
+    case 'DateTextBlurred':
+      return options.typeable && !options.disabled
+        ? commitTyped(model, options, transition(model, Popover.Message.BlurredPanel(), options))
+        : { model };
+    case 'DateTextReverted':
+      return transition({ ...model, typedDate: null }, Popover.Message.RequestedClose(), options);
     case 'Clear': {
       if (options.disabled) return { model };
       const mode = timeMode(model, options),
@@ -502,6 +586,7 @@ export function update(
           {
             ...model,
             draft: Option.none(),
+            typedDate: null,
             ...(mode === 'time' && !(options.timeControlled ?? 'time' in options)
               ? { time: null }
               : {}),
@@ -530,7 +615,11 @@ export function update(
       const preset = options.presets?.[message.index];
       if (!preset) return { model };
       const selection = Calendar.fromSelected(preset.range);
-      const next = setValue({ ...model, draft: Option.none() }, selection, options);
+      const next = setValue(
+        { ...model, draft: Option.none(), typedDate: null },
+        selection,
+        options,
+      );
       return {
         model: {
           ...next,
@@ -560,7 +649,7 @@ export function update(
       };
       const selection =
         result.outMessage?._tag === 'Selected'
-          ? selected(next, result.outMessage.selection, options)
+          ? selected({ ...next, typedDate: null }, result.outMessage.selection, options)
           : { model: next };
       return {
         ...selection,

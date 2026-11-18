@@ -1,5 +1,5 @@
-import { Effect, Schema } from 'effect';
-import { Mount } from 'foldkit';
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
 
 /** Preserve Fluid's motion value across visits and follow-axis changes.
  * Only a force-open/axis effect resets it; leaving the trigger does not.
@@ -54,8 +54,7 @@ export function trackCursor(element: Element): () => void {
 }
 
 /** Visual translation only; trigger interactions belong to Tooltip.view. */
-export const CursorFollow = Mount.define('Tooltip.CursorFollow', {
-  messages: [Schema.Never],
+export const CursorFollow = defineSilentMount('Tooltip.CursorFollow', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() => trackCursor(element)),

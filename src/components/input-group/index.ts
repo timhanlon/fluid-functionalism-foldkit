@@ -1,11 +1,11 @@
-import { Effect, Schema } from 'effect';
+import { defineSilentMount } from '../silent-mount';
+import { Effect } from 'effect';
 import { Mount } from 'foldkit';
 import type { Html, HtmlBuilder } from 'foldkit/html';
 import { mountHover } from '../../fluid-hover/engine';
 import '../input-field/styles.css';
 
-const Mounted = Mount.define('InputGroup.Mount', {
-  messages: [Schema.Never],
+const Mounted = defineSilentMount('InputGroup.Mount', {
   execute: ({ element }) =>
     Effect.acquireRelease(
       Effect.sync(() =>
